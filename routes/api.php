@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Modules\Api\CardSaleSettlement;
+use App\Http\Controllers\Modules\Api\CL\ClAccounting;
 use App\Http\Controllers\Modules\Api\CL\ClCardReplacement;
 use App\Http\Controllers\Modules\Api\CL\ClValidation;
 use App\Http\Controllers\Modules\Api\CL\ClController;
@@ -120,7 +121,8 @@ Route::post('/edcCrashReport', [crashReports::class, 'edcLog']);
 /*CLOSE LOOP API*/
 Route::get('/clSnMapping', [ClSnMapping::class, 'index']);
 
-Route::post('/sync/cl',[ClController::class,'syncCl']);
+/* SETTLE CL SV & TP ACCOUNTING TRANSACTION */
+Route::post('/sync/cl/accounting',[ClAccounting::class,'ClAccounting']);
 
 /* SETTLE CL SV & TP VALIDATION TRANSACTION */
 Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
