@@ -1,0 +1,145 @@
+<?php
+
+use App\Http\Controllers\Modules\Api\CardSaleSettlement;
+use App\Http\Controllers\Modules\Api\CL\ClCardReplacement;
+use App\Http\Controllers\Modules\Api\CL\ClValidation;
+use App\Http\Controllers\Modules\Api\CL\ClController;
+use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
+use App\Http\Controllers\Modules\Api\ConfigApiController;
+use App\Http\Controllers\Modules\Api\NewConfigApiController;
+use App\Http\Controllers\Modules\Api\CrashReport\crashReports;
+use App\Http\Controllers\Modules\Api\Equipment;
+use App\Http\Controllers\Modules\Api\FicoReport\OlFicoReport;
+use App\Http\Controllers\Modules\Api\Firmware\Firmware;
+use App\Http\Controllers\Modules\Api\Firmware\FirmwareSettlement;
+use App\Http\Controllers\Modules\Api\OlSettlement;
+use App\Http\Controllers\Modules\Api\OlSvAccounting;
+use App\Http\Controllers\Modules\Api\paySchemeFare;
+use App\Http\Controllers\Modules\Api\Paytm\AcqApiManager;
+use App\Http\Controllers\Modules\Api\Paytm\IssuanceApiManager;
+use App\Http\Controllers\Modules\Api\Paytm\OlAcqTxn;
+use App\Http\Controllers\Modules\Api\Paytm\VerifyTerminal;
+use App\Http\Controllers\Modules\Api\SettleOlTransaction;
+use App\Http\Controllers\Modules\Api\TidController;
+use App\Http\Controllers\Modules\Pass\PassController;
+use App\Http\Controllers\Modules\ReportApi\CashCollection;
+use App\Http\Controllers\Modules\ReportApi\DailyRidership;
+use App\Http\Controllers\Modules\ReportApi\Revenue;
+use App\Http\Controllers\Modules\ReportApi\TravelApiController;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::post('get/params', [PassController::class, 'getParamsForPass']);
+
+/*DOWNLOAD AND CHECK UPDATE OF FIRMWARE*/
+Route::post('/checkUpdate', [Firmware::class, 'checkUpdate']);
+Route::get('/getFirmware/{uploadId}', [Firmware::class, 'getFirmware']);
+
+/* GET CONFIGURATION */
+Route::post('config', [ConfigApiController::class, 'getConfig']);
+
+/*NEW API CONTROLLER*/
+Route::post('v1/config',[NewConfigApiController::class,'getConfig']);
+
+/* SETTLE OPEN LOOP TRANSACTION */
+Route::post('settleOlTransaction', [SettleOlTransaction::class, 'setOlTransaction']);
+
+/* SETTLE SV ACCOUNTING */
+Route::post('syncOlAccTrans', [OlSvAccounting::class, 'OlSvAccounting']);
+
+/* FOR GETTING TERMINAL ID */
+Route::post('tidDetails', [TidController::class, 'tidDetails']);
+
+/* EDIT TID DETAILS */
+Route::post('editEdcDetails', [TidController::class, 'editEdcDetails']);
+Route::post('exitTidDetails', [TidController::class, 'exitTidDetails']);
+Route::post('entryTidDetails', [TidController::class, 'entryTidDetails']);
+
+/* FOR SETTLE COMMON CARD SALE */
+Route::post('syncOlSaleTrans', [CardSaleSettlement::class, 'cardSale']);
+
+Route::post('eqRole', [Equipment::class, 'eqModeID']);
+
+/* CHECK SCS AVAILABILITY */
+Route::post('checkSCS', [Equipment::class, 'checkSCS']);
+Route::post('/payScheme', [paySchemeFare::class, 'payScheme']);
+
+/* GET ROLES OF EQUIPMENT */
+Route::post('/getRoles', [Equipment::class, 'getRoles']);
+
+/* SETTLEMENT API */
+Route::get('/getSettlements', [OlSettlement::class, 'getSettlements']);
+Route::post('/setSettlements', [OlSettlement::class, 'setSettlements']);
+
+/* VERIFY TERMINAL */
+Route::post('/verifyTerminal', [VerifyTerminal::class, 'verify']);
+Route::get('/olAcqTxn', [OlAcqTxn::class, 'index']);
+
+/* DOWNLOAD AND CHECK UPDATE OF FIRMWARE */
+Route::post('/checkUpdate', [Firmware::class, 'checkUpdate']);
+Route::get('/getFirmware/{uploadId}', [Firmware::class, 'getFirmware']);
+
+
+/* PAYTM */
+Route::post('/otp/send',[IssuanceApiManager::class,'sendOtp']);
+Route::post('/otp/verify',[IssuanceApiManager::class,'verifyOtp']);
+Route::post('/kyc/details',[IssuanceApiManager::class,'kycDetail']);
+Route::post('/kyc/submit',[IssuanceApiManager::class,'submitKyc']);
+Route::post('/card/activation',[IssuanceApiManager::class,'activateCard']);
+Route::post('/card/status',[IssuanceApiManager::class,'activationStatus']);
+
+Route::post('/verifyTerminal',[AcqApiManager::class,'verifyTerminal']);
+Route::post('/moneyLoad',[AcqApiManager::class,'moneyLoad']);
+Route::post('/sale',[AcqApiManager::class,'sale']);
+Route::post('/balanceUpdate',[AcqApiManager::class,'balanceUpdate']);
+Route::post('/void',[AcqApiManager::class,'voidTrans']);
+Route::post('/serviceCreation',[AcqApiManager::class,'serviceCreation']);
+Route::post('/updateReceiptAndRevertLastTxn',[AcqApiManager::class,'updateReceiptAndRevertLastTxn']);
+
+/*CRASH REPORTS*/
+Route::post('/gateCrashReport', [crashReports::class,'gateLog']);
+Route::post('/tomCrashReport', [crashReports::class, 'tomLog']);
+Route::post('/edcCrashReport', [crashReports::class, 'edcLog']);
+
+/*CLOSE LOOP API*/
+Route::get('/clSnMapping', [ClSnMapping::class, 'index']);
+
+Route::post('/sync/cl',[ClController::class,'syncCl']);
+
+/* SETTLE CL SV & TP VALIDATION TRANSACTION */
+Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
+
+/*CL CARD REP */
+Route::post('/cl/card/rep',[ClCardReplacement::class,'store']);
+
+/* REPORT API'S*/
+Route::middleware(['basic_auth'])->group(function (){
+    Route::post('/oldailyRidership',[DailyRidership::class,'index']);
+    Route::post('/olcashCollection',[CashCollection::class,'index']);
+    Route::post('/olrevenue',[Revenue::class,'index']);
+    Route::post('/olValReport',[TravelApiController::class,'getReport']);
+    /* MMOPL OL SAP FICO POSTING */
+    /* Route::get('/olFicoReport', [OlFicoReport::class, 'index']);*/
+});
+
+
+
+
+
+
