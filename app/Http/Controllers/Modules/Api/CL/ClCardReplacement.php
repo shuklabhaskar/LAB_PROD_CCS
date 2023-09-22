@@ -29,8 +29,13 @@ class ClCardReplacement extends Controller
         foreach ($transactions as $transaction) {
 
             /* CHECK THAT IS TEST IS NULLABLE OR NOT */
-            $paxLastName = "null";
-            if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+            $paxLastName = "";
+            $paxFirstName = "";
+            $PaxMobile = "1234567891";
+
+            if(array_key_exists("paxLastName", $transaction))  $paxLastName = $transaction['paxLastName'];
+            if(array_key_exists("paxFirstName", $transaction))  $paxLastName = $transaction['paxFirstName'];
+            if(array_key_exists("paxMobile", $transaction))  $paxLastName = $transaction['paxMobile'];
 
             DB::table('cl_card_rep')->insert([
                 'atek_id'           => $transaction['atekId'],
@@ -43,9 +48,9 @@ class ClCardReplacement extends Controller
                 'pass_id'           => $transaction['passId'],
                 'pass_expiry'       => $transaction['passExpiry'],
                 'tid'               => $transaction['tid'],
-                'pax_first_name'    => $transaction['paxFirstName'],
+                'pax_first_name'    => $paxFirstName,
                 'pax_last_name'     => $paxLastName,
-                'pax_mobile'        => $transaction['paxMobile'],
+                'pax_mobile'        => $PaxMobile,
             ]);
 
             $transData['is_settled'] = true;
