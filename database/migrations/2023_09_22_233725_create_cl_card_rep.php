@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->text('tid');
             $table->text('pax_first_name');
             $table->text('pax_last_name')->nullable();
-            $table->integer('pax_mobile');
+            $table->bigInteger('pax_mobile');
             $table->timestamp('created_at')->useCurrent();
         });
 

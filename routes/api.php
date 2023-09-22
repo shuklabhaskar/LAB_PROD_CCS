@@ -3,16 +3,13 @@
 use App\Http\Controllers\Modules\Api\CardSaleSettlement;
 use App\Http\Controllers\Modules\Api\CL\ClAccounting;
 use App\Http\Controllers\Modules\Api\CL\ClCardReplacement;
-use App\Http\Controllers\Modules\Api\CL\ClValidation;
-use App\Http\Controllers\Modules\Api\CL\ClController;
 use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
+use App\Http\Controllers\Modules\Api\CL\ClValidation;
 use App\Http\Controllers\Modules\Api\ConfigApiController;
-use App\Http\Controllers\Modules\Api\NewConfigApiController;
 use App\Http\Controllers\Modules\Api\CrashReport\crashReports;
 use App\Http\Controllers\Modules\Api\Equipment;
-use App\Http\Controllers\Modules\Api\FicoReport\OlFicoReport;
 use App\Http\Controllers\Modules\Api\Firmware\Firmware;
-use App\Http\Controllers\Modules\Api\Firmware\FirmwareSettlement;
+use App\Http\Controllers\Modules\Api\NewConfigApiController;
 use App\Http\Controllers\Modules\Api\OlSettlement;
 use App\Http\Controllers\Modules\Api\OlSvAccounting;
 use App\Http\Controllers\Modules\Api\paySchemeFare;
@@ -27,7 +24,6 @@ use App\Http\Controllers\Modules\ReportApi\CashCollection;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

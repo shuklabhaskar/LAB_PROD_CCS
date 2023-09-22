@@ -3,42 +3,55 @@
 namespace App\Http\Controllers\Modules\Api\CL;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class ClCardReplacement extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): Response|Application|ResponseFactory
     {
 
         $transactions = json_decode($request->getContent(), true);
         $response = [];
 
-        if ($request == [] || $request == null)
+        if ($transactions == []){
+
             return response([
                 'status' => false,
                 'error' => "please provide required data!"
             ]);
 
+        }
+
         foreach ($transactions as $transaction) {
 
+            /* CHECK THAT IS TEST IS NULLABLE OR NOT */
+            $paxLastName = "null";
+            if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+
             DB::table('cl_card_rep')->insert([
-                'atek_id'       => $transaction['atekId'],
-                'txn_date'      => $transaction['txnDate'],
-                'engraved_id'   => $transaction['engravedId'],
-                'chip_id'       => $transaction['chipId'],
-                'stn_id'        => $transaction['stnId'],
-                'pass_bal'      => $transaction['passBal'],
-                'card_sec'      => $transaction['cardSec'],
-                'pass_id'       => $transaction['passId'],
-                'pass_expiry'   => $transaction['passExpiry'],
-                'tid'           => $transaction['tid'],
+                'atek_id'           => $transaction['atekId'],
+                'txn_date'          => $transaction['txnDate'],
+                'engraved_id'       => $transaction['engravedId'],
+                'chip_id'           => $transaction['chipId'],
+                'stn_id'            => $transaction['stnId'],
+                'pass_bal'          => $transaction['passBal'],
+                'card_sec'          => $transaction['cardSec'],
+                'pass_id'           => $transaction['passId'],
+                'pass_expiry'       => $transaction['passExpiry'],
+                'tid'               => $transaction['tid'],
+                'pax_first_name'    => $transaction['paxFirstName'],
+                'pax_last_name'     => $paxLastName,
+                'pax_mobile'        => $transaction['paxMobile'],
             ]);
 
             $transData['is_settled'] = true;
             $transData['atek_id'] = $transaction['atekId'];
 
-            array_push($response, $transData);
+            $response[] = $transData;
         }
 
         return response([
@@ -48,3 +61,4 @@ class ClCardReplacement extends Controller
 
     }
 }
+

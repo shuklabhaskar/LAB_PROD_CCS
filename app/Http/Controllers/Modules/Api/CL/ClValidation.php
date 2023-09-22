@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ClValidation extends Controller
 {
-    
+
     function setClTransaction(Request $request)
     {
 
@@ -133,19 +133,19 @@ class ClValidation extends Controller
                 $transData['is_settled'] = true;
                 $transData['atek_id']    = $transaction ['atek_id'];
 
-                array_push($response, $transData);
+                $response[] = $transData;
 
             } catch (PDOException $e) {
 
                 /* IF COLUMN IDENTITY FOUND AS ERROR */
                 if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
-                    $transData['is_settled']    = true;
-                    $transData['atek_id']       = $transaction['atek_id'];
-                    $transData['error']         = $e->getMessage();
+                    $transData['is_settled'] = true;
+                    $transData['atek_id'] = $transaction['atek_id'];
+                    $transData['error'] = $e->getMessage();
                 } else {
-                    $transData['is_settled']    = false;
-                    $transData['atek_id']       = $transaction['atek_id'];
-                    $transData['error']         = $e->getMessage();
+                    $transData['is_settled'] = false;
+                    $transData['atek_id'] = $transaction['atek_id'];
+                    $transData['error'] = $e->getMessage();
                 }
 
                 array_push($response, $transData);
