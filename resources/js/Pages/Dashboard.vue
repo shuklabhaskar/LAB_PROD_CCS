@@ -2,7 +2,7 @@
 
     <div>
 
-        <h1> <strong>LAB TESTING CCS </strong> DASHBOARD</h1>
+        <h1> <strong>LAB PRODUCTION CCS </strong> DASHBOARD</h1>
 
         <div class="row mt-5">
             <div class="col-xl-6 col-xxl-5 d-flex">

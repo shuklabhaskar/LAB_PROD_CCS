@@ -342,6 +342,16 @@
                                                     <input  disabled type="number" min="0" v-model="form.daily_trip_limit" class="form-control"/>
                                                 </div>
 
+                                                <!--ISSUE PERMIT-->
+                                                <div class="mb-3 col-md-3" id="issue_permit">
+                                                    <label class="form-label">Issue Permit</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-text">
+                                                            <input  type="checkbox" v-model="form.issue_permit">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <!--RELOAD PERMIT-->
                                                 <div class="mb-3 col-md-3" id="reload_permit">
                                                     <label class="form-label">Reload Permit</label>
@@ -525,6 +535,7 @@
                     grace_period: this.Pass.grace_period,
                     trip_count: this.Pass.trip_count,
                     daily_trip_limit: this.Pass.daily_trip_limit,
+                    issue_permit: this.Pass.issue_permit,
                     reload_permit: this.Pass.reload_permit,
                     refund_permit: this.Pass.refund_permit,
                     refund_charges: this.Pass.refund_charges,

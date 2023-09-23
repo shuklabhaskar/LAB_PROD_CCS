@@ -35,6 +35,7 @@ class PassParametersSeeder extends Seeder
         DB::table('ms_pass_parameters') -> insert(['params' => 'grace_period','sjt' =>0,'rjt'=>0,'sv'=>1,'tp'=>0]);
         DB::table('ms_pass_parameters') -> insert(['params' => 'trip_count','sjt' =>0,'rjt'=>0,'sv'=>0,'tp'=>1]);
         DB::table('ms_pass_parameters') -> insert(['params' => 'daily_trip_limit','sjt' =>0,'rjt'=>0,'sv'=>0,'tp'=>1]);
+        DB::table('ms_pass_parameters') -> insert(['params' => 'issue_permit','sjt' =>1,'rjt'=>1,'sv'=>1,'tp'=>1]);
         DB::table('ms_pass_parameters') -> insert(['params' => 'reload_permit','sjt' =>0,'rjt'=>0,'sv'=>1,'tp'=>1]);
         DB::table('ms_pass_parameters') -> insert(['params' => 'refund_permit','sjt' =>1,'rjt'=>1,'sv'=>1,'tp'=>1]);
         DB::table('ms_pass_parameters') -> insert(['params' => 'refund_charges','sjt' =>1,'rjt'=>1,'sv'=>1,'tp'=>1]);

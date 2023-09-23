@@ -47,6 +47,7 @@ class PassInventory extends Migration
             $table->double('grace_period')->nullable();
             $table->string('trip_count')->nullable();
             $table->double('daily_trip_limit')->nullable();
+            $table->double('issue_permit')->nullable();
             $table->boolean('reload_permit')->nullable();
             $table->boolean('refund_permit')->nullable();
             $table->double('refund_charges')->nullable();
