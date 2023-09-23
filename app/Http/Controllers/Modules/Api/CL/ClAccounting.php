@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Modules\Api\CL;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -14,15 +15,15 @@ class ClAccounting extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'atek_id'        => 'required|string|max:255',
-            'des_stn_id'     => 'required|integer',
-            'engraved_id'    => 'required',
-            'eq_id'          => 'required|string',
-            'media_type_id'  => 'required|integer',
-            'pass_id'        => 'required',
-            'src_stn_id'     => 'required|integer',
-            'stn_id'         => 'required|integer',
-            'txn_date'       => 'required'
+            '*.atek_id'        => 'required',
+            '*.des_stn_id'     => 'required|integer',
+            '*.engraved_id'    => 'required',
+            '*.eq_id'          => 'required|string',
+            '*.media_type_id'  => 'required|integer',
+            '*.pass_id'        => 'required',
+            '*.src_stn_id'     => 'required|integer',
+            '*.stn_id'         => 'required|integer',
+            '*.txn_date'       => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +85,7 @@ class ClAccounting extends Controller
 
     }
 
-    public function Issuance($transaction , $engravedIdExists){
+    public function Issuance($transaction , $engravedIdExists) {
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName       = "";
@@ -138,9 +139,9 @@ class ClAccounting extends Controller
                 'old_engraved_id'   => $transaction['old_engraved_id'],
             ]);
 
-            if ($svData){
+            if ($svData) {
 
-                if ($engravedIdExists){
+                if ($engravedIdExists) {
 
                     /* FOR CL SV ISSUANCE */
                     if ($transaction['product_id'] == 3 ){
@@ -183,8 +184,7 @@ class ClAccounting extends Controller
                                 'product_id'        =>$transaction['product_id'],
                                 'card_fee'          =>$transaction['card_fee'],
                                 'card_sec'          =>$transaction['card_sec'],
-                                'sv_balance'        =>$transaction['sv_balance'],
-                                'tp_balance'        =>$transaction['tp_balance'],
+                                'tp_balance'        =>$transaction['pos_chip_bal'],
                                 'pass_expiry'       =>$transaction['pass_expiry'],
                                 'src_stn_id'        =>$transaction['src_stn_id'],
                                 'des_stn_id'        =>$transaction['des_stn_id'],
@@ -214,8 +214,7 @@ class ClAccounting extends Controller
                                 'product_id'        =>  $transaction['product_id'],
                                 'card_fee'          =>  $transaction['card_fee'],
                                 'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'tp_balance'        =>  $transaction['pos_chip_bal'],
+                                'sv_balance'        =>  $transaction['pos_chip_bal'],
                                 'pass_expiry'       =>  $transaction['pass_expiry'],
                                 'src_stn_id'        =>  $transaction['src_stn_id'],
                                 'des_stn_id'        =>  $transaction['des_stn_id'],
@@ -424,13 +423,13 @@ class ClAccounting extends Controller
                         ->update([
                             'engraved_id'       =>  $transaction['engraved_id'],
                             'chip_id'           =>  $transaction['chip_id'],
-                            'txn_date'          =>  "0000-00-00 00:00:00",
+                            'txn_date'          =>  Carbon::now(),
                             'pass_id'           =>  0,
                             'product_id'        =>  0,
                             'card_fee'          =>  0,
                             'card_sec'          =>  0,
                             'sv_balance'        =>  0,
-                            'pass_expiry'       =>  "0000-00-00 00:00:00",
+                            'pass_expiry'       =>  Carbon::now(),
                             'src_stn_id'        =>  0,
                             'des_stn_id'        =>  0,
                             'auto_topup_status' =>  false,
