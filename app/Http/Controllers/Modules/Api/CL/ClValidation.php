@@ -4,16 +4,14 @@ namespace App\Http\Controllers\Modules\Api\CL;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use PDOException;
-use Illuminate\Support\Facades\DB;
 
 class ClValidation extends Controller
 {
-
     function setClTransaction(Request $request)
     {
-
         $transactions = json_decode($request->getContent(),true);
         $response = [];
 
@@ -62,7 +60,7 @@ class ClValidation extends Controller
                     }
 
                     /* FOR STORE VALUE VALIDATION */
-                    DB::table('cl_sv_validation')->insert([
+                    $SvValidationTrue = DB::table('cl_sv_validation')->insert([
                         'atek_id'        => $transaction['atek_id'],
                         'txn_date'       => $transaction['txn_date'],
                         'engraved_id'    => $transaction['engraved_id'],
@@ -77,6 +75,16 @@ class ClValidation extends Controller
                         'stn_id'         => $transaction['stn_id'],
                         'is_test'        => $is_test,
                     ]);
+
+                    if ($SvValidationTrue && $transaction['val_type_id'] == 2){
+
+                            DB::table('cl_status')
+                                ->where('engraved_id','=',$transaction['engraved_id'])
+                                ->update([
+                                    'sv_balance' => 'chip_balance',
+                                    'updated_at' =>  now()
+                                ]);
+                    }
 
                 }
                 elseif ($transaction['product_id'] == 4) { /* FOR TRIP PASS ONLY */
@@ -106,7 +114,7 @@ class ClValidation extends Controller
                     }
 
                     /* FOR TRIP PASS VALIDATION */
-                    DB::table('cl_tp_validation')->insert([
+                    $TpValidationTrue = DB::table('cl_tp_validation')->insert([
                         'atek_id'        => $transaction['atek_id'],
                         'txn_date'       => $transaction['txn_date'],
                         'engraved_id'    => $transaction['engraved_id'],
@@ -121,6 +129,16 @@ class ClValidation extends Controller
                         'stn_id'         => $transaction['stn_id'],
                         'is_test'        => $is_test,
                     ]);
+
+                    if ($TpValidationTrue && $transaction['val_type_id'] == 2){
+
+                        DB::table('cl_status')
+                            ->where('engraved_id','=',$transaction['engraved_id'])
+                            ->update([
+                                'tp_balance' => 'trip_balance',
+                                'updated_at' =>  now()
+                            ]);
+                    }
 
                 }
                 else{
@@ -139,16 +157,14 @@ class ClValidation extends Controller
 
                 /* IF COLUMN IDENTITY FOUND AS ERROR */
                 if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
-                    $transData['is_settled'] = true;
-                    $transData['atek_id'] = $transaction['atek_id'];
-                    $transData['error'] = $e->getMessage();
+                    $transData['is_settled']    = true;
                 } else {
-                    $transData['is_settled'] = false;
-                    $transData['atek_id'] = $transaction['atek_id'];
-                    $transData['error'] = $e->getMessage();
+                    $transData['is_settled']    = false;
                 }
+                $transData['atek_id']       = $transaction['atek_id'];
+                $transData['error']         = $e->getMessage();
 
-                array_push($response, $transData);
+                $response[] = $transData;
 
             }
 

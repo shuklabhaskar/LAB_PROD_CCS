@@ -1,32 +1,41 @@
+# Author: Bhaskar Shukla
 <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('cl_card_rep', function (Blueprint $table) {
-            $table->id('cl_card_rep_id')->unique();
+            $table->id('cl_indra_id')->unique();
             $table->text('atek_id')->unique();
-            $table->dateTime('txn_date');
+            $table->datetime('txn_date');
             $table->bigInteger('engraved_id');
             $table->bigInteger('chip_id');
             $table->integer('stn_id');
-            $table->double('pass_bal');
-            $table->double('card_sec');
-            $table->integer('pass_id');
+            $table->double('sv_balance')->nullable();
+            $table->double('tp_balance')->nullable();
+            $table->double('card_sec')->nullable();
+            $table->double('card_fee')->nullable();
+            $table->integer('pass_id')->nullable();
+            $table->integer('product_id');
             $table->dateTime('pass_expiry');
+            $table->integer('src_stn_id')->nullable();
+            $table->integer('des_stn_id')->nullable();
             $table->text('tid');
-            $table->text('pax_first_name');
+            $table->text('eq_id');
+            $table->integer('eq_type_id');
+            $table->text('pax_first_name')->nullable();
             $table->text('pax_last_name')->nullable();
-            $table->bigInteger('pax_mobile');
+            $table->integer('pax_mobile')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
 

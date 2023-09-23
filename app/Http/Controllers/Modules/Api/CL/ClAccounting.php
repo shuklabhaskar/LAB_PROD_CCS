@@ -5,12 +5,32 @@ namespace App\Http\Controllers\Modules\Api\CL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use PDOException;
 
 class ClAccounting extends Controller
 {
     public function ClAccounting(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'atek_id'        => 'required|string|max:255',
+            'des_stn_id'     => 'required|integer',
+            'engraved_id'    => 'required',
+            'eq_id'          => 'required|string',
+            'media_type_id'  => 'required|integer',
+            'pass_id'        => 'required',
+            'src_stn_id'     => 'required|integer',
+            'stn_id'         => 'required|integer',
+            'txn_date'       => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+               'status' => false,
+               'error' => json_encode($validator->errors())
+            ]);
+        }
 
         $transactions = json_decode($request->getContent(), true);
         $response = [];
@@ -26,16 +46,25 @@ class ClAccounting extends Controller
 
         foreach ($transactions as $transaction) {
 
-            $productID = $transaction['product_id'];
+            $opTypeId = $transaction['op_type_id'];
 
-            if ($productID == 3) {
+            $engravedIdExists = DB::table('cl_status')
+                ->where('engraved_id','=',$transaction['engraved_id'])
+                ->value('engraved_id');
 
-                $transData = $this->svAccounting($transaction);
+            if ($opTypeId == 1) { //ISSUANCE
+
+                $transData = $this->Issuance($transaction , $engravedIdExists);
                 $response[] = $transData;
 
-            } elseif ($productID == 4) {
+            } elseif ($opTypeId == 3) { // RELOAD
 
-                $transData = $this->tpAccounting($transaction);
+                $transData = $this->Reload($transaction  , $engravedIdExists);
+                $response[] = $transData;
+
+            }  elseif ($opTypeId == 6) { // REFUND
+
+                $transData = $this->Refund($transaction  , $engravedIdExists);
                 $response[] = $transData;
 
             } else {
@@ -55,44 +84,183 @@ class ClAccounting extends Controller
 
     }
 
-    public function svAccounting($transaction)
-    {
+    public function Issuance($transaction , $engravedIdExists){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $autoTopUpStatus    = false;
+        $autoTopUpAmount    = 0.0;
+        $bonusPoints        = 0.0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
+        if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
+        if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
 
         try {
-            DB::table('cl_sv_accounting')->insert([
-                'atek_id' => $transaction['atek_id'],
-                'txn_date' => $transaction['txn_date'],
-                'engraved_id' => $transaction['engraved_id'],
-                'op_type_id' => $transaction['op_type_id'],
-                'stn_id' => $transaction['stn_id'],
-                'cash_col' => $transaction['cash_col'],
-                'cash_ret' => $transaction['cash_ret'],
-                'pass_price' => $transaction['pass_price'],
-                'card_fee' => $transaction['card_fee'],
-                'card_sec' => $transaction['card_sec'],
-                'processing_fee' => $transaction['processing_fee'],
-                'total_price' => $transaction['total_price'],
-                'pass_ref_chr' => $transaction['pass_ref_chr'],
-                'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                'pre_chip_bal' => $transaction['pre_chip_bal'],
-                'pos_chip_bal' => $transaction['pos_chip_bal'],
-                'media_type_id' => $transaction['media_type_id'],
-                'product_id' => $transaction['product_id'],
-                'pass_id' => $transaction['pass_id'],
-                'pass_expiry' => $transaction['pass_expiry'],
-                'pax_first_name' => $transaction['pax_first_name'],
-                'pax_last_name' => $transaction['pax_last_name'],
-                'pax_mobile' => $transaction['pax_mobile'],
-                'pax_gen_type' => $transaction['pax_gen_type'],
-                'shift_id' => $transaction['shift_id'],
-                'user_id' => $transaction['user_id'],
-                'eq_id' => $transaction['eq_id'],
-                'pay_type_id' => $transaction['pay_type_id'],
-                'pay_ref' => $transaction['pay_ref'],
-                'is_test' => $transaction['is_test'],
-                'old_engraved_id' => $transaction['old_engraved_id'],
+
+            $svData =  DB::table('cl_sv_accounting')->insert([
+                'atek_id'           => $transaction['atek_id'],
+                'txn_date'          => $transaction['txn_date'],
+                'engraved_id'       => $transaction['engraved_id'],
+                'op_type_id'        => $transaction['op_type_id'],
+                'stn_id'            => $transaction['stn_id'],
+                'cash_col'          => $transaction['cash_col'],
+                'cash_ret'          => $transaction['cash_ret'],
+                'pass_price'        => $transaction['pass_price'],
+                'card_fee'          => $transaction['card_fee'],
+                'card_sec'          => $transaction['card_sec'],
+                'processing_fee'    => $transaction['processing_fee'],
+                'total_price'       => $transaction['total_price'],
+                'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                'media_type_id'     => $transaction['media_type_id'],
+                'product_id'        => $transaction['product_id'],
+                'pass_id'           => $transaction['pass_id'],
+                'pass_expiry'       => $transaction['pass_expiry'],
+                'pax_first_name'    => $transaction['pax_first_name'],
+                'pax_last_name'     => $transaction['pax_last_name'],
+                'pax_mobile'        => $transaction['pax_mobile'],
+                'pax_gen_type'      => $transaction['pax_gen_type'],
+                'shift_id'          => $transaction['shift_id'],
+                'user_id'           => $transaction['user_id'],
+                'eq_id'             => $transaction['eq_id'],
+                'pay_type_id'       => $transaction['pay_type_id'],
+                'pay_ref'           => $transaction['pay_ref'],
+                'is_test'           => $transaction['is_test'],
+                'old_engraved_id'   => $transaction['old_engraved_id'],
             ]);
+
+            if ($svData){
+
+                if ($engravedIdExists){
+
+                    /* FOR CL SV ISSUANCE */
+                    if ($transaction['product_id'] == 3 ){
+
+                        DB::table('cl_status')
+                            ->where('engraved_id','=',$transaction['engraved_id'])
+                            ->update([
+                                'engraved_id'       =>$transaction['engraved_id'],
+                                'chip_id'           =>$transaction['chip_id'],
+                                'txn_date'          =>$transaction['txn_date'],
+                                'pass_id'           =>$transaction['pass_id'],
+                                'product_id'        =>$transaction['product_id'],
+                                'card_fee'          =>$transaction['card_fee'],
+                                'card_sec'          =>$transaction['card_sec'],
+                                'sv_balance'        =>$transaction['pos_chip_bal'],
+                                'pass_expiry'       =>$transaction['pass_expiry'],
+                                'src_stn_id'        =>$transaction['src_stn_id'],
+                                'des_stn_id'        =>$transaction['des_stn_id'],
+                                'auto_topup_status' =>$autoTopUpStatus,
+                                'auto_topup_amt'    =>$autoTopUpAmount,
+                                'bonus_points'      =>$bonusPoints,
+                                'is_test'           =>$transaction['is_test'],
+                                'pax_first_name'    =>$paxFirstName,
+                                'pax_last_name'     =>$paxLastName,
+                                'pax_mobile'        =>$transaction['pax_mobile'],
+                                'pax_gen_type'      =>$transaction['pax_gen_type'],
+                                'updated_at'        =>now(),
+                            ]);
+                    }
+
+                    /* FOR CL TP ISSUANCE */
+                    if ($transaction['product_id'] == 4){
+                        DB::table('cl_status')
+                            ->where('engraved_id','=',$transaction['engraved_id'])
+                            ->update([
+                                'engraved_id'       =>$transaction['engraved_id'],
+                                'chip_id'           =>$transaction['chip_id'],
+                                'txn_date'          =>$transaction['txn_date'],
+                                'pass_id'           =>$transaction['pass_id'],
+                                'product_id'        =>$transaction['product_id'],
+                                'card_fee'          =>$transaction['card_fee'],
+                                'card_sec'          =>$transaction['card_sec'],
+                                'sv_balance'        =>$transaction['sv_balance'],
+                                'tp_balance'        =>$transaction['tp_balance'],
+                                'pass_expiry'       =>$transaction['pass_expiry'],
+                                'src_stn_id'        =>$transaction['src_stn_id'],
+                                'des_stn_id'        =>$transaction['des_stn_id'],
+                                'auto_topup_status' =>$autoTopUpStatus,
+                                'auto_topup_amt'    =>$autoTopUpAmount,
+                                'bonus_points'      =>$bonusPoints,
+                                'is_test'           =>false,
+                                'pax_first_name'    =>$paxFirstName,
+                                'pax_last_name'     =>$paxLastName,
+                                'pax_mobile'        =>$paxMobile,
+                                'pax_gen_type'      =>0,
+                                'updated_at'        =>now(),
+                            ]);
+                    }
+
+                }
+
+                if ($engravedIdExists == null){
+
+                    if ($transaction['product_id'] == 3 ){
+
+                            DB::table('cl_status')->insert([
+                                'engraved_id'       =>  $transaction['engraved_id'],
+                                'chip_id'           =>  $transaction['chip_id'],
+                                'txn_date'          =>  $transaction['txn_date'],
+                                'pass_id'           =>  $transaction['pass_id'],
+                                'product_id'        =>  $transaction['product_id'],
+                                'card_fee'          =>  $transaction['card_fee'],
+                                'card_sec'          =>  $transaction['card_sec'],
+                                'sv_balance'        =>  $transaction['sv_balance'],
+                                'tp_balance'        =>  $transaction['pos_chip_bal'],
+                                'pass_expiry'       =>  $transaction['pass_expiry'],
+                                'src_stn_id'        =>  $transaction['src_stn_id'],
+                                'des_stn_id'        =>  $transaction['des_stn_id'],
+                                'auto_topup_status' =>  $autoTopUpStatus,
+                                'auto_topup_amt'    =>  $autoTopUpAmount,
+                                'bonus_points'      =>  $bonusPoints,
+                                'is_test'           =>  false,
+                                'pax_first_name'    =>  $paxFirstName,
+                                'pax_last_name'     =>  $paxLastName,
+                                'pax_mobile'        =>  $paxMobile,
+                                'pax_gen_type'      =>  0,
+                            ]);
+
+                    }
+
+                    if ($transaction['product_id'] == 4 ){
+
+                        DB::table('cl_status')->insert([
+                            'engraved_id'       =>$transaction['engraved_id'],
+                            'chip_id'           =>$transaction['chip_id'],
+                            'txn_date'          =>$transaction['txn_date'],
+                            'pass_id'           =>$transaction['pass_id'],
+                            'product_id'        =>$transaction['product_id'],
+                            'card_fee'          =>$transaction['card_fee'],
+                            'card_sec'          =>$transaction['card_sec'],
+                            'tp_balance'        =>$transaction['pos_chip_bal'],
+                            'pass_expiry'       =>$transaction['pass_expiry'],
+                            'src_stn_id'        =>$transaction['src_stn_id'],
+                            'des_stn_id'        =>$transaction['des_stn_id'],
+                            'auto_topup_status' =>$autoTopUpStatus,
+                            'auto_topup_amt'    =>$autoTopUpAmount,
+                            'bonus_points'      =>$bonusPoints,
+                            'is_test'           =>false,
+                            'pax_first_name'    =>$paxFirstName,
+                            'pax_last_name'     =>$paxLastName,
+                            'pax_mobile'        =>$paxMobile,
+                            'pax_gen_type'      =>0,
+
+                        ]);
+
+                    }
+
+                }
+
+            }
 
             $transData['is_settled'] = true;
             $transData['atek_id'] = $transaction['atek_id'];
@@ -112,49 +280,172 @@ class ClAccounting extends Controller
             return $transData;
 
         }
+
+
     }
 
-    public function tpAccounting($transaction)
-    {
+    public function Reload($transaction , $engravedIdExists){
 
         try {
 
-            DB::table('cl_tp_accounting')->insert([
-                'atek_id' => $transaction['atek_id'],
-                'txn_date' => $transaction['txn_date'],
-                'engraved_id' => $transaction['engraved_id'],
-                'op_type_id' => $transaction['op_type_id'],
-                'stn_id' => $transaction['stn_id'],
-                'cash_col' => $transaction['cash_col'],
-                'cash_ret' => $transaction['cash_ret'],
-                'pass_price' => $transaction['pass_price'],
-                'card_fee' => $transaction['card_fee'],
-                'card_sec' => $transaction['card_sec'],
-                'processing_fee' => $transaction['processing_fee'],
-                'total_price' => $transaction['total_price'],
-                'pass_ref_chr' => $transaction['pass_ref_chr'],
-                'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                'num_trips' => $transaction['num_trips'],
-                'rem_trips' => $transaction['rem_trips'],
-                'media_type_id' => $transaction['media_type_id'],
-                'product_id' => $transaction['product_id'],
-                'pass_id' => $transaction['pass_id'],
-                'pass_expiry' => $transaction['pass_expiry'],
-                'src_stn_id' => $transaction['src_stn_id'],
-                'des_stn_id' => $transaction['des_stn_id'],
-                'pax_first_name' => $transaction['pax_first_name'],
-                'pax_last_name' => $transaction['pax_last_name'],
-                'pax_mobile' => $transaction['pax_mobile'],
-                'pax_gen_type' => $transaction['pax_gen_type'],
-                'shift_id' => $transaction['shift_id'],
-                'user_id' => $transaction['user_id'],
-                'eq_id' => $transaction['eq_id'],
-                'pay_type_id' => $transaction['pay_type_id'],
-                'pay_ref' => $transaction['pay_ref'],
-                'is_test' => $transaction['is_test'],
-                'old_engraved_id' => $transaction['old_engraved_id'],
+            $svData =  DB::table('cl_sv_accounting')->insert([
+                'atek_id'           => $transaction['atek_id'],
+                'txn_date'          => $transaction['txn_date'],
+                'engraved_id'       => $transaction['engraved_id'],
+                'op_type_id'        => $transaction['op_type_id'],
+                'stn_id'            => $transaction['stn_id'],
+                'cash_col'          => $transaction['cash_col'],
+                'cash_ret'          => $transaction['cash_ret'],
+                'pass_price'        => $transaction['pass_price'],
+                'card_fee'          => $transaction['card_fee'],
+                'card_sec'          => $transaction['card_sec'],
+                'processing_fee'    => $transaction['processing_fee'],
+                'total_price'       => $transaction['total_price'],
+                'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                'media_type_id'     => $transaction['media_type_id'],
+                'product_id'        => $transaction['product_id'],
+                'pass_id'           => $transaction['pass_id'],
+                'pass_expiry'       => $transaction['pass_expiry'],
+                'pax_first_name'    => $transaction['pax_first_name'],
+                'pax_last_name'     => $transaction['pax_last_name'],
+                'pax_mobile'        => $transaction['pax_mobile'],
+                'pax_gen_type'      => $transaction['pax_gen_type'],
+                'shift_id'          => $transaction['shift_id'],
+                'user_id'           => $transaction['user_id'],
+                'eq_id'             => $transaction['eq_id'],
+                'pay_type_id'       => $transaction['pay_type_id'],
+                'pay_ref'           => $transaction['pay_ref'],
+                'is_test'           => $transaction['is_test'],
+                'old_engraved_id'   => $transaction['old_engraved_id'],
             ]);
+
+            if ($svData){
+
+                if ($engravedIdExists){
+
+                    /* FOR CL SV ISSUANCE */
+                    if ($transaction['product_id'] == 3 ){
+
+                        DB::table('cl_status')
+                            ->where('engraved_id','=',$transaction['engraved_id'])
+                            ->update([
+                                'sv_balance'        =>$transaction['pos_chip_bal'],
+                                'updated_at'        =>now(),
+                            ]);
+                    }
+
+                    /* FOR CL TP ISSUANCE */
+                    if ($transaction['product_id'] == 4){
+
+                        DB::table('cl_status')
+                            ->where('engraved_id','=',$transaction['engraved_id'])
+                            ->update([
+                                'tp_balance' =>$transaction['tp_balance'],
+                                'updated_at' => now()
+                            ]);
+
+                    }
+
+                }
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+
+
+    }
+
+    public function Refund($transaction , $engravedIdExists){
+
+        try {
+
+            $svData =  DB::table('cl_sv_accounting')->insert([
+                'atek_id'           => $transaction['atek_id'],
+                'txn_date'          => $transaction['txn_date'],
+                'engraved_id'       => $transaction['engraved_id'],
+                'op_type_id'        => $transaction['op_type_id'],
+                'stn_id'            => $transaction['stn_id'],
+                'cash_col'          => $transaction['cash_col'],
+                'cash_ret'          => $transaction['cash_ret'],
+                'pass_price'        => $transaction['pass_price'],
+                'card_fee'          => $transaction['card_fee'],
+                'card_sec'          => $transaction['card_sec'],
+                'processing_fee'    => $transaction['processing_fee'],
+                'total_price'       => $transaction['total_price'],
+                'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                'media_type_id'     => $transaction['media_type_id'],
+                'product_id'        => $transaction['product_id'],
+                'pass_id'           => $transaction['pass_id'],
+                'pass_expiry'       => $transaction['pass_expiry'],
+                'pax_first_name'    => $transaction['pax_first_name'],
+                'pax_last_name'     => $transaction['pax_last_name'],
+                'pax_mobile'        => $transaction['pax_mobile'],
+                'pax_gen_type'      => $transaction['pax_gen_type'],
+                'shift_id'          => $transaction['shift_id'],
+                'user_id'           => $transaction['user_id'],
+                'eq_id'             => $transaction['eq_id'],
+                'pay_type_id'       => $transaction['pay_type_id'],
+                'pay_ref'           => $transaction['pay_ref'],
+                'is_test'           => $transaction['is_test'],
+                'old_engraved_id'   => $transaction['old_engraved_id'],
+            ]);
+
+            if ($svData){
+
+                if ($engravedIdExists){
+
+                    DB::table('cl_status')
+                        ->where('engraved_id','=',$transaction['engraved_id'])
+                        ->update([
+                            'engraved_id'       =>  $transaction['engraved_id'],
+                            'chip_id'           =>  $transaction['chip_id'],
+                            'txn_date'          =>  "0000-00-00 00:00:00",
+                            'pass_id'           =>  0,
+                            'product_id'        =>  0,
+                            'card_fee'          =>  0,
+                            'card_sec'          =>  0,
+                            'sv_balance'        =>  0,
+                            'pass_expiry'       =>  "0000-00-00 00:00:00",
+                            'src_stn_id'        =>  0,
+                            'des_stn_id'        =>  0,
+                            'auto_topup_status' =>  false,
+                            'auto_topup_amt'    =>  0,
+                            'bonus_points'      =>  0,
+                            'is_test'           =>  false,
+                            'pax_first_name'    =>  "",
+                            'pax_last_name'     =>  "",
+                            'pax_mobile'        =>  0000000000,
+                            'pax_gen_type'      =>  0,
+                        ]);
+
+                }
+
+            }
 
             $transData['is_settled'] = true;
             $transData['atek_id'] = $transaction['atek_id'];
@@ -176,4 +467,5 @@ class ClAccounting extends Controller
         }
 
     }
+
 }
