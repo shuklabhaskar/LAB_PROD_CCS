@@ -37,18 +37,18 @@ class ClValidation extends Controller
 
                     /* VALIDATION */
                     $validator = Validator::make($request->all(), [
-                        '*.atek_id' => 'required',
-                        '*.txn_date' => 'required',
-                        '*.engraved_id' => 'required',
-                        '*.val_type_id' => 'required|integer',
-                        '*.amt_deducted' => 'required',
-                        '*.chip_balance' => 'required',
-                        '*.media_type_id' => 'required|integer',
-                        '*.product_id' => 'required|integer',
-                        '*.pass_id' => 'required',
-                        '*.card_type_id' => 'required',
-                        '*.eq_id' => 'required',
-                        '*.stn_id' => 'required|integer',
+                        '*.atek_id'         => 'required',
+                        '*.txn_date'        => 'required',
+                        '*.engraved_id'     => 'required',
+                        '*.val_type_id'     => 'required|integer',
+                        '*.amt_deducted'    => 'required',
+                        '*.chip_balance'    => 'required',
+                        '*.media_type_id'   => 'required|integer',
+                        '*.product_id'      => 'required|integer',
+                        '*.pass_id'         => 'required',
+                        '*.card_type_id'    => 'required',
+                        '*.eq_id'           => 'required',
+                        '*.stn_id'          => 'required|integer',
                     ]);
 
                     /* IF VALIDATION FAILS */
@@ -61,19 +61,19 @@ class ClValidation extends Controller
 
                     /* FOR STORE VALUE VALIDATION */
                     $SvValidationTrue = DB::table('cl_sv_validation')->insert([
-                        'atek_id' => $transaction['atek_id'],
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'val_type_id' => $transaction['val_type_id'],
-                        'amt_deducted' => $transaction['amt_deducted'],
-                        'chip_balance' => $transaction['chip_balance'],
+                        'atek_id'       => $transaction['atek_id'],
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'val_type_id'   => $transaction['val_type_id'],
+                        'amt_deducted'  => $transaction['amt_deducted'],
+                        'chip_balance'  => $transaction['chip_balance'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
-                        'card_type_id' => $transaction['card_type_id'],
-                        'eq_id' => $transaction['eq_id'],
-                        'stn_id' => $transaction['stn_id'],
-                        'is_test' => $is_test,
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
+                        'card_type_id'  => $transaction['card_type_id'],
+                        'eq_id'         => $transaction['eq_id'],
+                        'stn_id'        => $transaction['stn_id'],
+                        'is_test'       => $is_test,
                     ]);
 
                     if ($SvValidationTrue && $transaction['val_type_id'] == 2) {
@@ -90,18 +90,18 @@ class ClValidation extends Controller
 
                     /* VALIDATION */
                     $validator = Validator::make($request->all(), [
-                        '*.atek_id' => 'required',
-                        '*.txn_date' => 'required',
-                        '*.engraved_id' => 'required',
-                        '*.val_type_id' => 'required',
-                        '*.trip_deducted' => 'required',
-                        '*.trip_balance' => 'required',
-                        '*.media_type_id' => 'required',
-                        '*.product_id' => 'required',
-                        '*.pass_id' => 'required',
-                        '*.card_type_id' => 'required',
-                        '*.eq_id' => 'required',
-                        '*.stn_id' => 'required',
+                        '*.atek_id'         => 'required',
+                        '*.txn_date'        => 'required',
+                        '*.engraved_id'     => 'required',
+                        '*.val_type_id'     => 'required',
+                        '*.trip_deducted'   => 'required',
+                        '*.trip_balance'    => 'required',
+                        '*.media_type_id'   => 'required',
+                        '*.product_id'      => 'required',
+                        '*.pass_id'         => 'required',
+                        '*.card_type_id'    => 'required',
+                        '*.eq_id'           => 'required',
+                        '*.stn_id'          => 'required',
                     ]);
 
                     /* IF VALIDATION FAILS */
@@ -114,19 +114,19 @@ class ClValidation extends Controller
 
                     /* FOR TRIP PASS VALIDATION */
                     $TpValidationTrue = DB::table('cl_tp_validation')->insert([
-                        'atek_id' => $transaction['atek_id'],
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'val_type_id' => $transaction['val_type_id'],
+                        'atek_id'       => $transaction['atek_id'],
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'val_type_id'   => $transaction['val_type_id'],
                         'trip_deducted' => $transaction['trip_deducted'],
-                        'trip_balance' => $transaction['trip_balance'],
+                        'trip_balance'  => $transaction['trip_balance'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
-                        'card_type_id' => $transaction['card_type_id'],
-                        'eq_id' => $transaction['eq_id'],
-                        'stn_id' => $transaction['stn_id'],
-                        'is_test' => $is_test,
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
+                        'card_type_id'  => $transaction['card_type_id'],
+                        'eq_id'         => $transaction['eq_id'],
+                        'stn_id'        => $transaction['stn_id'],
+                        'is_test'       => $is_test,
                     ]);
 
                     if ($TpValidationTrue) {

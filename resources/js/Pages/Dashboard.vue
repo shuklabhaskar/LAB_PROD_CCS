@@ -66,7 +66,6 @@
 <script>
 
     import Layout from "./Base/Layout";
-    import axios from "axios";
 
     export default {
         name: "Dashboard",
@@ -77,22 +76,6 @@
             Station_inactive:Array,
             Equipments_inactive:Array,
         },
-        mounted() {
-            $("#example").DataTable({
-                responsive  : true,
-                "paging"    : true,
-            });
-        },
-
-        methods:{
-            async payScheme() {
-                const res = await axios.post("api/payScheme")
-                console.log(res);
-                if (res.status == 200) {
-                    alert("Account Base transaction updated Successfully")
-                }
-            }
-        }
     }
 </script>
 

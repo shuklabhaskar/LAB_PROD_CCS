@@ -48,10 +48,10 @@ Route::post('get/params', [PassController::class, 'getParamsForPass']);
 Route::post('/checkUpdate', [Firmware::class, 'checkUpdate']);
 Route::get('/getFirmware/{uploadId}', [Firmware::class, 'getFirmware']);
 
-/* GET CONFIGURATION */
+/* GET CONFIGURATION V0 */
 Route::post('config', [ConfigApiController::class, 'getConfig']);
 
-/*NEW API CONTROLLER*/
+/* API CONTROLLER V1 */
 Route::post('v1/config',[NewConfigApiController::class,'getConfig']);
 
 /* SETTLE OPEN LOOP TRANSACTION */
@@ -87,11 +87,6 @@ Route::post('/setSettlements', [OlSettlement::class, 'setSettlements']);
 /* VERIFY TERMINAL */
 Route::post('/verifyTerminal', [VerifyTerminal::class, 'verify']);
 Route::get('/olAcqTxn', [OlAcqTxn::class, 'index']);
-
-/* DOWNLOAD AND CHECK UPDATE OF FIRMWARE */
-Route::post('/checkUpdate', [Firmware::class, 'checkUpdate']);
-Route::get('/getFirmware/{uploadId}', [Firmware::class, 'getFirmware']);
-
 
 /* PAYTM */
 Route::post('/otp/send',[IssuanceApiManager::class,'sendOtp']);
