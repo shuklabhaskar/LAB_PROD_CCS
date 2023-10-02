@@ -148,16 +148,16 @@ class NewConfigApiController extends Controller
 
                 if ($config->config_id == 2) {
                     if ($config->config_version != $fare_version) {
-                        $configResponse['fares'] = DB::table('fare_table')
-                            ->join('fare_inventory','fare_inventory.fare_table_id','=','fare_table.fare_table_id')
-                            ->where('fare_inventory.status','=',true)
-                            ->orderBy('fare_table_id','ASC')
-                            ->select([
-                                'fare_table.fare_table_id',
-                                'fare_table.source_id',
-                                'fare_table.destination_id',
-                                'fare_table.fare'])
-                            ->get();
+                        $FareData = DB::table('config_gen')
+                            ->where('config_id','=',2)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($FareData, true);
+
+                        $NewData = collect($data)->sortBy('fare_table_id')->values()->all();
+
+                        $configResponse['fares'] = $NewData;
 
                         $configResponse['version']['fare_version'] = $config->config_version;
                     } else {
@@ -167,10 +167,17 @@ class NewConfigApiController extends Controller
 
                 if ($config->config_id == 4) {
                     if ($config->config_version != $pass_version) {
-                        $configResponse['passes'] = DB::table('pass_inventory')
-                            ->where('status','=',true)
-                            ->orderBy('pass_inv_id','ASC')
-                            ->get();
+                        $PassData = DB::table('config_gen')
+                            ->where('config_id','=',4)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($PassData, true);
+
+                        $NewData = collect($data)->sortBy('pass_inv_id')->values()->all();
+
+                        $configResponse['passes'] = $NewData;
+
                         $configResponse['version']['pass_version'] = $config->config_version;
                     }else {
                         $configResponse['version']['pass_version'] = $pass_version;
@@ -288,17 +295,20 @@ class NewConfigApiController extends Controller
                 /* FOR FARE CONFIGURATION  */
                 if ($config->config_id == 2) {
                     if ($config->config_version != $fare_version) {
-                        $configResponse['fares'] = DB::table('fare_table')
-                            ->join('fare_inventory','fare_inventory.fare_table_id','=','fare_table.fare_table_id')
-                            ->where('fare_inventory.status','=',true)
-                            ->orderBy('fare_table_id','ASC')
-                            ->select([
-                                'fare_table.fare_table_id',
-                                'fare_table.source_id',
-                                'fare_table.destination_id',
-                                'fare_table.fare'])
-                            ->get();
+
+                        $FareData = DB::table('config_gen')
+                            ->where('config_id','=',2)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($FareData, true);
+
+                        $NewData = collect($data)->sortBy('fare_table_id')->values()->all();
+
+                        $configResponse['fares'] = $NewData;
+
                         $configResponse['version']['fare_version'] = $config->config_version;
+
                     }else{
                         $configResponse['version']['fare_version'] = $fare_version;
                     }
@@ -308,6 +318,7 @@ class NewConfigApiController extends Controller
                 if ($config->config_id == 3) {
                     if ($config->config_version != $pass_version) {
                         $configResponse['stations'] = DB::table('station_inventory')
+                            ->orderBy('stn_inv_id','ASC')
                             ->where('status','=',true)
                             ->select([
                             'stn_inv_id',
@@ -337,14 +348,16 @@ class NewConfigApiController extends Controller
                 if ($config->config_id == 4) {
                     if ($config->config_version != $pass_version) {
 
-                        $configResponse['passes'] = DB::table('pass_inventory')
-                            ->orderBy('pass_inv_id','ASC')
-                            ->where('status','=',true)
-                            ->where(function ($query) {
-                                $query  ->where('media_type_id', '=', 1)
-                                        ->orwhere('media_type_id','=',2)
-                                    ->orWhere('media_type_id', '=', 4); })
-                            ->get();
+                        $PassData = DB::table('config_gen')
+                            ->where('config_id','=',4)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($PassData, true);
+
+                        $NewData = collect($data)->sortBy('pass_inv_id')->values()->all();
+
+                        $configResponse['passes'] = $NewData;
 
                         $configResponse['version']['pass_version'] = $config->config_version;
                     }else{

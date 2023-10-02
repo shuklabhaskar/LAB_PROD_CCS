@@ -41,7 +41,7 @@
 
                                     <!--SAVE BUTTON-->
                                     <div class="col-auto ms-auto text-end mt-n1">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><font-awesome-icon icon="fa-solid fa-save" /> Save
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><font-awesome-icon icon="fa-solid fa-save" /> Upload
                                         </button>
                                     </div>
 
@@ -124,7 +124,7 @@
         outline-offset: -10px;
         -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
         transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        padding: 120px 0px 85px 35%;
+        padding: 120px 0 85px 35%;
         text-align: center !important;
         margin: 0;
         width: 100% !important;

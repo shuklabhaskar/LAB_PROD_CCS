@@ -38,7 +38,7 @@ class FareController extends Controller
             // PRINT COLUMN
             for($j = 0; $j < $Stations->count(); $j++) {
                 // PRINT ROW
-                $fare[$i][$j] = 2;
+                $fare[$i][$j] = 0;
             }
         }
 

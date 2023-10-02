@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('cl_status', function (Blueprint $table) {
             $table->id('cl_status_id')->unique();
-            $table->bigInteger('engraved_id');
-            $table->bigInteger('chip_id');
+            $table->bigInteger('engraved_id')->unique();
+            $table->bigInteger('chip_id')->unique();
             $table->dateTime('txn_date');
             $table->integer('pass_id');
             $table->integer('product_id');

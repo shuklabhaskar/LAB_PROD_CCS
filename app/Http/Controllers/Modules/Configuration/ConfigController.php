@@ -42,7 +42,16 @@ class ConfigController extends Controller
 
         else if ($config_id == 2) {
             /*FARE*/
-            $configurations = DB::table('fare_table')->get()->toJson();
+            $configurations = DB::table('fare_table')
+                ->join('fare_inventory','fare_inventory.fare_table_id','=','fare_table.fare_table_id')
+                ->where('fare_inventory.status','=',true)
+                ->orderBy('fare_table_id','ASC')
+                ->select([
+                    'fare_table.fare_table_id',
+                    'fare_table.source_id',
+                    'fare_table.destination_id',
+                    'fare_table.fare'])
+                ->get();
         }
 
         else if ($config_id == 3) {
@@ -52,8 +61,16 @@ class ConfigController extends Controller
 
         else if ($config_id == 4){
             /*PASSES*/
-            $configurations = DB::table('pass_inventory')->where('status', '=', true)
-                -> get(['pass_inv_id', 'media_type_id', 'product_id', 'pass_id', 'pass_name', 'description', 'company_id', 'status', 'fare_table_id', 'start_date', 'end_date', 'same_stn_over_time_limit', 'same_stn_over_time_pen', 'same_stn_over_time_max_pen', 'other_stn_over_time_limit', 'other_stn_over_time_pen', 'other_stn_over_time_max_pen', 'over_travel_pen', 'entry_mismatch_limit', 'entry_mismatch_same_time_pen', 'entry_mismatch_no_exit_pen', 'exit_mismatch_pen', 'entry_exit_control', 'entry_validity_period', 'return_validity_period', 'pass_validity_period', 'grace_period', 'trip_count', 'daily_trip_limit', 'reload_permit', 'refund_permit', 'refund_charges', 'min_sv_topup_amt', 'sv_step_topup_amt', 'min_sv_entry_bal', 'max_sv_bal', 'created_date', 'updated_date', 'updated_by']);
+            $configurations =DB::table('pass_inventory')
+                ->orderBy('pass_inv_id', 'ASC')
+                ->where('status', true)
+                ->where(function ($query) {
+                    $query->where('media_type_id', '=', 1)
+                        ->orWhere('media_type_id', '=', 2)
+                        ->orWhere('media_type_id', '=', 4);
+                })
+                ->get();
+
         }
 
         else if ($config_id == 6) /* EQUIPMENT BLACKLIST */
@@ -61,10 +78,14 @@ class ConfigController extends Controller
             $configurations = DB::table('equipment_blacklist')->select('equipment_id')->get()->tojson();
             DB::table('equipment_blacklist')->update(['is_generated' => true]);
 
-        } else if ($config_id == 7) /* TICKET BLACKLISTS */ {
+        }
+
+        /*else if ($config_id == 7)*/ /* TICKET BLACKLISTS */ /*{
             $configurations = DB::table('ticket_blacklist')->select('ticket_id')->get()->toJson();
             DB::table('ticket_blacklist')->update(['is_generated' => true]);
-        } else if ($config_id == 8) /* TICKET BLACKLISTS */ {
+        }*/
+
+        else if ($config_id == 8) /* TICKET BLACKLISTS */ {
             $configurations = DB::table('acq_param')->get()->toJson();
         }
 

@@ -20,6 +20,15 @@ class CardSnMappingController extends Controller
     /**
      * @throws Exception
      */
+
+    /**
+     *
+     * "phpoffice/phpspreadsheet": "^1.29",
+     * "rector/rector": "^0.18.3",
+     * "rector/rector-phpoffice": "^0.14.0",
+     * use this for composer in future if version degrade or upgrade
+    **/
+
     public function store(Request $request)
     {
         $request->validate([

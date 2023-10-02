@@ -3,6 +3,7 @@
 use App\Http\Controllers\Modules\Api\CardSaleSettlement;
 use App\Http\Controllers\Modules\Api\CL\ClAccounting;
 use App\Http\Controllers\Modules\Api\CL\ClCardReplacement;
+use App\Http\Controllers\Modules\Api\CL\ClIndraCardReplacement;
 use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
 use App\Http\Controllers\Modules\Api\CL\ClValidation;
 use App\Http\Controllers\Modules\Api\ConfigApiController;
@@ -118,8 +119,10 @@ Route::post('/sync/cl/accounting',[ClAccounting::class,'ClAccounting']);
 /* SETTLE CL SV & TP VALIDATION TRANSACTION */
 Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
 
-/*CL CARD REP */
-Route::post('/cl/card/rep',[ClCardReplacement::class,'store']);
+/*CL INDRA CARD REP */
+Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
+
+Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
 /* REPORT API'S*/
 Route::middleware(['basic_auth'])->group(function (){
@@ -127,6 +130,7 @@ Route::middleware(['basic_auth'])->group(function (){
     Route::post('/olcashCollection',[CashCollection::class,'index']);
     Route::post('/olrevenue',[Revenue::class,'index']);
     Route::post('/olValReport',[TravelApiController::class,'getReport']);
+
     /* MMOPL OL SAP FICO POSTING */
     /* Route::get('/olFicoReport', [OlFicoReport::class, 'index']);*/
 });

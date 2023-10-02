@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PDOException;
+use PDOException;    
 
 /** While Card issuance from TOM data will
  * insert in open loop card sale for each card sale transaction **/

@@ -218,7 +218,7 @@
                 <div class="sidebar-cta">
                     <div class="sidebar-cta-content">
                         <div class="d-grid">
-                            <a class="btn btn-outline-primary">Version 3.4</a>
+                            <a class="btn btn-outline-primary">Version 3.5</a>
                         </div>
                     </div>
                 </div>

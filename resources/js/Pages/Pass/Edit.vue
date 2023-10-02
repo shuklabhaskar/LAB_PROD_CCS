@@ -280,10 +280,11 @@
                                 <div class="accordion-body">
                                     <div class="card">
                                         <div class="card-body">
+
                                             <div class="row">
 
                                                 <!--PASS IS TEST OR NOT-->
-                                                <div class="mb-3 col-md-4">
+                                                <div class="mb-3 col-md-3">
                                                     <label class="form-label">Is Test <span class="text-danger">*</span></label>
                                                     <select v-model="form.is_test" class="form-control form-select" name="test_id">
                                                         <option selected value="null">Select Tester</option>
@@ -384,6 +385,7 @@
                                                 </div>
 
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
