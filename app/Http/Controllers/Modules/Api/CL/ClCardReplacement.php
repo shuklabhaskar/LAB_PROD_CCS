@@ -18,10 +18,10 @@ class ClCardReplacement extends Controller
             ]);
         }
 
-
         try {
 
-            $cardData = DB::table('cl_status')->where('engraved_id', '=', $engravedId)
+            $cardData = DB::table('cl_status')
+                ->where('engraved_id', '=', $engravedId)
                 ->first();
 
             if ($cardData == null){
@@ -43,4 +43,6 @@ class ClCardReplacement extends Controller
             ]);
         }
     }
+
+
 }

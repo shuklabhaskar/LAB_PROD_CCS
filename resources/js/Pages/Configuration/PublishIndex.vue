@@ -58,7 +58,7 @@
                                         <th>STATION</th>
                                         <th>IP</th>
                                         <th>STATUS</th>
-                                        <th><input class="form-check-input" type="checkbox" v-model="form.select_all"
+                                        <th><input disabled class="form-check-input" type="checkbox" v-model="form.select_all"
                                                    id="select_all" v-on:click="select"></th>
                                     </tr>
                                     </thead>

@@ -122,6 +122,7 @@ Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
 /*CL INDRA CARD REP */
 Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 
+/* GETTING CARD DATA FOR REPLACEMENT */
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
 /* REPORT API'S*/
