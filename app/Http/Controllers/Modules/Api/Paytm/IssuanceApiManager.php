@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Modules\Api\Paytm;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class IssuanceApiManager extends Controller
 {
     // ----------------------------------------- DEBUG -----------------------------------------
-    
-    function sendOtp(Request $request): Collection
+
+
+    public function sendOtp(Request $request): Collection
     {
         $body = $request->input('body');
         $token = $request->input('header')['authorization'];

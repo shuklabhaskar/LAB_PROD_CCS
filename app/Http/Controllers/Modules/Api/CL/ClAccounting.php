@@ -715,30 +715,29 @@ class ClAccounting extends Controller
 
                 if ($svData){
 
-                    if (!$engravedIdExists){
-
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $transaction['pax_gen_type'],
-                            ]);
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       => $transaction['engraved_id'],
+                            'chip_id'           => $transaction['chip_id'],
+                            'txn_date'          => $transaction['txn_date'],
+                            'pass_id'           => $transaction['pass_id'],
+                            'product_id'        => $transaction['product_id'],
+                            'card_fee'          => $transaction['card_fee'],
+                            'card_sec'          => $transaction['card_sec'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
+                            'pass_expiry'       => $transaction['pass_expiry'],
+                            'src_stn_id'        => $transaction['src_stn_id'],
+                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'auto_topup_status' => $autoTopUpStatus,
+                            'auto_topup_amt'    => $autoTopUpAmount,
+                            'bonus_points'      => $bonusPoints,
+                            'is_test'           => $transaction['is_test'],
+                            'pax_first_name'    => $paxFirstName,
+                            'pax_last_name'     => $paxLastName,
+                            'pax_mobile'        => $transaction['pax_mobile'],
+                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'updated_at'        => now(),
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 3,
@@ -746,8 +745,6 @@ class ClAccounting extends Controller
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
                         ]);
-
-                    }
                 }
 
             }
@@ -791,31 +788,33 @@ class ClAccounting extends Controller
                     'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
-                if ($tpData){
-                    if (!$engravedIdExists){
 
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $transaction['pax_gen_type'],
-                            ]);
+                if ($tpData){
+
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       =>  $transaction['engraved_id'],
+                            'chip_id'           =>  $transaction['chip_id'],
+                            'txn_date'          =>  $transaction['txn_date'],
+                            'pass_id'           =>  $transaction['pass_id'],
+                            'product_id'        =>  $transaction['product_id'],
+                            'card_fee'          =>  $transaction['card_fee'],
+                            'card_sec'          =>  $transaction['card_sec'],
+                            'tp_balance'        =>  $transaction['rem_trips'],
+                            'pass_expiry'       =>  $transaction['pass_expiry'],
+                            'src_stn_id'        =>  $transaction['src_stn_id'],
+                            'des_stn_id'        =>  $transaction['des_stn_id'],
+                            'auto_topup_status' =>  $autoTopUpStatus,
+                            'auto_topup_amt'    =>  $autoTopUpAmount,
+                            'bonus_points'      =>  $bonusPoints,
+                            'is_test'           =>  false,
+                            'pax_first_name'    =>  $paxFirstName,
+                            'pax_last_name'     =>  $paxLastName,
+                            'pax_mobile'        =>  $paxMobile,
+                            'pax_gen_type'      =>  0,
+                            'updated_at'       =>  now()
+
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 3,
@@ -824,7 +823,7 @@ class ClAccounting extends Controller
                             'chip_id'           => $transaction['chip_id'],
                         ]);
 
-                    }
+
                 }
 
             }
@@ -906,30 +905,30 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($svData){
-                    if (!$engravedIdExists){
 
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       => $transaction['engraved_id'],
-                                'chip_id'           => $transaction['chip_id'],
-                                'txn_date'          => $transaction['txn_date'],
-                                'pass_id'           => $transaction['pass_id'],
-                                'product_id'        => $transaction['product_id'],
-                                'card_fee'          => $transaction['card_fee'],
-                                'card_sec'          => $transaction['card_sec'],
-                                'sv_balance'        => $transaction['sv_balance'],
-                                'pass_expiry'       => $transaction['pass_expiry'],
-                                'src_stn_id'        => $transaction['src_stn_id'],
-                                'des_stn_id'        => $transaction['des_stn_id'],
-                                'auto_topup_status' => $autoTopUpStatus,
-                                'auto_topup_amt'    => $autoTopUpAmount,
-                                'bonus_points'      => $bonusPoints,
-                                'is_test'           => $transaction['is_test'],
-                                'pax_first_name'    => $paxFirstName,
-                                'pax_last_name'     => $paxLastName,
-                                'pax_mobile'        => $paxMobile,
-                                'pax_gen_type'      => $transaction['pax_gen_type'],
-                            ]);
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       => $transaction['engraved_id'],
+                            'chip_id'           => $transaction['chip_id'],
+                            'txn_date'          => $transaction['txn_date'],
+                            'pass_id'           => $transaction['pass_id'],
+                            'product_id'        => $transaction['product_id'],
+                            'card_fee'          => $transaction['card_fee'],
+                            'card_sec'          => $transaction['card_sec'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
+                            'pass_expiry'       => $transaction['pass_expiry'],
+                            'src_stn_id'        => $transaction['src_stn_id'],
+                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'auto_topup_status' => $autoTopUpStatus,
+                            'auto_topup_amt'    => $autoTopUpAmount,
+                            'bonus_points'      => $bonusPoints,
+                            'is_test'           => $transaction['is_test'],
+                            'pax_first_name'    => $paxFirstName,
+                            'pax_last_name'     => $paxLastName,
+                            'pax_mobile'        => $transaction['pax_mobile'],
+                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'updated_at'        => now(),
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 2,
@@ -938,7 +937,7 @@ class ClAccounting extends Controller
                             'chip_id'           => $transaction['chip_id'],
                         ]);
 
-                    }
+
                 }
 
             }
@@ -983,30 +982,31 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($tpData){
-                    if (!$engravedIdExists){
 
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $transaction['pax_gen_type'],
-                            ]);
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       =>  $transaction['engraved_id'],
+                            'chip_id'           =>  $transaction['chip_id'],
+                            'txn_date'          =>  $transaction['txn_date'],
+                            'pass_id'           =>  $transaction['pass_id'],
+                            'product_id'        =>  $transaction['product_id'],
+                            'card_fee'          =>  $transaction['card_fee'],
+                            'card_sec'          =>  $transaction['card_sec'],
+                            'tp_balance'        =>  $transaction['rem_trips'],
+                            'pass_expiry'       =>  $transaction['pass_expiry'],
+                            'src_stn_id'        =>  $transaction['src_stn_id'],
+                            'des_stn_id'        =>  $transaction['des_stn_id'],
+                            'auto_topup_status' =>  $autoTopUpStatus,
+                            'auto_topup_amt'    =>  $autoTopUpAmount,
+                            'bonus_points'      =>  $bonusPoints,
+                            'is_test'           =>  false,
+                            'pax_first_name'    =>  $paxFirstName,
+                            'pax_last_name'     =>  $paxLastName,
+                            'pax_mobile'        =>  $paxMobile,
+                            'pax_gen_type'      =>  0,
+                            'updated_at'       =>  now()
+
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 2,
@@ -1015,7 +1015,7 @@ class ClAccounting extends Controller
                             'chip_id'           => $transaction['chip_id'],
                         ]);
 
-                    }
+
                 }
 
             }
@@ -1097,30 +1097,30 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($svData){
-                    if (!$engravedIdExists){
 
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $transaction['pax_gen_type'],
-                            ]);
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       => $transaction['engraved_id'],
+                            'chip_id'           => $transaction['chip_id'],
+                            'txn_date'          => $transaction['txn_date'],
+                            'pass_id'           => $transaction['pass_id'],
+                            'product_id'        => $transaction['product_id'],
+                            'card_fee'          => $transaction['card_fee'],
+                            'card_sec'          => $transaction['card_sec'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
+                            'pass_expiry'       => $transaction['pass_expiry'],
+                            'src_stn_id'        => $transaction['src_stn_id'],
+                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'auto_topup_status' => $autoTopUpStatus,
+                            'auto_topup_amt'    => $autoTopUpAmount,
+                            'bonus_points'      => $bonusPoints,
+                            'is_test'           => $transaction['is_test'],
+                            'pax_first_name'    => $paxFirstName,
+                            'pax_last_name'     => $paxLastName,
+                            'pax_mobile'        => $transaction['pax_mobile'],
+                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'updated_at'        => now(),
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 1,
@@ -1129,7 +1129,6 @@ class ClAccounting extends Controller
                             'chip_id'           => $transaction['chip_id'],
                         ]);
 
-                    }
                 }
 
             }
@@ -1174,30 +1173,31 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($tpData){
-                    if (!$engravedIdExists){
 
-                        DB::table('cl_status')
-                            ->insert([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'sv_balance'        =>  $transaction['sv_balance'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $transaction['pax_gen_type'],
-                            ]);
+                    DB::table('cl_status')
+                        ->insert([
+                            'engraved_id'       =>  $transaction['engraved_id'],
+                            'chip_id'           =>  $transaction['chip_id'],
+                            'txn_date'          =>  $transaction['txn_date'],
+                            'pass_id'           =>  $transaction['pass_id'],
+                            'product_id'        =>  $transaction['product_id'],
+                            'card_fee'          =>  $transaction['card_fee'],
+                            'card_sec'          =>  $transaction['card_sec'],
+                            'tp_balance'        =>  $transaction['rem_trips'],
+                            'pass_expiry'       =>  $transaction['pass_expiry'],
+                            'src_stn_id'        =>  $transaction['src_stn_id'],
+                            'des_stn_id'        =>  $transaction['des_stn_id'],
+                            'auto_topup_status' =>  $autoTopUpStatus,
+                            'auto_topup_amt'    =>  $autoTopUpAmount,
+                            'bonus_points'      =>  $bonusPoints,
+                            'is_test'           =>  false,
+                            'pax_first_name'    =>  $paxFirstName,
+                            'pax_last_name'     =>  $paxLastName,
+                            'pax_mobile'        =>  $paxMobile,
+                            'pax_gen_type'      =>  0,
+                            'updated_at'       =>  now()
+
+                        ]);
 
                         DB::table('cl_blacklist')->insert([
                             'ms_blk_reason_id'  => 1,
@@ -1206,8 +1206,6 @@ class ClAccounting extends Controller
                             'chip_id'           => $transaction['chip_id'],
                         ]);
 
-
-                    }
                 }
 
             }
