@@ -718,9 +718,8 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['old_engraved_id'])
-                            ->update([
-                                'engraved_id'       =>  $transaction['old_engraved_id'],
+                            ->insert([
+                                'engraved_id'       =>  $transaction['engraved_id'],
                                 'chip_id'           =>  $transaction['chip_id'],
                                 'txn_date'          =>  $transaction['txn_date'],
                                 'pass_id'           =>  $transaction['pass_id'],
@@ -742,7 +741,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 3,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -796,8 +795,7 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['engraved_id'])
-                            ->update([
+                            ->insert([
                                 'engraved_id'       =>  $transaction['engraved_id'],
                                 'chip_id'           =>  $transaction['chip_id'],
                                 'txn_date'          =>  $transaction['txn_date'],
@@ -820,7 +818,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 3,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -849,7 +847,7 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    }
+    } /*3*/
 
     public function cardNotReadablePhysicallyNotOkay($transaction , $engravedIdExists){
 
@@ -911,9 +909,8 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['old_engraved_id'])
-                            ->update([
-                                'engraved_id'       => $transaction['old_engraved_id'],
+                            ->insert([
+                                'engraved_id'       => $transaction['engraved_id'],
                                 'chip_id'           => $transaction['chip_id'],
                                 'txn_date'          => $transaction['txn_date'],
                                 'pass_id'           => $transaction['pass_id'],
@@ -935,7 +932,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 2,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -989,9 +986,8 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['old_engraved_id'])
-                            ->update([
-                                'engraved_id'       =>  $transaction['old_engraved_id'],
+                            ->insert([
+                                'engraved_id'       =>  $transaction['engraved_id'],
                                 'chip_id'           =>  $transaction['chip_id'],
                                 'txn_date'          =>  $transaction['txn_date'],
                                 'pass_id'           =>  $transaction['pass_id'],
@@ -1013,7 +1009,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 2,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -1042,7 +1038,7 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    }
+    } /*2*/
 
     public function lostCard($transaction , $engravedIdExists){
 
@@ -1104,9 +1100,8 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['engraved_id'])
-                            ->update([
-                                'engraved_id'       =>  $transaction['old_engraved_id'],
+                            ->insert([
+                                'engraved_id'       =>  $transaction['engraved_id'],
                                 'chip_id'           =>  $transaction['chip_id'],
                                 'txn_date'          =>  $transaction['txn_date'],
                                 'pass_id'           =>  $transaction['pass_id'],
@@ -1128,7 +1123,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 1,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -1182,9 +1177,8 @@ class ClAccounting extends Controller
                     if ($engravedIdExists){
 
                         DB::table('cl_status')
-                            ->where('engraved_id','=',$transaction['old_engraved_id'])
-                            ->update([
-                                'engraved_id'       =>  $transaction['old_engraved_id'],
+                            ->insert([
+                                'engraved_id'       =>  $transaction['engraved_id'],
                                 'chip_id'           =>  $transaction['chip_id'],
                                 'txn_date'          =>  $transaction['txn_date'],
                                 'pass_id'           =>  $transaction['pass_id'],
@@ -1206,7 +1200,7 @@ class ClAccounting extends Controller
                             ]);
 
                         DB::table('cl_blacklist')->insert([
-                            'ms_blk_reason_id'  => $transaction['ms_blk_reason_id'],
+                            'ms_blk_reason_id'  => 1,
                             'start_date'        => Carbon::now(),
                             'engraved_id'       => $transaction['old_engraved_id'],
                             'chip_id'           => $transaction['chip_id'],
@@ -1236,6 +1230,6 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    }
+    }/*1*/
 
 }
