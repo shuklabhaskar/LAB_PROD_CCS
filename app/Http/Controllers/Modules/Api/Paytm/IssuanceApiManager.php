@@ -14,7 +14,7 @@ use Mockery\Exception;
 class IssuanceApiManager extends Controller
 {
     // ----------------------------------------- DEBUG -----------------------------------------
-    public function sendOtp(Request $request): string
+    public function sendOtp(Request $request)
     {
         $body = $request->input('body');
         $token = $request->input('header')['authorization'];
@@ -32,7 +32,12 @@ class IssuanceApiManager extends Controller
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return $e->getMessage();
+            return \Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
         }
     }
 
