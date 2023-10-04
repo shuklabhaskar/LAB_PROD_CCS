@@ -715,7 +715,7 @@ class ClAccounting extends Controller
 
                 if ($svData){
 
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
@@ -792,7 +792,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($tpData){
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
@@ -906,7 +906,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($svData){
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
@@ -983,7 +983,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($tpData){
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
@@ -1097,7 +1097,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($svData){
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
@@ -1174,7 +1174,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($tpData){
-                    if ($engravedIdExists){
+                    if (!$engravedIdExists){
 
                         DB::table('cl_status')
                             ->insert([
