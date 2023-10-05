@@ -361,6 +361,10 @@ class ClAccounting extends Controller
         $paxLastName        = "";
         $paxMobile          = 123456789;
         $paxGenType         = 0;
+        $autoTopUpStatus    = false;
+        $autoTopUpAmount    = 0.0;
+        $bonusPoints        = 0.0;
+
 
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
@@ -420,8 +424,25 @@ class ClAccounting extends Controller
                             DB::table('cl_status')
                                 ->where('engraved_id','=',$transaction['engraved_id'])
                                 ->update([
-                                    'sv_balance'        =>$transaction['pos_chip_bal'],
-                                    'updated_at'        =>now(),
+                                    'chip_id'           => $transaction['chip_id'],
+                                    'txn_date'          => $transaction['txn_date'],
+                                    'pass_id'           => $transaction['pass_id'],
+                                    'product_id'        => $transaction['product_id'],
+                                    'card_fee'          => $transaction['card_fee'],
+                                    'card_sec'          => $transaction['card_sec'],
+                                    'sv_balance'        => $transaction['pos_chip_bal'],
+                                    'pass_expiry'       => $transaction['pass_expiry'],
+                                    'src_stn_id'        => $transaction['src_stn_id'],
+                                    'des_stn_id'        => $transaction['des_stn_id'],
+                                    'auto_topup_status' => $autoTopUpStatus,
+                                    'auto_topup_amt'    => $autoTopUpAmount,
+                                    'bonus_points'      => $bonusPoints,
+                                    'is_test'           => $transaction['is_test'],
+                                    'pax_first_name'    => $paxFirstName,
+                                    'pax_last_name'     => $paxLastName,
+                                    'pax_mobile'        => $paxMobile,
+                                    'pax_gen_type'      => $paxGenType,
+                                    'updated_at'        => now(),
                                 ]);
 
 
@@ -477,8 +498,26 @@ class ClAccounting extends Controller
                         DB::table('cl_status')
                             ->where('engraved_id','=',$transaction['engraved_id'])
                             ->update([
-                                'tp_balance' =>$transaction['tp_balance'],
-                                'updated_at' => now()
+                                'engraved_id'       =>  $transaction['engraved_id'],
+                                'chip_id'           =>  $transaction['chip_id'],
+                                'txn_date'          =>  $transaction['txn_date'],
+                                'pass_id'           =>  $transaction['pass_id'],
+                                'product_id'        =>  $transaction['product_id'],
+                                'card_fee'          =>  $transaction['card_fee'],
+                                'card_sec'          =>  $transaction['card_sec'],
+                                'tp_balance'        =>  $transaction['rem_trips'],
+                                'pass_expiry'       =>  $transaction['pass_expiry'],
+                                'src_stn_id'        =>  $transaction['src_stn_id'],
+                                'des_stn_id'        =>  $transaction['des_stn_id'],
+                                'auto_topup_status' =>  $autoTopUpStatus,
+                                'auto_topup_amt'    =>  $autoTopUpAmount,
+                                'bonus_points'      =>  $bonusPoints,
+                                'is_test'           =>  $transaction['is_test'],
+                                'pax_first_name'    =>  $paxFirstName,
+                                'pax_last_name'     =>  $paxLastName,
+                                'pax_mobile'        =>  $paxMobile,
+                                'pax_gen_type'      =>  $paxGenType,
+                                'updated_at'        =>  now()
                             ]);
 
                     }
