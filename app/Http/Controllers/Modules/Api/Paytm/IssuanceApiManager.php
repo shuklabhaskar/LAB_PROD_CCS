@@ -37,7 +37,6 @@ class IssuanceApiManager extends Controller
             ]);
         }
     }
-
     public function verifyOtp(Request $request)
     {
         $body = $request->input('body');
@@ -64,7 +63,6 @@ class IssuanceApiManager extends Controller
             ]);
         }
     }
-
     public function kycDetail(Request $request)
     {
         $token = $request->input('header')['authorization'];
@@ -105,7 +103,7 @@ class IssuanceApiManager extends Controller
                     'sessionId' => $session,
                     'Content-Type' => 'application/json',
                 ],
-                'json' => $body, // Use 'json' to send JSON data directly
+                'json' => $body,
                 'timeout' => 3 * 60,
                 'http_errors' => false,
             ]);
@@ -147,7 +145,6 @@ class IssuanceApiManager extends Controller
             ]);
         }
     }
-
     public function activationStatus(Request $request)
     {
         $token = $request->input('header')['authorization'];
@@ -178,7 +175,6 @@ class IssuanceApiManager extends Controller
             ]);
         }
     }
-
 
     // -------------------------------------------- PROD -----------------------------------------
     // function sendOtp(Request $request): Collection

@@ -118,6 +118,7 @@ class ClAccounting extends Controller
         $paxFirstName       = "";
         $paxLastName        = "";
         $paxMobile          = 123456789;
+        $paxGenType       = 0;
         $autoTopUpStatus    = false;
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
@@ -125,6 +126,7 @@ class ClAccounting extends Controller
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
         if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
         if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
         if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
@@ -155,10 +157,10 @@ class ClAccounting extends Controller
                 'product_id'        => $transaction['product_id'],
                 'pass_id'           => $transaction['pass_id'],
                 'pass_expiry'       => $transaction['pass_expiry'],
-                'pax_first_name'    => $transaction['pax_first_name'],
-                'pax_last_name'     => $transaction['pax_last_name'],
-                'pax_mobile'        => $transaction['pax_mobile'],
-                'pax_gen_type'      => $transaction['pax_gen_type'],
+                'pax_first_name'    => $paxFirstName,
+                'pax_last_name'     => $paxLastName,
+                'pax_mobile'        => $paxMobile,
+                'pax_gen_type'      => $paxGenType,
                 'shift_id'          => $transaction['shift_id'],
                 'user_id'           => $transaction['user_id'],
                 'eq_id'             => $transaction['eq_id'],
@@ -193,8 +195,8 @@ class ClAccounting extends Controller
                                     'is_test'           => $transaction['is_test'],
                                     'pax_first_name'    => $paxFirstName,
                                     'pax_last_name'     => $paxLastName,
-                                    'pax_mobile'        => $transaction['pax_mobile'],
-                                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                                    'pax_mobile'        => $paxMobile,
+                                    'pax_gen_type'      => $paxGenType,
                                     'updated_at'        => now(),
                                 ]);
 
@@ -217,11 +219,11 @@ class ClAccounting extends Controller
                                  'auto_topup_status' =>  $autoTopUpStatus,
                                  'auto_topup_amt'    =>  $autoTopUpAmount,
                                  'bonus_points'      =>  $bonusPoints,
-                                 'is_test'           =>  false,
+                                 'is_test'           =>  $transaction['is_test'],
                                  'pax_first_name'    =>  $paxFirstName,
                                  'pax_last_name'     =>  $paxLastName,
                                  'pax_mobile'        =>  $paxMobile,
-                                 'pax_gen_type'      =>  0,
+                                 'pax_gen_type'      =>  $paxGenType,
                              ]);
 
                      }
@@ -256,10 +258,10 @@ class ClAccounting extends Controller
                     'pass_expiry'      => $transaction['pass_expiry'],
                     'src_stn_id'       => $transaction['src_stn_id'],
                     'des_stn_id'       => $transaction['des_stn_id'],
-                    'pax_first_name'   => $transaction['pax_first_name'],
-                    'pax_last_name'    => $transaction['pax_last_name'],
-                    'pax_mobile'       => $transaction['pax_mobile'],
-                    'pax_gen_type'     => $transaction['pax_gen_type'],
+                    'pax_first_name'   => $paxFirstName,
+                    'pax_last_name'    => $paxLastName,
+                    'pax_mobile'       => $paxMobile,
+                    'pax_gen_type'     => $paxGenType,
                     'shift_id'         => $transaction['shift_id'],
                     'user_id'          => $transaction['user_id'],
                     'eq_id'            => $transaction['eq_id'],
@@ -290,11 +292,11 @@ class ClAccounting extends Controller
                             'auto_topup_status' =>  $autoTopUpStatus,
                             'auto_topup_amt'    =>  $autoTopUpAmount,
                             'bonus_points'      =>  $bonusPoints,
-                            'is_test'           =>  false,
+                            'is_test'           =>  $transaction['is_test'],
                             'pax_first_name'    =>  $paxFirstName,
                             'pax_last_name'     =>  $paxLastName,
                             'pax_mobile'        =>  $paxMobile,
-                            'pax_gen_type'      =>  0,
+                            'pax_gen_type'      =>  $paxGenType,
                              'updated_at'       =>  now()
 
                         ]);
@@ -317,11 +319,11 @@ class ClAccounting extends Controller
                                 'auto_topup_status' =>$autoTopUpStatus,
                                 'auto_topup_amt'    =>$autoTopUpAmount,
                                 'bonus_points'      =>$bonusPoints,
-                                'is_test'           =>false,
+                                'is_test'           =>$transaction['is_test'],
                                 'pax_first_name'    =>$paxFirstName,
                                 'pax_last_name'     =>$paxLastName,
                                 'pax_mobile'        =>$paxMobile,
-                                'pax_gen_type'      =>0,
+                                'pax_gen_type'      =>$paxGenType,
 
                             ]);
 
@@ -353,6 +355,24 @@ class ClAccounting extends Controller
 
     public function Reload($transaction , $engravedIdExists){
 
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType       = 0;
+        $autoTopUpStatus    = false;
+        $autoTopUpAmount    = 0.0;
+        $bonusPoints        = 0.0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
+        if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
+        if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
+        if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
+
+
         try {
 
             if ($transaction['product_id'] == 3 ){
@@ -379,10 +399,10 @@ class ClAccounting extends Controller
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
                     'pass_expiry'       => $transaction['pass_expiry'],
-                    'pax_first_name'    => $transaction['pax_first_name'],
-                    'pax_last_name'     => $transaction['pax_last_name'],
-                    'pax_mobile'        => $transaction['pax_mobile'],
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -438,10 +458,10 @@ class ClAccounting extends Controller
                     'pass_expiry'       => $transaction['pass_expiry'],
                     'src_stn_id'        => $transaction['src_stn_id'],
                     'des_stn_id'        => $transaction['des_stn_id'],
-                    'pax_first_name'    => $transaction['pax_first_name'],
-                    'pax_last_name'     => $transaction['pax_last_name'],
-                    'pax_mobile'        => $transaction['pax_mobile'],
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -493,6 +513,24 @@ class ClAccounting extends Controller
 
     public function Refund($transaction , $engravedIdExists){
 
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType       = 0;
+        $autoTopUpStatus    = false;
+        $autoTopUpAmount    = 0.0;
+        $bonusPoints        = 0.0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
+        if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
+        if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
+        if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
+
+
         try {
 
             if ($transaction['product_id'] == 3) {
@@ -519,10 +557,10 @@ class ClAccounting extends Controller
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
                     'pass_expiry'       => $transaction['pass_expiry'],
-                    'pax_first_name'    => $transaction['pax_first_name'],
-                    'pax_last_name'     => $transaction['pax_last_name'],
-                    'pax_mobile'        => $transaction['pax_mobile'],
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -590,10 +628,10 @@ class ClAccounting extends Controller
                     'pass_expiry'       => $transaction['pass_expiry'],
                     'src_stn_id'        => $transaction['src_stn_id'],
                     'des_stn_id'        => $transaction['des_stn_id'],
-                    'pax_first_name'    => $transaction['pax_first_name'],
-                    'pax_last_name'     => $transaction['pax_last_name'],
-                    'pax_mobile'        => $transaction['pax_mobile'],
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -662,6 +700,7 @@ class ClAccounting extends Controller
         $paxFirstName       = "";
         $paxLastName        = "";
         $paxMobile          = 123456789;
+        $paxGenType         = 0;
         $autoTopUpStatus    = false;
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
@@ -669,6 +708,7 @@ class ClAccounting extends Controller
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
         if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
         if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
         if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
@@ -703,7 +743,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -734,8 +774,8 @@ class ClAccounting extends Controller
                             'is_test'           => $transaction['is_test'],
                             'pax_first_name'    => $paxFirstName,
                             'pax_last_name'     => $paxLastName,
-                            'pax_mobile'        => $transaction['pax_mobile'],
-                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'pax_mobile'        => $paxMobile,
+                            'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now(),
                         ]);
 
@@ -778,7 +818,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -807,12 +847,12 @@ class ClAccounting extends Controller
                             'auto_topup_status' =>  $autoTopUpStatus,
                             'auto_topup_amt'    =>  $autoTopUpAmount,
                             'bonus_points'      =>  $bonusPoints,
-                            'is_test'           =>  false,
+                            'is_test'           =>  $transaction['is_test'],
                             'pax_first_name'    =>  $paxFirstName,
                             'pax_last_name'     =>  $paxLastName,
                             'pax_mobile'        =>  $paxMobile,
-                            'pax_gen_type'      =>  0,
-                            'updated_at'       =>  now()
+                            'pax_gen_type'      =>  $paxGenType,
+                            'updated_at'        =>  now()
 
                         ]);
 
@@ -855,12 +895,14 @@ class ClAccounting extends Controller
         $paxLastName        = "";
         $paxMobile          = 123456789;
         $autoTopUpStatus    = false;
+        $paxGenType       = 0;
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
 
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
         if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
         if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
         if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
@@ -894,7 +936,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -925,8 +967,8 @@ class ClAccounting extends Controller
                             'is_test'           => $transaction['is_test'],
                             'pax_first_name'    => $paxFirstName,
                             'pax_last_name'     => $paxLastName,
-                            'pax_mobile'        => $transaction['pax_mobile'],
-                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'pax_mobile'        => $paxMobile,
+                            'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now(),
                         ]);
 
@@ -971,7 +1013,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -999,12 +1041,12 @@ class ClAccounting extends Controller
                             'auto_topup_status' =>  $autoTopUpStatus,
                             'auto_topup_amt'    =>  $autoTopUpAmount,
                             'bonus_points'      =>  $bonusPoints,
-                            'is_test'           =>  false,
+                            'is_test'           =>  $transaction['is_test'],
                             'pax_first_name'    =>  $paxFirstName,
                             'pax_last_name'     =>  $paxLastName,
                             'pax_mobile'        =>  $paxMobile,
-                            'pax_gen_type'      =>  0,
-                            'updated_at'       =>  now()
+                            'pax_gen_type'      =>  $paxGenType,
+                            'updated_at'        =>  now()
 
                         ]);
 
@@ -1046,6 +1088,7 @@ class ClAccounting extends Controller
         $paxFirstName       = "";
         $paxLastName        = "";
         $paxMobile          = 123456789;
+        $paxGenType       = 0;
         $autoTopUpStatus    = false;
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
@@ -1053,6 +1096,7 @@ class ClAccounting extends Controller
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxMobile = $transaction['pax_gen_type'];
         if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
         if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
         if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
@@ -1086,7 +1130,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -1117,8 +1161,8 @@ class ClAccounting extends Controller
                             'is_test'           => $transaction['is_test'],
                             'pax_first_name'    => $paxFirstName,
                             'pax_last_name'     => $paxLastName,
-                            'pax_mobile'        => $transaction['pax_mobile'],
-                            'pax_gen_type'      => $transaction['pax_gen_type'],
+                            'pax_mobile'        => $paxMobile,
+                            'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now(),
                         ]);
 
@@ -1162,7 +1206,7 @@ class ClAccounting extends Controller
                     'pax_first_name'    => $paxFirstName,
                     'pax_last_name'     => $paxLastName,
                     'pax_mobile'        => $paxMobile,
-                    'pax_gen_type'      => $transaction['pax_gen_type'],
+                    'pax_gen_type'      => $paxGenType,
                     'shift_id'          => $transaction['shift_id'],
                     'user_id'           => $transaction['user_id'],
                     'eq_id'             => $transaction['eq_id'],
@@ -1190,12 +1234,12 @@ class ClAccounting extends Controller
                             'auto_topup_status' =>  $autoTopUpStatus,
                             'auto_topup_amt'    =>  $autoTopUpAmount,
                             'bonus_points'      =>  $bonusPoints,
-                            'is_test'           =>  false,
+                            'is_test'           =>  $transaction['is_test'],
                             'pax_first_name'    =>  $paxFirstName,
                             'pax_last_name'     =>  $paxLastName,
                             'pax_mobile'        =>  $paxMobile,
-                            'pax_gen_type'      =>  0,
-                            'updated_at'       =>  now()
+                            'pax_gen_type'      =>  $paxGenType,
+                            'updated_at'        =>  now()
 
                         ]);
 
