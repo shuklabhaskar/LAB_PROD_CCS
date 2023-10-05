@@ -24,22 +24,38 @@ class ClCardReplacement extends Controller
                 ->where('engraved_id', '=', $engravedId)
                 ->first();
 
-            if ($cardData == null){
+
+            if ($cardData == null) {
+
                 return response([
-                    'status'     => false,
-                    'error'      => "Card Data Does Not Exists"
+                    'status' => false,
+                    'error' => "Card Data Does Not Exists"
                 ]);
-            }else{
-                return response([
-                    'status'    => true,
-                    'data'      => $cardData
-                ]);
+
+            } else {
+
+                $cardBlacklisted = DB::table('cl_blacklist')
+                    ->where('engraved_id', '=', $engravedId)
+                    ->value('engraved_id');
+
+                if ($cardBlacklisted) {
+                    return response([
+                        'status' => false,
+                        'error' => "This Card is Blacklisted"
+                    ]);
+                } else {
+
+                    return response([
+                        'status' => true,
+                        'data' => $cardData
+                    ]);
+                }
             }
 
         } catch (PDOException $e) {
             return response([
-                'status'    => false,
-                'error'     => $e->getMessage()
+                'status' => false,
+                'error' => $e->getMessage()
             ]);
         }
     }
