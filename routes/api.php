@@ -22,6 +22,7 @@ use App\Http\Controllers\Modules\Api\SettleOlTransaction;
 use App\Http\Controllers\Modules\Api\TidController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\ReportApi\CashCollection;
+use App\Http\Controllers\Modules\ReportApi\CL\DailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
@@ -125,15 +126,21 @@ Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 /* GETTING CARD DATA FOR REPLACEMENT */
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
+
+
 /* REPORT API'S*/
 Route::middleware(['basic_auth'])->group(function (){
+    /* OPEN LOOP API */
     Route::post('/oldailyRidership',[DailyRidership::class,'index']);
     Route::post('/olcashCollection',[CashCollection::class,'index']);
     Route::post('/olrevenue',[Revenue::class,'index']);
     Route::post('/olValReport',[TravelApiController::class,'getReport']);
-
     /* MMOPL OL SAP FICO POSTING */
     /* Route::get('/olFicoReport', [OlFicoReport::class, 'index']);*/
+
+    /* CLOSED LOOP API */
+    Route::post('/cl/Daily/Ridership',[DailyRidershipReport::class,'dailyRidership']);
+
 });
 
 

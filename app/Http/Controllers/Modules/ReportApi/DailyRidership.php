@@ -115,7 +115,7 @@ class DailyRidership extends Controller
                         $data['sbi_entry_count']    = $sbiEntryData;
                         $data['other_entry_count']  = $otherEntryData;
 
-                        array_push($entries, $data);
+                        $entries[] = $data;
 
 
                     }catch (PDOException $e){
@@ -123,7 +123,7 @@ class DailyRidership extends Controller
                         $data['success'] = false;
                         $data['message'] = "no entry found";
 
-                        array_push($entries, $data);
+                        $entries[] = $data;
                     }
 
                 }
