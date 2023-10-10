@@ -33,7 +33,7 @@
                                 <th>CARD NAME</th>
                                 <th>STATUS</th>
                                 <th>DESCRIPTION</th>
-                                <th>ACTIONS</th>
+                                <th>ACTION</th>
                             </tr>
                             </thead>
                             <tbody>

@@ -27,7 +27,9 @@ class CardSnMappingController extends Controller
      * "rector/rector": "^0.18.3",
      * "rector/rector-phpoffice": "^0.14.0",
      * use this for composer in future if version degrade or upgrade
-    **/
+     *
+     * https://phpspreadsheet.readthedocs.io/en/latest/topics/migration-from-PHPExcel/
+     **/
 
     public function store(Request $request)
     {

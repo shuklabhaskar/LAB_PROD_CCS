@@ -33,7 +33,7 @@ class Firmware extends Controller
             /*CHECKING AVAILABLE VERSION FOR AG*/
             if ($request->eq_type_id == 1) {
 
-                if ($AGEquipments->contains($request->eq_id)) {
+                if ($AGEquipments->contains($request->input('eq_id'))) {
 
                     $current_version = DB::table('firmware_publish')
                         ->where('firmware_id', '=', 1)
@@ -41,33 +41,33 @@ class Firmware extends Controller
                         ->first('firmware_version');
 
                     $ID = DB::table('firmware_publish')
-                        ->where('equipment_id', '=', $request->eq_id)
+                        ->where('equipment_id', '=', $request->input('eq_id'))
                         ->where('is_sent', '=', false)
                         ->first('firmware_upload_id');
 
 
-                        if ($current_version->firmware_version != null) {
-                            if ($current_version->firmware_version != $request->current_version) {
-                                return [
-                                    'status'    => true,
-                                    'code'      => 100,
-                                    'uploadID'  => $ID->firmware_upload_id,
-                                    'message'   => "Yes, New version is available."
-                                ];
-                            } else {
-                                return [
-                                    'status'    => false,
-                                    'code'      => 101,
-                                    'message'   => "You have already latest version of gate application"
-                                ];
-                            }
+                    if ($current_version->firmware_version != null) {
+                        if ($current_version->firmware_version != $request->input('current_version')) {
+                            return [
+                                'status'    => true,
+                                'code'      => 100,
+                                'uploadID'  => $ID->firmware_upload_id,
+                                'message'   => "Yes, New version is available."
+                            ];
                         } else {
                             return [
                                 'status'    => false,
                                 'code'      => 101,
-                                'message'   => "No File is available"
+                                'message'   => "You have already latest version of gate application"
                             ];
                         }
+                    } else {
+                        return [
+                            'status'    => false,
+                            'code'      => 101,
+                            'message'   => "No File is available"
+                        ];
+                    }
 
 
                 } else {
@@ -83,7 +83,7 @@ class Firmware extends Controller
 
             /*CHECKING AVAILABLE VERSION FOR TOM*/
             if ($request->eq_type_id == 2) {
-                if ($TOMEquipments->contains($request->eq_id)) {
+                if ($TOMEquipments->contains($request->input('eq_id'))) {
 
                     $current_version = DB::table('firmware_publish')
                         ->where('firmware_id', '=', 2)
@@ -91,14 +91,14 @@ class Firmware extends Controller
                         ->first('firmware_version');
 
                     $ID = DB::table('firmware_publish')
-                        ->where('equipment_id', '=', $request->eq_id)
+                        ->where('equipment_id', '=', $request->input('eq_id'))
                         ->where('is_sent', '=', false)
                         ->first('firmware_upload_id');
 
 
                     if ($current_version->firmware_version != null) {
 
-                        if ($current_version->firmware_version != $request->current_version) {
+                        if ($current_version->firmware_version != $request->input('current_version')) {
                             return [
                                 'status'   => true,
                                 'code'     => 100,
@@ -134,7 +134,7 @@ class Firmware extends Controller
             /*CHECKING AVAILABLE VERSION FOR EDC*/
             if ($request->eq_type_id == 6) {
 
-                if ($EDCEquipments->contains($request->eq_id)) {
+                if ($EDCEquipments->contains($request->input('eq_id'))) {
 
                     $current_version = DB::table('firmware_publish')
                         ->where('firmware_id', '=', 6)
@@ -142,12 +142,12 @@ class Firmware extends Controller
                         ->first('firmware_version');
 
                     $ID = DB::table('firmware_publish')
-                        ->where('equipment_id', '=', $request->eq_id)
+                        ->where('equipment_id', '=', $request->input('eq_id'))
                         ->where('is_sent', '=', false)
                         ->first('firmware_upload_id');
 
                     if ($current_version->firmware_version != null) {
-                        if ($current_version->firmware_version != $request->current_version) {
+                        if ($current_version->firmware_version != $request->input('eq_id')) {
                             return [
                                 'status'    => true,
                                 'code'      => 100,
@@ -199,7 +199,7 @@ class Firmware extends Controller
                 ->orderBy('is_sent','ASC')
                 ->first('is_sent');
 
-            if ($true->is_sent == false) {
+            if (!$true->is_sent) {
 
                 $path = DB::table('firmware_upload')
                     ->where('firmware_upload_id','=',$uploadId)

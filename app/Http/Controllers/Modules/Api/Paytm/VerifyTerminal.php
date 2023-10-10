@@ -1,21 +1,16 @@
-<?php
+<?php /** @noinspection LaravelFunctionsInspection */
 
 namespace App\Http\Controllers\Modules\Api\Paytm;
 
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Promise\PromiseInterface;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 
 class VerifyTerminal extends Controller
 {
     public function verify(Request $request)
     {
-        $baseUrl = env('PPBL_BASE_URL');
-        $data = $request->getContent();
 
+        $request->getContent();
         $curl = curl_init();
 
         curl_setopt_array($curl, array(

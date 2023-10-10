@@ -39,7 +39,7 @@ class StationController extends Controller
     /*INSERTING STATION DATA*/
     function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'stn_name'          => 'required',
             'status'            => 'required|boolean',
             'line_id'           => 'required|integer',
@@ -57,18 +57,18 @@ class StationController extends Controller
 
         DB::table('station_inventory')->insert([
             'stn_id'            => $stnID,
-            'stn_name'          => $request->stn_name,
-            'description'       => $request->description,
-            'company_id'        => $request->company_id,
-            'status'            => $request->status,
-            'line_id'           => $request->line_id,
-            'stn_short_name'    => $request->stn_short_name,
-            'stn_national_lang' => $request->stn_national_lang,
-            'stn_regional_lang' => $request->stn_regional_lang,
-            'cord_x'            => $request->cord_x,
-            'cord_y'            => $request->cord_y,
-            'start_date'        => $request->start_date,
-            'end_date'          => $request->end_date,
+            'stn_name'          => $request->input('stn_name'),
+            'description'       => $request->input('description'),
+            'company_id'        => $request->input('company_id'),
+            'status'            => $request->input('status'),
+            'line_id'           => $request->input('line_id'),
+            'stn_short_name'    => $request->input('stn_short_name'),
+            'stn_national_lang' => $request->input('stn_national_lang'),
+            'stn_regional_lang' => $request->input('stn_regional_lang'),
+            'cord_x'            => $request->input('cord_x'),
+            'cord_y'            => $request->input('cord_y'),
+            'start_date'        => $request->input('start_date'),
+            'end_date'          => $request->input('end_date'),
             'created_date'      => now(),
         ]);
 
@@ -78,7 +78,7 @@ class StationController extends Controller
         return redirect()
             ->to('stations')
             ->with([
-                'message' => $request->stn_name. 'STATION CREATED SUCCESSFULLY.'
+                'message' => $request->input('stn_name'). 'STATION CREATED SUCCESSFULLY.'
             ]);
     }
 
@@ -99,7 +99,7 @@ class StationController extends Controller
     /*UPDATING STATION DATA*/
     function update(Request $request, $id)
     {
-        $data = $request->validate([
+        $request->validate([
             'stn_name'          => 'required',
             'status'            => 'required|boolean|min:0',
             'line_id'           => 'required|integer|min:0',
@@ -114,18 +114,18 @@ class StationController extends Controller
 
         DB::table('station_inventory')->where('stn_id', '=', $id)
             ->update([
-                'stn_name'          => $request->stn_name,
-                'description'       => $request->description,
-                'company_id'        => $request->company_id,
-                'status'            => $request->status,
-                'line_id'           => $request->line_id,
-                'stn_short_name'    => $request->stn_short_name,
-                'stn_national_lang' => $request->stn_national_lang,
-                'stn_regional_lang' => $request->stn_regional_lang,
-                'cord_x'            => $request->cord_x,
-                'cord_y'            => $request->cord_y,
-                'start_date'        => $request->start_date,
-                'end_date'          => $request->end_date,
+                'stn_name'          => $request->input('stn_name'),
+                'description'       => $request->input('description'),
+                'company_id'        => $request->input('company_id'),
+                'status'            => $request->input('status'),
+                'line_id'           => $request->input('line_id'),
+                'stn_short_name'    => $request->input('stn_short_name'),
+                'stn_national_lang' => $request->input('stn_national_lang'),
+                'stn_regional_lang' => $request->input('stn_regional_lang'),
+                'cord_x'            => $request->input('cord_x'),
+                'cord_y'            => $request->input('cord_y'),
+                'start_date'        => $request->input('start_date'),
+                'end_date'          => $request->input('end_date'),
                 'updated_date'      => now(),
                 'updated_by'        => 1,
             ]);
@@ -136,7 +136,7 @@ class StationController extends Controller
             ->to('stations')
             ->with([
                 'status' => true,
-                'message' => $request->stn_name . ' STATION UPDATED SUCCESSFULLY.'
+                'message' => $request->input('stn_name') . ' STATION UPDATED SUCCESSFULLY.'
             ]);
     }
 

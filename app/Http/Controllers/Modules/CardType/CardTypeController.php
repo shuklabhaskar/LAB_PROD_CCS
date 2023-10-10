@@ -50,7 +50,7 @@ class CardTypeController extends Controller
         ]);
 
         /*IN CASE OF OL CARDS */
-        if ($request->media_type_id == 1 ){
+        if ($request->input('media_type_id') == 1 ){
 
             $request->validate([
                 'card_name'              => 'required',
@@ -69,27 +69,27 @@ class CardTypeController extends Controller
 
             DB::table('card_type')->insert([
                 'card_id'                   => $cardID,
-                'media_type_id'             => $request->media_type_id,
-                'card_bin'                  => $request->card_bin_number,
-                'ps_type_id'                => $request->ps_type_id,
-                'card_name'                 => $request->card_name,
-                'description'               => $request->description,
-                'card_pro_id'               => $request->card_pro_id,
-                'card_fee'                  => $request->card_fee,
-                'card_sec'                  => $request->card_sec,
-                'card_sec_refund_permit'    => $request->card_sec_refund_permit,
-                'card_sec_refund_charges'   => $request->card_sec_refund_charges,
-                'sv_pass_id'                => $request->sv_pass_id,
-                'tp_pass_id'                => $request->tp_pass_id,
-                'status'                    => $request->status,
-                'start_date'                => $request->start_date,
-                'end_date'                  => $request->end_date,
+                'media_type_id'             => $request->input('media_type_id'),
+                'card_bin'                  => $request->input('card_bin'),
+                'ps_type_id'                => $request->input('ps_type_id'),
+                'card_name'                 => $request->input('card_name'),
+                'description'               => $request->input('description'),
+                'card_pro_id'               => $request->input('card_pro_id'),
+                'card_fee'                  => $request->input('card_fee'),
+                'card_sec'                  => $request->input('card_sec'),
+                'card_sec_refund_permit'    => $request->input('card_sec_refund_permit'),
+                'card_sec_refund_charges'   => $request->input('card_sec_refund_charges'),
+                'sv_pass_id'                => $request->input('sv_pass_id'),
+                'tp_pass_id'                => $request->input('tp_pass_id'),
+                'status'                    => $request->input('status'),
+                'start_date'                => $request->input('start_date'),
+                'end_date'                  => $request->input('end_date'),
                 'created_date'              => Carbon::now(),
             ]);
         }
 
         /* IN CASE OF CL CARDS */
-        if ($request->media_type_id == 2 ){
+        if ($request->input('media_type_id') == 2 ){
 
             $request->validate([
                 'card_name'              => 'required',
@@ -107,26 +107,29 @@ class CardTypeController extends Controller
 
             DB::table('card_type')->insert([
                 'card_id'                   => $cardID,
-                'media_type_id'             => $request->media_type_id,
-                'ps_type_id'                => $request->ps_type_id,
-                'card_name'                 => $request->card_name,
-                'description'               => $request->description,
-                'card_pro_id'               => $request->card_pro_id,
-                'card_fee'                  => $request->card_fee,
-                'card_sec'                  => $request->card_sec,
-                'card_sec_refund_permit'    => $request->card_sec_refund_permit,
-                'card_sec_refund_charges'   => $request->card_sec_refund_charges,
-                'sv_pass_id'                => $request->sv_pass_id,
-                'tp_pass_id'                => $request->tp_pass_id,
-                'status'                    => $request->status,
-                'start_date'                => $request->start_date,
-                'end_date'                  => $request->end_date,
+                'media_type_id'             => $request->input('media_type_id'),
+                'ps_type_id'                => $request->input('ps_type_id'),
+                'card_name'                 => $request->input('card_name'),
+                'description'               => $request->input('description'),
+                'card_pro_id'               => $request->input('card_pro_id'),
+                'card_fee'                  => $request->input('card_fee'),
+                'card_sec'                  => $request->input('card_sec'),
+                'card_sec_refund_permit'    => $request->input('card_sec_refund_permit'),
+                'card_sec_refund_charges'   => $request->input('card_sec_refund_charges'),
+                'sv_pass_id'                => $request->input('sv_pass_id'),
+                'tp_pass_id'                => $request->input('tp_pass_id'),
+                'status'                    => $request->input('status'),
+                'start_date'                => $request->input('start_date'),
+                'end_date'                  => $request->input('end_date'),
                 'created_date'              => Carbon::now(),
             ]);
         }
 
         /* FOR PQR AND WHATSAPP*/
-        if ($request->media_type_id == 3 || $request->media_type_id == 4 || $request->media_type_id == 5) {
+        if ($request->input('media_type_id') == 3 || $request->input('media_type_id') == 4 || $request->input('media_type_id') == 5) {
+
+            $newId  = DB::table('card_type')->orderBy('card_type_id', 'desc')->first('card_type_id');
+            $cardID = ($newId != null) ? $newId->card_type_id + 1 : 1;
 
             $request->validate([
                 'card_name'              => 'required',
@@ -139,28 +142,28 @@ class CardTypeController extends Controller
             ]);
 
             DB::table('card_type')->insert([
-                'card_id' => $cardID,
-                'media_type_id' => $request->media_type_id,
-                'card_name' => $request->card_name,
-                'description' => $request->description,
-                'card_pro_id' => $request->card_pro_id,
-                'card_fee' => $request->card_fee,
-                'card_sec' => $request->card_sec,
-                'card_sec_refund_permit' => $request->card_sec_refund_permit,
-                'card_sec_refund_charges' => $request->card_sec_refund_charges,
-                'sv_pass_id' => $request->sv_pass_id,
-                'tp_pass_id' => $request->tp_pass_id,
-                'status' => $request->status,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'created_date' => Carbon::now(),
+                'card_id'                   => $cardID,
+                'media_type_id'             => $request->input('media_type_id'),
+                'card_name'                 => $request->input('card_name'),
+                'description'               => $request->input('description'),
+                'card_pro_id'               => $request->input('card_pro_id'),
+                'card_fee'                  => $request->input('card_fee'),
+                'card_sec'                  => $request->input('card_sec'),
+                'card_sec_refund_permit'    => $request->input('card_sec_refund_permit'),
+                'card_sec_refund_charges'   => $request->input('card_sec_refund_charges'),
+                'sv_pass_id'                => $request->input('sv_pass_id'),
+                'tp_pass_id'                => $request->input('tp_pass_id'),
+                'status'                    => $request->input('status'),
+                'start_date'                => $request->input('start_date'),
+                'end_date'                  => $request->input('end_date'),
+                'created_date'              => Carbon::now(),
             ]);
 
         }
 
         return redirect('cardType')->with([
             'status'    => true,
-            'message'   => $request->card_name .' CARD TYPE CREATED SUCCESSFULLY.'
+            'message'   => $request->input('card_name') .' CARD TYPE CREATED SUCCESSFULLY.'
         ]);
     }
 
@@ -209,7 +212,7 @@ class CardTypeController extends Controller
     /* UPDATE SELECTED CARD TYPE */
     public function update(Request $request,$id){
 
-        if ($request->media_type_id == 1 ) {
+        if ($request->input('media_type_id') == 1 ) {
 
             $request->validate([
                 'card_name'         => 'required',
@@ -224,28 +227,28 @@ class CardTypeController extends Controller
             ]);
 
             DB::table('card_type')->where('card_type_id','=',$id)->update([
-                'media_type_id'           => $request->media_type_id,
-                'ps_type_id'              => $request->ps_type_id,
-                'card_bin'                => $request->card_bin_number,
-                'card_name'               => $request->card_name,
-                'description'             => $request->description,
-                'card_pro_id'             => $request->card_pro_id,
-                'card_fee'                => $request->card_fee,
-                'card_sec'                => $request->card_sec,
-                'card_sec_refund_permit'  => $request->card_sec_refund_permit,
-                'card_sec_refund_charges' => $request->card_sec_refund_charges,
-                'sv_pass_id'              => $request->sv_pass_id,
-                'tp_pass_id'              => $request->tp_pass_id,
-                'status'                  => $request->status,
-                'start_date'              => $request->start_date,
-                'end_date'                => $request->end_date,
+                'media_type_id'           => $request->input('media_type_id'),
+                'ps_type_id'              => $request->input('ps_type_id'),
+                'card_bin'                => $request->input('card_bin'),
+                'card_name'               => $request->input('card_name'),
+                'description'             => $request->input('description'),
+                'card_pro_id'             => $request->input('card_pro_id'),
+                'card_fee'                => $request->input('card_fee'),
+                'card_sec'                => $request->input('card_sec'),
+                'card_sec_refund_permit'  => $request->input('card_sec_refund_permit'),
+                'card_sec_refund_charges' => $request->input('card_sec_refund_charges'),
+                'sv_pass_id'              => $request->input('sv_pass_id'),
+                'tp_pass_id'              => $request->input('tp_pass_id'),
+                'status'                  => $request->input('status'),
+                'start_date'              => $request->input('start_date'),
+                'end_date'                => $request->input('end_date'),
                 'created_date'            => Carbon::now(),
                 'updated_by'              => 1,
             ]);
 
         }
 
-        if ($request->media_type_id == 2){
+        if ($request->input('media_type_id') == 2){
 
             $request->validate([
                 'card_name'      => 'required',
@@ -259,20 +262,20 @@ class CardTypeController extends Controller
             ]);
 
             DB::table('card_type')->where('card_type_id','=',$id)->update([
-                'media_type_id'           => $request->media_type_id,
-                'ps_type_id'              => $request->ps_type_id,
-                'card_name'               => $request->card_name,
-                'description'             => $request->description,
-                'card_pro_id'             => $request->card_pro_id,
-                'card_fee'                => $request->card_fee,
-                'card_sec'                => $request->card_sec,
-                'card_sec_refund_permit'  => $request->card_sec_refund_permit,
-                'card_sec_refund_charges' => $request->card_sec_refund_charges,
-                'sv_pass_id'              => $request->sv_pass_id,
-                'tp_pass_id'              => $request->tp_pass_id,
-                'status'                  => $request->status,
-                'start_date'              => $request->start_date,
-                'end_date'                => $request->end_date,
+                'media_type_id'           => $request->input('media_type_id'),
+                'ps_type_id'              => $request->input('ps_type_id'),
+                'card_name'               => $request->input('card_name'),
+                'description'             => $request->input('description'),
+                'card_pro_id'             => $request->input('card_pro_id'),
+                'card_fee'                => $request->input('card_fee'),
+                'card_sec'                => $request->input('card_sec'),
+                'card_sec_refund_permit'  => $request->input('card_sec_refund_permit'),
+                'card_sec_refund_charges' => $request->input('card_sec_refund_charges'),
+                'sv_pass_id'              => $request->input('sv_pass_id'),
+                'tp_pass_id'              => $request->input('tp_pass_id'),
+                'status'                  => $request->input('status'),
+                'start_date'              => $request->input('start_date'),
+                'end_date'                => $request->input('end_date'),
                 'created_date'            => Carbon::now(),
                 'updated_by'              => 1,
             ]);
@@ -280,26 +283,26 @@ class CardTypeController extends Controller
         }
 
         DB::table('card_type')->where('card_type_id','=',$id)->update([
-            'media_type_id'           => $request->media_type_id,
-            'card_name'               => $request->card_name,
-            'description'             => $request->description,
-            'card_pro_id'             => $request->card_pro_id,
-            'card_fee'                => $request->card_fee,
-            'card_sec'                => $request->card_sec,
-            'card_sec_refund_permit'  => $request->card_sec_refund_permit,
-            'card_sec_refund_charges' => $request->card_sec_refund_charges,
-            'sv_pass_id'              => $request->sv_pass_id,
-            'tp_pass_id'              => $request->tp_pass_id,
-            'status'                  => $request->status,
-            'start_date'              => $request->start_date,
-            'end_date'                => $request->end_date,
+            'media_type_id'           => $request->input('media_type_id'),
+            'card_name'               => $request->input('card_name'),
+            'description'             => $request->input('description'),
+            'card_pro_id'             => $request->input('card_pro_id'),
+            'card_fee'                => $request->input('card_fee'),
+            'card_sec'                => $request->input('card_sec'),
+            'card_sec_refund_permit'  => $request->input('card_sec_refund_permit'),
+            'card_sec_refund_charges' => $request->input('card_sec_refund_charges'),
+            'sv_pass_id'              => $request->input('sv_pass_id'),
+            'tp_pass_id'              => $request->input('tp_pass_id'),
+            'status'                  => $request->input('status'),
+            'start_date'              => $request->input('start_date'),
+            'end_date'                => $request->input('end_date'),
             'created_date'            => Carbon::now(),
             'updated_by'              => 1,
         ]);
 
         return redirect('cardType')->with([
             'status'  => true,
-            'message' => $request->card_name .' CARD TYPE UPDATED SUCCESSFULLY.'
+            'message' => $request->input('card_name') .' CARD TYPE UPDATED SUCCESSFULLY.'
         ]);
 
     }

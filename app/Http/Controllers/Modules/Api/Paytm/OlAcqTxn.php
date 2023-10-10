@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use function Symfony\Component\Finder\size;
 
 class OlAcqTxn extends Controller
 {
@@ -30,7 +29,7 @@ class OlAcqTxn extends Controller
             $requests = DB::table('ol_acq_txn')
                 ->where('emv_tid', '=', $tid->emv_tid)
                 ->where('is_sync', '=', false)
-                ->limit(100)
+                ->limit(50)
                 ->get('request_json');
 
             foreach ($requests as $request) {

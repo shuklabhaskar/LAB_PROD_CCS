@@ -11,7 +11,7 @@ class Equipment extends Controller
     public function eqModeID(Request $request){
 
         $data = DB::table('ms_equipment_role')
-            ->where('eq_type_id','=',$request->eq_type_id)
+            ->where('eq_type_id','=',$request->input('eq_type_id'))
             ->get();
 
         return response([
@@ -24,7 +24,7 @@ class Equipment extends Controller
     public  function checkSCS(Request $request){
 
          $data = DB::table("equipment_inventory")
-            ->where('stn_id','=',$request->stn_id)
+            ->where('stn_id','=',$request->input('stn_id'))
             ->where('eq_type_id','=',4)
             ->first();
 
@@ -46,7 +46,7 @@ class Equipment extends Controller
     public  function getRoles(Request $request){
 
         $data = DB::table('ms_equipment_role')
-            ->where('eq_type_id','=',$request->eq_type_id)
+            ->where('eq_type_id','=',$request->input('eq_type_id'))
             ->get();
 
         if( $data == null){

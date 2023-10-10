@@ -74,7 +74,7 @@ class ClAccounting extends Controller
                     REPLACEMENT IN CASE OF CARD NOT OKAY & PHYSICALLY OKAY
                 **/
 
-                $transData = $this->cardNotReadablePhysicallyOkay($transaction  , $engravedIdExists);
+                $transData = $this->cardNotReadablePhysicallyOkay($transaction);
                 $response[] = $transData;
 
             }elseif ($opTypeId == 12) { // REFUND
@@ -83,7 +83,7 @@ class ClAccounting extends Controller
                 REPLACEMENT IN CASE OF CARD NOT OKAY & PHYSICALLY NOT OKAY
                  **/
 
-                $transData = $this->cardNotReadablePhysicallyNotOkay($transaction  , $engravedIdExists);
+                $transData = $this->cardNotReadablePhysicallyNotOkay($transaction);
                 $response[] = $transData;
 
             }elseif ($opTypeId == 13) { // REFUND
@@ -92,7 +92,7 @@ class ClAccounting extends Controller
                 LOST CARD
                  **/
 
-                $transData = $this->lostCard($transaction  , $engravedIdExists);
+                $transData = $this->lostCard($transaction);
                 $response[] = $transData;
 
             }else {
@@ -122,7 +122,7 @@ class ClAccounting extends Controller
         $autoTopUpStatus    = false;
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
-        
+
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
@@ -352,7 +352,7 @@ class ClAccounting extends Controller
         }
 
 
-    }
+    } /* OP_TYPE_ID = 1*/
 
     public function Reload($transaction , $engravedIdExists){
 
@@ -546,7 +546,7 @@ class ClAccounting extends Controller
         }
 
 
-    }
+    } /* OP_TYPE_ID = 3*/
 
     public function Refund($transaction , $engravedIdExists){
 
@@ -554,16 +554,12 @@ class ClAccounting extends Controller
         $paxFirstName       = "";
         $paxLastName        = "";
         $paxMobile          = 123456789;
-        $paxGenType       = 0;
+        $paxGenType         = 0;
 
         if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
         if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
         if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
         if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
-        if(array_key_exists("auto_topup_status", $transaction))  $autoTopUpStatus = $transaction['auto_topup_status'];
-        if(array_key_exists("auto_topup_amt", $transaction))  $autoTopUpAmount = $transaction['auto_topup_amt'];
-        if(array_key_exists("bonus_points", $transaction))  $bonusPoints = $transaction['bonus_points'];
-
 
         try {
 
@@ -726,9 +722,9 @@ class ClAccounting extends Controller
 
         }
 
-    }
+    } /* OP_TYPE_ID = 6*/
 
-    public function cardNotReadablePhysicallyOkay($transaction , $engravedIdExists){
+    public function cardNotReadablePhysicallyOkay($transaction){
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName       = "";
@@ -920,9 +916,9 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    } /*3*/
+    } /* OP_TYPE_ID = 11*/
 
-    public function cardNotReadablePhysicallyNotOkay($transaction , $engravedIdExists){
+    public function cardNotReadablePhysicallyNotOkay($transaction){
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName       = "";
@@ -1114,9 +1110,9 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    } /*2*/
+    } /* OP_TYPE_ID = 12*/
 
-    public function lostCard($transaction , $engravedIdExists){
+    public function lostCard($transaction){
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName       = "";
@@ -1306,6 +1302,6 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-    }/*1*/
+    }/* OP_TYPE_ID = 13*/
 
 }

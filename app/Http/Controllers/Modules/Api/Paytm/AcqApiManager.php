@@ -3,142 +3,312 @@
 namespace App\Http\Controllers\Modules\Api\Paytm;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
+use Mockery\Exception;
 
 
 class AcqApiManager extends Controller
 {
-    // -------------------------------------------------- DEBUG --------------------------------------------------
+    /*** -------------------------------------------------- DEBUG -------------------------------------------------- ***/
 
-    
-    // function verifyTerminal(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/verifyTerminal")
-    //         ->collect();
-    // }
-
-    // function moneyLoad(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/moneyLoad")
-    //         ->collect();
-    // }
-
-    // function sale(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/sale")
-    //         ->collect();
-    // }
-
-    // function balanceUpdate(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/balanceUpdate")
-    //         ->collect();
-    // }
-
-    // function voidTrans(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/void")
-    //         ->collect();
-    // }
-
-    // function serviceCreation(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/serviceCreation")
-    //         ->collect();
-    // }
-
-    // function updateReceiptAndRevertLastTxn(Request $request): \Illuminate\Support\Collection
-    // {
-    //     $body = $request->input('body');
-    //     return Http::timeout(3*60)->retry(3)
-    //         ->withBody(json_encode($body), 'application/json')
-    //         ->post("https://nos-staging.paytm.com/nos/updateReceiptAndRevertLastTxn")
-    //         ->collect();
-    // }
-    
-
-    
-    // -------------------------------------------------- PROD -------------------------------------------------
-    function verifyTerminal(Request $request): \Illuminate\Support\Collection
+    function verifyTerminal(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/verifyTerminal")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/verifyTerminal", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function moneyLoad(Request $request): \Illuminate\Support\Collection
+    function moneyLoad(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/moneyLoad")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/moneyLoad", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function sale(Request $request): \Illuminate\Support\Collection
+    function sale(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/sale")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/sale", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function balanceUpdate(Request $request): \Illuminate\Support\Collection
+    function balanceUpdate(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/balanceUpdate")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/balanceUpdate", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function voidTrans(Request $request): \Illuminate\Support\Collection
+    function voidTrans(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/void")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/void", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function serviceCreation(Request $request): \Illuminate\Support\Collection
+    function serviceCreation(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/serviceCreation")
-            ->collect();
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/serviceCreation", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
     }
 
-    function updateReceiptAndRevertLastTxn(Request $request): \Illuminate\Support\Collection
+    function updateReceiptAndRevertLastTxn(Request $request)
     {
-        $body = $request->input('body');
-        return Http::timeout(3*60)->retry(3)
-            ->withBody(json_encode($body), 'application/json')
-            ->post("https://securegw.paytm.in/nos/updateReceiptAndRevertLastTxn")
-            ->collect();
-    } 
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://nos-staging.paytm.com/nos/updateReceiptAndRevertLastTxn", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    /*** -------------------------------------------------- PROD ------------------------------------------------- ***/
+
+    /*function verifyTerminal(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/verifyTerminal", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function moneyLoad(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/moneyLoad", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function sale(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/sale", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function balanceUpdate(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/balanceUpdate", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function voidTrans(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/void", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function serviceCreation(Request $request)
+    {
+
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/serviceCreation", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }
+
+    function updateReceiptAndRevertLastTxn(Request $request)
+    {
+        try {
+            $body = $request->input('body');
+            $client = new Client();
+            $response = $client->post("https://securegw.paytm.in/nos/updateReceiptAndRevertLastTxn", [
+                'body' => json_encode($body),
+                'timeout' => 3 * 60,
+                'http_errors' => false,
+            ]);
+            return json_decode($response->getBody()->getContents());
+        } catch (Exception|GuzzleException $e) {
+            return Response::json([
+                'body' => [
+                    'resultCode' => 101,
+                    'resultMsg' => $e->getMessage()
+                ]
+            ]);
+        }
+    }*/
 
 }

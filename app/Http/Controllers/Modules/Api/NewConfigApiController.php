@@ -346,6 +346,7 @@ class NewConfigApiController extends Controller
 
                 /* FOR PASS CONFIGURATION */
                 if ($config->config_id == 4) {
+
                     if ($config->config_version != $pass_version) {
 
                         $PassData = DB::table('config_gen')
@@ -359,10 +360,8 @@ class NewConfigApiController extends Controller
 
                         $configResponse['passes'] = $NewData;
 
-                        $configResponse['version']['pass_version'] = $config->config_version;
-                    }else{
-                        $configResponse['version']['pass_version'] = $config->config_version;
                     }
+                    $configResponse['version']['pass_version'] = $config->config_version;
                 }
 
                 /* FOR USER CONFIGURATION */
