@@ -23,6 +23,7 @@ use App\Http\Controllers\Modules\Api\TidController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\ReportApi\CashCollection;
 use App\Http\Controllers\Modules\ReportApi\CL\DailyRidershipReport;
+use App\Http\Controllers\Modules\ReportApi\CL\RevenueReport;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
@@ -140,6 +141,7 @@ Route::middleware(['basic_auth'])->group(function (){
 
     /* CLOSED LOOP API */
     Route::post('/cl/Daily/Ridership',[DailyRidershipReport::class,'dailyRidership']);
+    Route::post('/cl/revenue',[RevenueReport::class,'revenue']);
 
 });
 

@@ -14,8 +14,8 @@ class DailyRidership extends Controller
     public function index(Request $request){
 
 
-        $from = $request->from_date;
-        $to   = $request->to_date;
+        $from = $request->input('from_date');
+        $to   = $request->input('to_date');
 
         /* VALIDATION */
         $validator = Validator::make($request->all(), [

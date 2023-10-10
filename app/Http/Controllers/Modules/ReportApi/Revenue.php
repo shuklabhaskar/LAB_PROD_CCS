@@ -12,8 +12,8 @@ class Revenue extends Controller
 {
     public function index(Request $request)
     {
-        $from   = $request->from_date;
-        $to     = $request->to_date;
+        $from   = $request->input('from_date');
+        $to     = $request->input('to_date');
 
         /* VALIDATION */
         $validator = Validator::make($request->all(), [
@@ -181,12 +181,11 @@ class Revenue extends Controller
                     $data['sbi_sv_revenue']     = $sbi_revenue   + $sbi_stnPenAmount;
                     $data['other_sv_revenue']   = $other_revenue + $other_stnPenAmount;
 
-                    array_push($cardData, $data);
+                    $cardData[] = $data;
 
                 } catch (PDOException $e) {
-
-                    $data['success'] = false;
-                    array_push($cardData, $data);
+                    $data['success']    = false;
+                    $cardData[]         = $data;
                 }
 
             }

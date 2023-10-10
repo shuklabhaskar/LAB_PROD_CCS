@@ -12,8 +12,8 @@ class CashCollection extends Controller
 {
     public function index(Request $request)
     {
-        $from = $request->from_date;
-        $to   = $request->to_date;
+        $from = $request->input('from_date');
+        $to   = $request->input('to_date');
 
         /* VALIDATION */
         $validator = Validator::make($request->all(), [
@@ -139,13 +139,13 @@ class CashCollection extends Controller
             }
 
             return response([
-                'status'                    => true,
-                'total_SV_Collection'       => $totalCollection,
-                'total_SV_Issued_count'     => $ttlSVIssued,
-                'total_SV_TopUp_Count'      => $topUpCount,
-                'total_online_reload_amount'  => $ttlOnlineReloadAmount,
-                'total_SV_Refund_Count'     => $ttlRefund,
-                'data'                      => $cardData,
+                'status'                        => true,
+                'total_SV_Collection'           => $totalCollection,
+                'total_SV_Issued_count'         => $ttlSVIssued,
+                'total_SV_TopUp_Count'          => $topUpCount,
+                'total_online_reload_amount'    => $ttlOnlineReloadAmount,
+                'total_SV_Refund_Count'         => $ttlRefund,
+                'data'                          => $cardData,
             ]);
 
         }
