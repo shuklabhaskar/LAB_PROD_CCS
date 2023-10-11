@@ -6,16 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class CardSnMappingController extends Controller
+{ public function index()
 {
-    public function index()
-    {
-        return Inertia::render('CardSnMapping/Index');
-    }
+    return Inertia::render('CardSnMapping/Index');
+}
 
     public function store(Request $request)
     {
@@ -29,18 +28,12 @@ class CardSnMappingController extends Controller
 
         $excelFileName = uniqid('cl_sn_mapping');
 
-        $clSnSheetPath = public_path($destinationPath);
+        // Create the directory in the storage/app directory
+        Storage::makeDirectory($destinationPath);
 
-        if (file_exists($clSnSheetPath)) {
-            File::deleteDirectory($clSnSheetPath);
-        }
+        $excelFilePath = $uploadedFile->storeAs($destinationPath, $excelFileName);
 
-        File::makeDirectory($clSnSheetPath);
-
-        $uploadedFile->move($clSnSheetPath, $excelFileName);
-
-        $excelFilePath = $clSnSheetPath . '/' . $excelFileName;
-        $spreadsheet = IOFactory::load($excelFilePath);
+        $spreadsheet = IOFactory::load(storage_path("app/$excelFilePath"));
         $worksheet = $spreadsheet->getActiveSheet();
         $firstRow = true;
         $insertedCount = 0;
