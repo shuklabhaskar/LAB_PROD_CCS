@@ -20,18 +20,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/verifyTerminal", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+            return $e->getMessage();
         }
     }
 
@@ -41,18 +37,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/moneyLoad", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -62,18 +54,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/sale", [
+                'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -83,18 +71,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/balanceUpdate", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -104,18 +88,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/void", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -125,18 +105,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/serviceCreation", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -146,18 +122,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://nos-staging.paytm.com/nos/updateReceiptAndRevertLastTxn", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -169,18 +141,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/verifyTerminal", [
+                'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -190,18 +158,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/moneyLoad", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -211,18 +175,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/sale", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -232,18 +192,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/balanceUpdate", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -253,18 +209,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/void", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -275,18 +227,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/serviceCreation", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }
 
@@ -296,18 +244,14 @@ class AcqApiManager extends Controller
             $body = $request->input('body');
             $client = new Client();
             $response = $client->post("https://securegw.paytm.in/nos/updateReceiptAndRevertLastTxn", [
+                 'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 'body' => json_encode($body),
                 'timeout' => 3 * 60,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
             return json_decode($response->getBody()->getContents());
         } catch (Exception|GuzzleException $e) {
-            return Response::json([
-                'body' => [
-                    'resultCode' => 101,
-                    'resultMsg' => $e->getMessage()
-                ]
-            ]);
+           return $e->getMessage();
         }
     }*/
 
