@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a24e819a132c884799cbb30ef1ff72fc",
+    "content-hash": "bed14d84bcbf9de65aca95f74127f8b3",
     "packages": [
         {
             "name": "brick/math",
@@ -4291,69 +4291,6 @@
                 }
             ],
             "time": "2023-10-05T11:25:40+00:00"
-        },
-        {
-            "name": "rector/rector-phpoffice",
-            "version": "0.14.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rectorphp/rector-phpoffice.git",
-                "reference": "6cdeaf81be3b318a0a16c81c63dcb982d6490d02"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector-phpoffice/zipball/6cdeaf81be3b318a0a16c81c63dcb982d6490d02",
-                "reference": "6cdeaf81be3b318a0a16c81c63dcb982d6490d02",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1"
-            },
-            "conflict": {
-                "rector/rector": "<0.12"
-            },
-            "require-dev": {
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^1.8.2",
-                "phpstan/phpstan-webmozart-assert": "^1.2",
-                "phpunit/phpunit": "^9.5.21",
-                "rector/phpstan-rules": "^0.6",
-                "rector/rector": "dev-main",
-                "rector/rector-debugging": "dev-main",
-                "symplify/easy-coding-standard": "^11.1",
-                "symplify/phpstan-extensions": "^11.1",
-                "symplify/phpstan-rules": "^11.1",
-                "symplify/rule-doc-generator": "^11.1",
-                "symplify/vendor-patches": "^11.1"
-            },
-            "type": "rector-extension",
-            "extra": {
-                "enable-patching": true,
-                "branch-alias": {
-                    "dev-main": "0.11-dev"
-                },
-                "rector": {
-                    "includes": [
-                        "config/config.php"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Rector\\PHPOffice\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Rector migration rules for PHP Office to PhpSpreadSheet",
-            "support": {
-                "issues": "https://github.com/rectorphp/rector-phpoffice/issues",
-                "source": "https://github.com/rectorphp/rector-phpoffice/tree/0.14.0"
-            },
-            "abandoned": true,
-            "time": "2022-11-14T15:15:33+00:00"
         },
         {
             "name": "spatie/laravel-permission",

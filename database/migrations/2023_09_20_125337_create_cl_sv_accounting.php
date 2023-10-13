@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('cl_sv_accounting', function (Blueprint $table) {
             $table->id('cl_acc_id')->unique();

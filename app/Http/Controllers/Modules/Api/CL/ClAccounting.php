@@ -424,25 +424,10 @@ class ClAccounting extends Controller
                             DB::table('cl_status')
                                 ->where('engraved_id','=',$transaction['engraved_id'])
                                 ->update([
-                                    'chip_id'           => $transaction['chip_id'],
-                                    'txn_date'          => $transaction['txn_date'],
-                                    'pass_id'           => $transaction['pass_id'],
-                                    'product_id'        => $transaction['product_id'],
-                                    'card_fee'          => $transaction['card_fee'],
-                                    'card_sec'          => $transaction['card_sec'],
-                                    'sv_balance'        => $transaction['pos_chip_bal'],
-                                    'pass_expiry'       => $transaction['pass_expiry'],
-                                    'src_stn_id'        => $transaction['src_stn_id'],
-                                    'des_stn_id'        => $transaction['des_stn_id'],
-                                    'auto_topup_status' => $autoTopUpStatus,
-                                    'auto_topup_amt'    => $autoTopUpAmount,
-                                    'bonus_points'      => $bonusPoints,
-                                    'is_test'           => $transaction['is_test'],
-                                    'pax_first_name'    => $paxFirstName,
-                                    'pax_last_name'     => $paxLastName,
-                                    'pax_mobile'        => $paxMobile,
-                                    'pax_gen_type'      => $paxGenType,
-                                    'updated_at'        => now(),
+                                    'txn_date'    => $transaction['txn_date'],
+                                    'sv_balance'  => $transaction['pos_chip_bal'],
+                                    'pass_expiry' => $transaction['pass_expiry'],
+                                    'updated_at'  => now(),
                                 ]);
 
 
@@ -498,26 +483,10 @@ class ClAccounting extends Controller
                         DB::table('cl_status')
                             ->where('engraved_id','=',$transaction['engraved_id'])
                             ->update([
-                                'engraved_id'       =>  $transaction['engraved_id'],
-                                'chip_id'           =>  $transaction['chip_id'],
-                                'txn_date'          =>  $transaction['txn_date'],
-                                'pass_id'           =>  $transaction['pass_id'],
-                                'product_id'        =>  $transaction['product_id'],
-                                'card_fee'          =>  $transaction['card_fee'],
-                                'card_sec'          =>  $transaction['card_sec'],
-                                'tp_balance'        =>  $transaction['rem_trips'],
-                                'pass_expiry'       =>  $transaction['pass_expiry'],
-                                'src_stn_id'        =>  $transaction['src_stn_id'],
-                                'des_stn_id'        =>  $transaction['des_stn_id'],
-                                'auto_topup_status' =>  $autoTopUpStatus,
-                                'auto_topup_amt'    =>  $autoTopUpAmount,
-                                'bonus_points'      =>  $bonusPoints,
-                                'is_test'           =>  $transaction['is_test'],
-                                'pax_first_name'    =>  $paxFirstName,
-                                'pax_last_name'     =>  $paxLastName,
-                                'pax_mobile'        =>  $paxMobile,
-                                'pax_gen_type'      =>  $paxGenType,
-                                'updated_at'        =>  now()
+                                'txn_date'    =>  $transaction['txn_date'],
+                                'tp_balance'  =>  $transaction['rem_trips'],
+                                'pass_expiry' =>  $transaction['pass_expiry'],
+                                'updated_at'  =>  now()
                             ]);
 
                     }

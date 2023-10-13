@@ -25,9 +25,9 @@ class FirmwareController extends Controller
         /* IF FIRMWARE IS SELECTED FOR AG */
         if ($request->input('firmware_id') == 1) {
             $request->validate([
-                'firmware_id' => 'required|integer',
-                'description' => 'required',
-                'file' => 'required',
+                'firmware_id'   => 'required|integer',
+                'description'   => 'required',
+                'file'          => 'required|file|max:100000',
             ]);
 
             foreach ($request->file() as $files) {
