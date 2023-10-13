@@ -653,7 +653,7 @@ class ClAccounting extends Controller
                                 'product_id'        =>  0,
                                 'card_fee'          =>  0,
                                 'card_sec'          =>  0,
-                                'sv_balance'        =>  0,
+                                'tp_balance'        =>  0,
                                 'pass_expiry'       =>  Carbon::now(),
                                 'src_stn_id'        =>  0,
                                 'des_stn_id'        =>  0,
