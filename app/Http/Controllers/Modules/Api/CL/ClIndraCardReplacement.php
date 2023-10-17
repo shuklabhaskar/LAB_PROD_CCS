@@ -77,6 +77,7 @@ class ClIndraCardReplacement extends Controller
                         'pass_id'            => $transaction['passId'],
                         'product_id'         => $transaction['productId'], //
                         'card_fee'           => $transaction['cardFee'],
+                        'card_sec'           => $transaction['card_sec'],
                         'sv_balance'         => $transaction['passBal'],
                         'pass_expiry'        => $transaction['passExpiry'],
                         'src_stn_id'         => $transaction['srcStnId'],
@@ -128,6 +129,7 @@ class ClIndraCardReplacement extends Controller
                         'pass_id'            => $transaction['passId'],
                         'product_id'         => $transaction['productId'],
                         'card_fee'           => $transaction['cardFee'],
+                        'card_sec'           => $transaction['card_sec'],
                         'tp_balance'         => $transaction['passBal'],
                         'pass_expiry'        => $transaction['passExpiry'],
                         'src_stn_id'         => $transaction['srcStnId'],
