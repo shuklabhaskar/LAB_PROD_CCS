@@ -48,9 +48,9 @@ class RevenueReport extends Controller
                         ->where('cl_sv_accounting.stn_id','=',$station->stn_id)
                         ->where('pass_inventory.status','=',true)
                         ->where('pass_inventory.is_test','=',false)
+                        ->where('cl_sv_accounting.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',1)
                         ->count();
 
@@ -62,7 +62,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',6)
                         ->count();
 
@@ -74,7 +73,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',3)
                         ->count();
 
@@ -88,7 +86,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',1)
                         ->count();
 
@@ -100,7 +97,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',6)
                         ->count();
 
@@ -112,7 +108,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',3)
                         ->count();
 
@@ -124,9 +119,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',1)
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     $svRefAmount = DB::table('cl_sv_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_sv_accounting.pass_id')
@@ -136,9 +130,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',6)
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     $svRelAmount = DB::table('cl_sv_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_sv_accounting.pass_id')
@@ -148,9 +141,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',3)
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     /* FOR TP ISSUANCE RELOAD AND REFUND */
 
@@ -162,7 +154,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',1)
                         ->sum('cl_tp_accounting.total_price');
 
@@ -174,7 +165,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',6)
                         ->sum('cl_tp_accounting.total_price');
 
@@ -186,7 +176,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',3)
                         ->sum('cl_tp_accounting.total_price');
 
@@ -198,9 +187,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->whereIn('cl_sv_accounting.op_type_id', [54, 61, 62, 63, 64, 65])
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     $tpGra = DB::table('cl_tp_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_tp_accounting.pass_id')
@@ -210,9 +198,7 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->whereIn('cl_tp_accounting.op_type_id', [54, 61, 62, 63, 64, 65])
-
                         ->sum('total_price');
 
                     $svRepAmount = DB::table('cl_sv_accounting')
@@ -223,9 +209,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->whereIn('cl_sv_accounting.op_type_id', [11, 12, 13])
-                        ->sum('cl_sv_accounting.pos_chip_bal');
+                        ->sum('cl_sv_accounting.total_price');
 
                     $tpRepAmount = DB::table('cl_tp_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_tp_accounting.pass_id')
@@ -234,7 +219,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.stn_id','=',$station->stn_id)
                         ->whereIn('cl_tp_accounting.op_type_id', [11, 12, 13])
                         ->sum('cl_tp_accounting.total_price');
@@ -247,9 +231,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',2)
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     $tpIssueCancellation = DB::table('cl_tp_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_tp_accounting.pass_id')
@@ -259,7 +242,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',2)
                         ->sum('cl_tp_accounting.total_price');
 
@@ -271,9 +253,8 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_sv_accounting.op_type_id','=',4)
-                        ->sum('pos_chip_bal');
+                        ->sum('total_price');
 
                     $tpRelCancel = DB::table('cl_tp_accounting')
                         ->join('pass_inventory','pass_inventory.pass_id','=','cl_tp_accounting.pass_id')
@@ -283,7 +264,6 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereNot('pass_inventory.pass_id','=',53)
                         ->where('cl_tp_accounting.op_type_id','=',4)
                         ->sum('cl_tp_accounting.total_price');
 
@@ -311,6 +291,7 @@ class RevenueReport extends Controller
                     $data['success'] = false;
                     $clRevenue[]     = $e;
                 }
+
             }
 
             return response([

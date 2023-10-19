@@ -38,15 +38,14 @@ class DailyRidershipReport extends Controller
                 ->get();
 
             $Passes = DB::table('pass_inventory')
-                ->whereNot('pass_id', '=',53)
-                ->where('status','=', true)
-                ->where('is_test', '=',false)
-                ->where('media_type_id', '=', 2)
+                ->where('pass_id', '!=', 53)
+                ->where('status', true)
+                ->where('is_test', false)
+                ->where('media_type_id', 2)
                 ->select(['pass_name', 'pass_id'])
                 ->get();
 
             foreach ($stations as $station) {
-
                 $data = [
                     'stn_name' => $station->stn_short_name,
                     'stn_code' => $station->stn_id,
@@ -55,26 +54,25 @@ class DailyRidershipReport extends Controller
                 foreach ($Passes as $pass) {
 
                     $svValidation = DB::table('cl_sv_validation')
-                        ->where('pass_id', '=',$pass->pass_id)
+                        ->where('pass_id', '=', $pass->pass_id)
+                        ->where('cl_sv_validation.is_test', '=', false)
                         ->whereBetween(DB::raw('(cl_sv_validation.txn_date)'), [$from, $to])
-                        ->where('stn_id', '=',$station->stn_id)
-                        ->whereNot('pass_id', '=',53)
-                        ->where('val_type_id', '=',1)
+                        ->where('stn_id', '=', $station->stn_id)
+                        ->where('val_type_id', '=', 1)
                         ->count();
 
                     $tpValidation = DB::table('cl_tp_validation')
-                        ->where('pass_id', '=',$pass->pass_id)
+                        ->where('pass_id', '=', $pass->pass_id)
+                        ->where('cl_tp_validation.is_test', '=', false)
                         ->whereBetween(DB::raw('(cl_tp_validation.txn_date)'), [$from, $to])
-                        ->where('stn_id','=', $station->stn_id)
-                        ->whereNot('pass_id','=',53)
-                        ->where('val_type_id','=',1)
+                        ->where('stn_id', '=', $station->stn_id)
+                        ->where('val_type_id', '=', 1)
                         ->count();
 
                     $data[$pass->pass_name] = $svValidation + $tpValidation;
-                    $clDailyRidership[] = $data;
                 }
 
-
+                $clDailyRidership[] = $data;
             }
 
             return response([
