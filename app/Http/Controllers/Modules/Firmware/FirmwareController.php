@@ -16,97 +16,35 @@ class FirmwareController extends Controller
     }
 
     /* UPLOADING FIRMWARE */
+    /* UPLOADING FIRMWARE */
     public function uploadFile(Request $request)
     {
         $request->validate([
             'firmware_id' => 'required|integer',
+            'description' => 'required',
+            'file' => 'required|file|max:100000',
         ]);
 
-        /* IF FIRMWARE IS SELECTED FOR AG */
-        if ($request->input('firmware_id') == 1) {
-            $request->validate([
-                'firmware_id'   => 'required|integer',
-                'description'   => 'required',
-                'file'          => 'required|file|max:100000',
+        $eqTypeId = $request->input('firmware_id');
+
+        foreach ($request->file() as $files) {
+
+            $fileName = $files->getClientOriginalName();
+            $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
+            $string = $withoutExt;
+            $parts = explode('_', $string);
+            $fileVersion = $parts[1];
+            $folderName = $this->getFolderName($eqTypeId);
+            $subFolderName = $this->getFolderName($eqTypeId) . "_" . $fileVersion;
+            $files->storeAs('uploads//'.$folderName.'//' . $subFolderName, $fileName, 'public');
+            $filePath = "uploads//$folderName//$subFolderName//$fileName";
+
+            DB::table('firmware_upload')->insert([
+            'eq_type_id' => $eqTypeId,
+                'description' => $request->input('description'),
+                'firmware_version' => $fileVersion,
+                'firmware_path' => 'app//public//' . $filePath,
             ]);
-
-            foreach ($request->file() as $files) {
-
-                $fileName = $files->getClientOriginalName();
-                $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
-                $string = $withoutExt;
-                $parts = explode('_', $string);
-                $fileVersion = $parts[1];
-
-                $files->storeAs('uploads//AG//' . 'AG_' . $fileVersion, $fileName, 'public');
-                $filePath = "uploads//AG//AG_$fileVersion//$fileName";
-
-                DB::table('firmware_upload')->insert([
-                    'firmware_id' => 1,
-                    'description' => $request->input('description'),
-                    'firmware_version' => $fileVersion,
-                    'firmware_path' => 'app//public//' . $filePath,
-                ]);
-
-            }
-
-        }
-
-        /* IF FIRMWARE IS SELECTED FOR TOM */
-        if ($request->input('firmware_id') == 2) {
-            $request->validate([
-                'firmware_id' => 'required|integer',
-                'description' => 'required',
-                'file' => 'required',
-            ]);
-
-            foreach ($request->file() as $files) {
-
-                $fileName = $files->getClientOriginalName();
-                $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
-                $string = $withoutExt;
-                $parts = explode('_', $string);
-                $fileVersion = $parts[1];
-                $files->storeAs('uploads//TOM//' . 'TOM_' . $fileVersion, $fileName, 'public');
-                $filePath = "uploads//TOM//TOM_$fileVersion//$fileName";
-
-                DB::table('firmware_upload')->insert([
-                    'firmware_id' => 2,
-                    'description' => $request->input('description'),
-                    'firmware_version' => $fileVersion,
-                    'firmware_path' => 'app//public//' . $filePath,
-                ]);
-            }
-
-        }
-
-        /* IF FIRMWARE IS SELECTED FOR EDC */
-        if ($request->input('firmware_id') == 6) {
-
-            $request->validate([
-                'firmware_id' => 'required|integer',
-                'description' => 'required',
-                'file' => 'required',
-            ]);
-
-            foreach ($request->file() as $files) {
-
-                $fileName = $files->getClientOriginalName();
-                $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
-                $string = $withoutExt;
-                $parts = explode('_', $string);
-                $fileVersion = $parts[1];
-                $files->storeAs('uploads//EDC//' . 'EDC_' . $fileVersion, $fileName, 'public');
-                $filePath = "uploads//EDC//EDC_$fileVersion//$fileName";
-
-                DB::table('firmware_upload')->insert([
-                    'firmware_id' => 6,
-                    'description' => $request->input('description'),
-                    'firmware_version' => $fileVersion,
-                    'firmware_path' => 'app//public//' . $filePath,
-                ]);
-            }
-
 
         }
 
@@ -115,7 +53,17 @@ class FirmwareController extends Controller
             ->with([
                 'message' => 'FIRMWARE UPLOADED SUCCESSFULLY.'
             ]);
+    }
 
+    private function getFolderName($eqTypeId)
+    {
+        $folderNames = [
+            1 => 'AG',
+            2 => 'TOM',
+            6 => 'EDC',
+        ];
+
+        return $folderNames[$eqTypeId] ?? 'UNKNOWN';
     }
 
 }

@@ -109,104 +109,104 @@
 </template>
 
 <script>
-    import Layout from "../Base/Layout";
-    import {Link, useForm} from "@inertiajs/inertia-vue3";
+import Layout from "../Base/Layout";
+import {Link, useForm} from "@inertiajs/inertia-vue3";
 
-    export default {
-        layout: Layout,
-        components: {
-            Link
+export default {
+    layout: Layout,
+    components: {
+        Link
+    },
+    props: {
+        errors: Object,
+    },
+
+    data() {
+        return {
+            form: useForm({
+                firmware_id: null,
+                firmware_version: null,
+                description: null,
+                file: null,
+            })
+        }
+    },
+
+    methods: {
+
+        /*FUNCTION FOR FILE UPLOAD OF FIRMWARE*/
+        onFileChange: function (e) {
+            this.form.file = e.target.files[0]
         },
-        props: {
-            errors: Object,
+
+        storeProducts() {
+            this.$inertia.post('/saveFile', this.form)
         },
 
-        data() {
-            return {
-                form: useForm({
-                    firmware_id: null,
-                    firmware_version: null,
-                    description: null,
-                    file: null,
-                })
-            }
-        },
-
-        methods: {
-
-            /*FUNCTION FOR FILE UPLOAD OF FIRMWARE*/
-           onFileChange: function (e) {
-                this.form.file = e.target.files[0]
-            },
-
-            storeProducts() {
-                this.$inertia.post('/saveFile', this.form)
-            },
-
-        },
-    }
+    },
+}
 </script>
 
 <style scoped>
 
-    .files input {
-        outline: 2px dashed #0036ff;
-        outline-offset: -10px;
-        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        padding: 120px 0px 85px 35%;
-        text-align: center !important;
-        margin: 0;
-        width: 100% !important;
-    }
+.files input {
+    outline: 2px dashed #0036ff;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 120px 0px 85px 35%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+}
 
-    .files input:focus {
-        outline: 2px dashed #0036ff;
-        outline-offset: -10px;
-        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        border: 1px solid #0036ff;
-    }
+.files input:focus {
+    outline: 2px dashed #0036ff;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    border: 1px solid #0036ff;
+}
 
-    .files {
-        position: relative
-    }
+.files {
+    position: relative
+}
 
-    .files:after {
-        pointer-events: none;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 50px;
-        right: 0;
-        height: 56px;
-        content: "";
-        background-image: url(https://www.flaticon.com/free-icon/file_1091223?term=upload&page=1&position=12&origin=search&related_id=1091223);
-        display: block;
-        margin: 0 auto;
-        background-size: 100%;
-        background-repeat: no-repeat;
-    }
+.files:after {
+    pointer-events: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 50px;
+    right: 0;
+    height: 56px;
+    content: "";
+    background-image: url(https://www.flaticon.com/free-icon/file_1091223?term=upload&page=1&position=12&origin=search&related_id=1091223);
+    display: block;
+    margin: 0 auto;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
 
-    .color input {
-        background-color: #0036ff;
-    }
+.color input {
+    background-color: #0036ff;
+}
 
-    .files:before {
-        position: absolute;
-        bottom: 10px;
-        left: 0;
-        pointer-events: none;
-        width: 100%;
-        right: 0;
-        height: 57px;
-        content: " or drag it here. ";
-        display: block;
-        margin: 0 auto;
-        color: #0036ff;
-        font-weight: 600;
-        text-transform: capitalize;
-        text-align: center;
-    }
+.files:before {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    right: 0;
+    height: 57px;
+    content: " or drag it here. ";
+    display: block;
+    margin: 0 auto;
+    color: #0036ff;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
 
 </style>

@@ -314,11 +314,11 @@
                                     <td>1</td>
                                     <td>AG FIRMWARE</td>
                                     <td><select id="ag_version" class="form-control"  v-model="form.AG.AGVersion">
-                                            <option value="null">Select Version of AG Jar</option>
-                                            <option v-for="AGVersion in AGVersions" :value="AGVersion.firmware_version">
-                                                {{AGVersion.firmware_version}}
-                                            </option>
-                                        </select>
+                                        <option value="null">Select Version of AG Jar</option>
+                                        <option v-for="AGVersion in AGVersions" :value="AGVersion.firmware_version">
+                                            {{AGVersion.firmware_version}}
+                                        </option>
+                                    </select>
                                         <div class="text-danger" v-if="errors.AGVersion">{{ errors.AGVersion }}</div>
 
                                     </td>
@@ -404,252 +404,252 @@
 </template>
 
 <script>
-    import Layout from "../Base/Layout";
-    import {Link, useForm} from "@inertiajs/inertia-vue3";
-    export default {
-        name: "FirmwarePublish",
-        layout: Layout,
-        components: {
-            Link
-        },
+import Layout from "../Base/Layout";
+import {Link, useForm} from "@inertiajs/inertia-vue3";
+export default {
+    name: "FirmwarePublish",
+    layout: Layout,
+    components: {
+        Link
+    },
 
-        props:{
-            AGEquipments: Array,
-            TOMEquipments: Array,
-            EDCEquipments: Array,
-            SCSEquipments: Array,
-            AGVersions: Array,
-            TOMVersions: Array,
-            EDCVersions: Array,
-            SCSVersions: Array,
-            errors: Object,
-        },
+    props:{
+        AGEquipments: Array,
+        TOMEquipments: Array,
+        EDCEquipments: Array,
+        SCSEquipments: Array,
+        AGVersions: Array,
+        TOMVersions: Array,
+        EDCVersions: Array,
+        SCSVersions: Array,
+        errors: Object,
+    },
 
-        data(){
-            return {
+    data(){
+        return {
 
-                form: useForm({
-                    AG_selected: [],
-                    AG_select_all: false,
-                    TOM_selected: [],
-                    TOM_select_all: false,
-                    EDC_selected: [],
-                    EDC_select_all: false,
-                    SCS_selected: [],
-                    SCS_select_all: false,
+            form: useForm({
+                AG_selected: [],
+                AG_select_all: false,
+                TOM_selected: [],
+                TOM_select_all: false,
+                EDC_selected: [],
+                EDC_select_all: false,
+                SCS_selected: [],
+                SCS_select_all: false,
 
-                    AG: {
-                        firmware_id: 1,
-                        AGVersion:null,
-                        AG_description:'',
-                        isSelected: false,
-                        AGValue: null
-                    },
+                AG: {
+                    firmware_id: 1,
+                    AGVersion:null,
+                    AG_description:'',
+                    isSelected: false,
+                    AGValue: null
+                },
 
-                    TOM: {
-                        firmware_id: 1,
-                        TOMVersion:null,
-                        TOM_description:'',
-                        isSelected: false,
-                        TOMValue: null
-                    },
+                TOM: {
+                    firmware_id: 1,
+                    TOMVersion:null,
+                    TOM_description:'',
+                    isSelected: false,
+                    TOMValue: null
+                },
 
-                    EDC: {
-                        firmware_id: 1,
-                        EDCVersion:null,
-                        EDC_description:'',
-                        isSelected: false,
-                        EDCValue: null
-                    },
+                EDC: {
+                    firmware_id: 1,
+                    EDCVersion:null,
+                    EDC_description:'',
+                    isSelected: false,
+                    EDCValue: null
+                },
 
-                    SCS: {
-                        firmware_id: 1,
-                        SCSVersion:null,
-                        SCS_description:'',
-                        isSelected: false,
-                        SCSValue: null
-                    },
-                }),
-                value: null,
+                SCS: {
+                    firmware_id: 1,
+                    SCSVersion:null,
+                    SCS_description:'',
+                    isSelected: false,
+                    SCSValue: null
+                },
+            }),
+            value: null,
+        }
+    },
+
+
+    methods:{
+
+        AGSelect: function () {
+            this.form.AG_selected = [];
+            if (!this.form.AG_select_all) {
+                for (let i in this.AGEquipments) {
+                    this.form.AG_selected.push(this.AGEquipments[i].eq_id);
+                }
             }
         },
 
-
-        methods:{
-
-            AGSelect: function () {
-                this.form.AG_selected = [];
-                if (!this.form.AG_select_all) {
-                    for (let i in this.AGEquipments) {
-                        this.form.AG_selected.push(this.AGEquipments[i].eq_id);
-                    }
+        TOMSelect: function () {
+            this.form.TOM_selected = [];
+            if (!this.form.TOM_select_all) {
+                for (let i in this.TOMEquipments) {
+                    this.form.TOM_selected.push(this.TOMEquipments[i].eq_id);
                 }
-            },
-
-            TOMSelect: function () {
-                this.form.TOM_selected = [];
-                if (!this.form.TOM_select_all) {
-                    for (let i in this.TOMEquipments) {
-                        this.form.TOM_selected.push(this.TOMEquipments[i].eq_id);
-                    }
-                }
-            },
-
-            EDCSelect: function () {
-                this.form.EDC_selected = [];
-                if (!this.form.EDC_select_all) {
-                    for (let i in this.EDCEquipments) {
-                        this.form.EDC_selected.push(this.EDCEquipments[i].eq_id);
-                    }
-                }
-            },
-
-            SCSSelect: function () {
-                this.form.SCS_selected = [];
-                if (!this.form.SCS_select_all) {
-                    for (let i in this.SCSEquipments) {
-                        this.form.SCS_selected.push(this.SCSEquipments[i].eq_id);
-                    }
-                }
-            },
-
-            publishFirmware: function () {
-                this.form.post('/firmwarePublish')
-            },
+            }
         },
 
-        mounted() {
-
-            $("#example").DataTable({
-                "bSort": false,
-
-                initComplete: function () {
-                    this.api().columns([3]).every(function (d) {
-                        var column = this;
-                        var theadname = $("#example th").eq([d]).text(); // used this specify table name and head
-                        var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
-                            .appendTo($(column.header()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column._isSelectMultipleElement = true
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append("<option value=\"" + d + "\">" + d + "</option>")
-                        });
-                    });
+        EDCSelect: function () {
+            this.form.EDC_selected = [];
+            if (!this.form.EDC_select_all) {
+                for (let i in this.EDCEquipments) {
+                    this.form.EDC_selected.push(this.EDCEquipments[i].eq_id);
                 }
-            });
+            }
+        },
 
-            $("#TOMTable").DataTable({
-                "bSort": false,
-
-                initComplete: function () {
-                    this.api().columns([3]).every(function (d) {
-                        var column = this;
-                        var theadname = $("#TOMTable th").eq([d]).text(); // used this specify table name and head
-                        var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
-                            .appendTo($(column.header()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column._isSelectMultipleElement = true
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append("<option value=\"" + d + "\">" + d + "</option>")
-                        });
-                    });
+        SCSSelect: function () {
+            this.form.SCS_selected = [];
+            if (!this.form.SCS_select_all) {
+                for (let i in this.SCSEquipments) {
+                    this.form.SCS_selected.push(this.SCSEquipments[i].eq_id);
                 }
-            });
+            }
+        },
 
-            $("#EDCTable").DataTable({
-                "bSort": false,
+        publishFirmware: function () {
+            this.form.post('/firmwarePublish')
+        },
+    },
 
-                initComplete: function () {
-                    this.api().columns([3]).every(function (d) {
-                        var column = this;
-                        var theadname = $("#EDCTable th").eq([d]).text(); // used this specify table name and head
-                        var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
-                            .appendTo($(column.header()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column._isSelectMultipleElement = true
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append("<option value=\"" + d + "\">" + d + "</option>")
+    mounted() {
+
+        $("#example").DataTable({
+            "bSort": false,
+
+            initComplete: function () {
+                this.api().columns([3]).every(function (d) {
+                    var column = this;
+                    var theadname = $("#example th").eq([d]).text(); // used this specify table name and head
+                    var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
+                        .appendTo($(column.header()).empty())
+                        .on("change", function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column._isSelectMultipleElement = true
+                            column
+                                .search(val ? "^" + val + "$" : "", true, false)
+                                .draw();
                         });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append("<option value=\"" + d + "\">" + d + "</option>")
                     });
-                }
-            });
+                });
+            }
+        });
 
-            $("#SCSTABLE").DataTable({
-                "bSort": false,
+        $("#TOMTable").DataTable({
+            "bSort": false,
 
-                initComplete: function () {
-                    this.api().columns([3]).every(function (d) {
-                        var column = this;
-                        var theadname = $("#SCSTABLE th").eq([d]).text(); // used this specify table name and head
-                        var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
-                            .appendTo($(column.header()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column._isSelectMultipleElement = true
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append("<option value=\"" + d + "\">" + d + "</option>")
+            initComplete: function () {
+                this.api().columns([3]).every(function (d) {
+                    var column = this;
+                    var theadname = $("#TOMTable th").eq([d]).text(); // used this specify table name and head
+                    var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
+                        .appendTo($(column.header()).empty())
+                        .on("change", function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column._isSelectMultipleElement = true
+                            column
+                                .search(val ? "^" + val + "$" : "", true, false)
+                                .draw();
                         });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append("<option value=\"" + d + "\">" + d + "</option>")
                     });
-                }
-            });
+                });
+            }
+        });
 
-            $("#generate").DataTable({
-                responsive  : true,
-                "paging"    : true,
-                "ordering"    : false,
-                columnDefs: [
-                    {
-                        targets: 0,
-                        "className": "text-center",
-                    },
-                    {
-                        targets: 1,
-                        "className": "text-start",
-                    },
-                    {
-                        targets: 2,
-                        "className": "text-center",
-                    },
-                    {
-                        targets: 3,
-                        "className": "text-center",
-                    },
+        $("#EDCTable").DataTable({
+            "bSort": false,
 
-                    {
-                        targets: 4,
-                        "className": "text-center",
-                    },
-                ]
-            });
-        }
+            initComplete: function () {
+                this.api().columns([3]).every(function (d) {
+                    var column = this;
+                    var theadname = $("#EDCTable th").eq([d]).text(); // used this specify table name and head
+                    var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
+                        .appendTo($(column.header()).empty())
+                        .on("change", function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column._isSelectMultipleElement = true
+                            column
+                                .search(val ? "^" + val + "$" : "", true, false)
+                                .draw();
+                        });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append("<option value=\"" + d + "\">" + d + "</option>")
+                    });
+                });
+            }
+        });
+
+        $("#SCSTABLE").DataTable({
+            "bSort": false,
+
+            initComplete: function () {
+                this.api().columns([3]).every(function (d) {
+                    var column = this;
+                    var theadname = $("#SCSTABLE th").eq([d]).text(); // used this specify table name and head
+                    var select = $('<select class="form-control form-select"><option value="">' + theadname + "</option></select>")
+                        .appendTo($(column.header()).empty())
+                        .on("change", function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column._isSelectMultipleElement = true
+                            column
+                                .search(val ? "^" + val + "$" : "", true, false)
+                                .draw();
+                        });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append("<option value=\"" + d + "\">" + d + "</option>")
+                    });
+                });
+            }
+        });
+
+        $("#generate").DataTable({
+            responsive  : true,
+            "paging"    : true,
+            "ordering"    : false,
+            columnDefs: [
+                {
+                    targets: 0,
+                    "className": "text-center",
+                },
+                {
+                    targets: 1,
+                    "className": "text-start",
+                },
+                {
+                    targets: 2,
+                    "className": "text-center",
+                },
+                {
+                    targets: 3,
+                    "className": "text-center",
+                },
+
+                {
+                    targets: 4,
+                    "className": "text-center",
+                },
+            ]
+        });
     }
+}
 </script>
 
 <style scoped>
