@@ -256,9 +256,9 @@
                                     <td>6</td>
                                     <td>Card Blacklist Config</td>
                                     <td>
-                                        <select disabled id="card_blacklist_config_version" class="form-control" name="config_version" v-model="form.CardBlacklist.version">
+                                        <select  id="card_blacklist_config_version" class="form-control" name="config_version" v-model="form.CardBlacklist.version">
                                             <option value="-1">Select Version</option>
-                                            <!--<option v-for="CardConfig in cardConfig" :value="cardConfig.config_version">{{cardConfig.config_version }}</option>-->
+                                            <option v-for="CardBl in CardBlConfig" :value="CardBl.config_version">{{CardBl.config_version }}</option>
                                         </select>
                                     </td>
                                     <td>

@@ -80,10 +80,9 @@ class ConfigController extends Controller
 
         }
 
-        /*else if ($config_id == 7)*/ /* TICKET BLACKLISTS */ /*{
-            $configurations = DB::table('ticket_blacklist')->select('ticket_id')->get()->toJson();
-            DB::table('ticket_blacklist')->update(['is_generated' => true]);
-        }*/
+        else if ($config_id == 7) /* CARD BLACKLISTS */ {
+            $configurations = DB::table('cl_blacklist')->select('chip_id')->get()->toJson();
+        }
 
         else if ($config_id == 8) /* TICKET BLACKLISTS */ {
             $configurations = DB::table('acq_param')->get()->toJson();
@@ -277,7 +276,7 @@ class ConfigController extends Controller
                 DB::table('config_publish')->insert([
                     'equipment_id'    => $eq_id,
                     'config_id'       => $data->CardBlacklist->config_id,
-                    'config_version'  => 1,
+                    'config_version'  => $data->CardBlacklist->version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
                     'activation_time' => $data->CardBlacklist->activation_time
@@ -286,7 +285,7 @@ class ConfigController extends Controller
             }
         }
 
-        /* CARD BLACKLIST */
+        /* ACQUIRER BLACKLIST */
         if ($data->Acquirer->isSelected == true) {
 
             foreach ($data->selected as $key => $eq_id) {

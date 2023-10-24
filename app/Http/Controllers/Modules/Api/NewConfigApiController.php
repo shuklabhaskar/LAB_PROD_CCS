@@ -105,6 +105,8 @@ class NewConfigApiController extends Controller
         $config_version = $request->input('config_version');
         $fare_version = $request->input('fare_version');
         $pass_version = $request->input('pass_version');
+        $cl_black_list_version = $request->input('cl_blacklist_version');
+
 
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
@@ -183,6 +185,27 @@ class NewConfigApiController extends Controller
                         $configResponse['version']['pass_version'] = $pass_version;
                     }
                 }
+
+                /* FOR CARD BLACKLIST CONFIGURATION */
+                if ($config->config_id == 7) {
+
+                    if ($config->config_version != $cl_black_list_version) {
+
+                        $Cl_blacklist = DB::table('config_gen')
+                            ->where('config_id','=',7)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($Cl_blacklist, true);
+
+                        $NewData = collect($data)->sortBy('chip_id')->values()->all();
+
+                        $configResponse['cl_blacklist'] = $NewData;
+
+                    }
+                    $configResponse['version']['cl_blacklist_version'] = $config->config_version;
+                }
+
             }
 
             DB::table('config_publish')
@@ -211,11 +234,11 @@ class NewConfigApiController extends Controller
     /* FOR TOM CONFIGURATION */
     private function getTOMConfig(Request $request)
     {
-
         $ip = $request->input('ip');
         $config_version = $request->input('config_version');
         $fare_version = $request->input('fare_version');
         $pass_version = $request->input('pass_version');
+        $cl_black_list_version = $request->input('cl_blacklist_version');
 
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
@@ -390,9 +413,22 @@ class NewConfigApiController extends Controller
 
                 /* FOR CARD BLACKLIST CONFIGURATION */
                 if ($config->config_id == 7) {
-                    $configResponse['card_blacklist'] = DB::table('cl_blacklist')
-                        ->orderBy('cl_blk_id','ASC')
-                        ->get();
+
+                    if ($config->config_version != $cl_black_list_version) {
+
+                        $Cl_blacklist = DB::table('config_gen')
+                            ->where('config_id','=',7)
+                            ->where('config_version','=',$config->config_version)
+                            ->value('config_data');
+
+                        $data = json_decode($Cl_blacklist, true);
+
+                        $NewData = collect($data)->sortBy('chip_id')->values()->all();
+
+                        $configResponse['cl_blacklist'] = $NewData;
+
+                    }
+                    $configResponse['version']['cl_blacklist_version'] = $config->config_version;
                 }
 
                 /* FOR ACQUIRER CONFIGURATION */
@@ -477,21 +513,21 @@ class NewConfigApiController extends Controller
         }
 
         return response([
-            'status' => true,
-            'code' => 100,
-            'config' => DB::table('tid_inv')
-                ->join('acq_param', 'acq_param.eq_type_id', '=', 'tid_inv.eq_type_id')
-                ->where('tid_inv.emv_serial_no', '=', $serial_no)
-                ->where('tid_inv.eq_type_id','=',$eq_type_id)
-                ->select([
-                    'tid_inv.emv_tid',
-                    'acq_param.acq_mid',
-                    'acq_param.client_id',
-                    'acq_param.acq_id',
-                    'acq_param.acq_name',
-                    'acq_param.operator_id',
-                ])
-                ->first()
+            'status'    => true,
+            'code'      => 100,
+            'config'    => DB::table('tid_inv')
+                            ->join('acq_param', 'acq_param.eq_type_id', '=', 'tid_inv.eq_type_id')
+                            ->where('tid_inv.emv_serial_no', '=', $serial_no)
+                            ->where('tid_inv.eq_type_id','=',$eq_type_id)
+                            ->select([
+                                'tid_inv.emv_tid',
+                                'acq_param.acq_mid',
+                                'acq_param.client_id',
+                                'acq_param.acq_id',
+                                'acq_param.acq_name',
+                                'acq_param.operator_id',
+                            ])
+                            ->first()
         ]);
 
     }
@@ -540,6 +576,7 @@ class NewConfigApiController extends Controller
         ]);
 
     }
+
 
 }
 
