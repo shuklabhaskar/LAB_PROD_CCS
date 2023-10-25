@@ -81,7 +81,7 @@ class ConfigController extends Controller
         }
 
         else if ($config_id == 7) /* CARD BLACKLISTS */ {
-            $configurations = DB::table('cl_blacklist')->select('chip_id')->get()->toJson();
+            $configurations = 1;
         }
 
         else if ($config_id == 8) /* TICKET BLACKLISTS */ {
@@ -96,6 +96,7 @@ class ConfigController extends Controller
             ->where('config_id', '=', $config_id)
             ->orderBy('config_version', 'desc')
             ->first('config_version');
+
 
         DB::table('config_gen')
             ->insert([
