@@ -47,27 +47,31 @@ class ClIndraCardReplacement extends Controller
 
             if ($transaction['productId'] == 3) {
 
-                $checkTrue = DB::table('cl_indra_rep')->insert([
-                    'atek_id'           => $transaction['atekId'],
-                    'txn_date'          => $transaction['txnDate'],
-                    'engraved_id'       => $transaction['engravedId'],
-                    'chip_id'           => $transaction['chipId'],
-                    'stn_id'            => $transaction['stnId'],
-                    'sv_balance'        => $transaction['passBal'],
-                    'card_sec'          => $transaction['cardSec'],
-                    'card_fee'          => $transaction['cardFee'],
-                    'pass_id'           => $transaction['passId'],
-                    'product_id'        => $transaction['productId'],
-                    'pass_expiry'       => $transaction['passExpiry'],
-                    'src_stn_id'        => $transaction['srcStnId'],
-                    'des_stn_id'        => $transaction['desStnId'],
-                    'tid'               => $transaction['tid'],
-                    'eq_id'             => $transaction['eqId'],
-                    'eq_type_id'        => $transaction['eqTypeId'],
-                    'pax_first_name'    => $paxFirstName,
-                    'pax_last_name'     => $paxLastName,
-                    'pax_mobile'        => $paxMobile,
-                ]);
+                try {
+                    $checkTrue = DB::table('cl_indra_rep')->insert([
+                        'atek_id'           => $transaction['atekId'],
+                        'txn_date'          => $transaction['txnDate'],
+                        'engraved_id'       => $transaction['engravedId'],
+                        'chip_id'           => $transaction['chipId'],
+                        'stn_id'            => $transaction['stnId'],
+                        'sv_balance'        => $transaction['passBal'],
+                        'card_sec'          => $transaction['cardSec'],
+                        'card_fee'          => $transaction['cardFee'],
+                        'pass_id'           => $transaction['passId'],
+                        'product_id'        => $transaction['productId'],
+                        'pass_expiry'       => $transaction['passExpiry'],
+                        'src_stn_id'        => $transaction['srcStnId'],
+                        'des_stn_id'        => $transaction['desStnId'],
+                        'tid'               => $transaction['tid'],
+                        'eq_id'             => $transaction['eqId'],
+                        'eq_type_id'        => $transaction['eqTypeId'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                    ]);
+                } catch (\PDOException $e) {
+                    //
+                }
 
                 if ($checkTrue) {
                     DB::table('cl_status')->insert([
@@ -77,7 +81,7 @@ class ClIndraCardReplacement extends Controller
                         'pass_id'            => $transaction['passId'],
                         'product_id'         => $transaction['productId'], //
                         'card_fee'           => $transaction['cardFee'],
-                        'card_sec'           => $transaction['card_sec'],
+                        'card_sec'           => $transaction['cardSec'],
                         'sv_balance'         => $transaction['passBal'],
                         'pass_expiry'        => $transaction['passExpiry'],
                         'src_stn_id'         => $transaction['srcStnId'],
@@ -99,27 +103,33 @@ class ClIndraCardReplacement extends Controller
 
             if ($transaction['productId'] == 4) {
 
-                $checkTrue = DB::table('cl_indra_rep')->insert([
-                    'atek_id'         => $transaction['atekId'],
-                    'txn_date'        => $transaction['txnDate'],
-                    'engraved_id'     => $transaction['engravedId'],
-                    'chip_id'         => $transaction['chipId'],
-                    'stn_id'          => $transaction['stnId'],
-                    'tp_balance'      => $transaction['passBal'],
-                    'card_sec'        => $transaction['cardSec'],
-                    'card_fee'        => $transaction['cardFee'],
-                    'pass_id'         => $transaction['passId'],
-                    'product_id'      => $transaction['productId'],
-                    'pass_expiry'     => $transaction['passExpiry'],
-                    'src_stn_id'      => $transaction['srcStnId'],
-                    'des_stn_id'      => $transaction['desStnId'],
-                    'tid'             => $transaction['tid'],
-                    'eq_id'           => $transaction['eqId'],
-                    'eq_type_id'      => $transaction['eqTypeId'],
-                    'pax_first_name'  => $paxFirstName,
-                    'pax_last_name'   => $paxLastName,
-                    'pax_mobile'      => $paxMobile,
-                ]);
+                try {
+
+                    $checkTrue = DB::table('cl_indra_rep')->insert([
+                        'atek_id'         => $transaction['atekId'],
+                        'txn_date'        => $transaction['txnDate'],
+                        'engraved_id'     => $transaction['engravedId'],
+                        'chip_id'         => $transaction['chipId'],
+                        'stn_id'          => $transaction['stnId'],
+                        'tp_balance'      => $transaction['passBal'],
+                        'card_sec'        => $transaction['cardSec'],
+                        'card_fee'        => $transaction['cardFee'],
+                        'pass_id'         => $transaction['passId'],
+                        'product_id'      => $transaction['productId'],
+                        'pass_expiry'     => $transaction['passExpiry'],
+                        'src_stn_id'      => $transaction['srcStnId'],
+                        'des_stn_id'      => $transaction['desStnId'],
+                        'tid'             => $transaction['tid'],
+                        'eq_id'           => $transaction['eqId'],
+                        'eq_type_id'      => $transaction['eqTypeId'],
+                        'pax_first_name'  => $paxFirstName,
+                        'pax_last_name'   => $paxLastName,
+                        'pax_mobile'      => $paxMobile,
+                    ]);
+
+                }catch (\PDOException $e){
+
+                }
 
                 if ($checkTrue) {
                     DB::table('cl_status')->insert([
@@ -129,7 +139,7 @@ class ClIndraCardReplacement extends Controller
                         'pass_id'            => $transaction['passId'],
                         'product_id'         => $transaction['productId'],
                         'card_fee'           => $transaction['cardFee'],
-                        'card_sec'           => $transaction['card_sec'],
+                        'card_sec'           => $transaction['cardSec'],
                         'tp_balance'         => $transaction['passBal'],
                         'pass_expiry'        => $transaction['passExpiry'],
                         'src_stn_id'         => $transaction['srcStnId'],
@@ -152,6 +162,7 @@ class ClIndraCardReplacement extends Controller
             $transData['is_settled'] = true;
             $transData['atek_id'] = $transaction['atekId'];
             $response[] = $transData;
+
         }
 
         return response([
