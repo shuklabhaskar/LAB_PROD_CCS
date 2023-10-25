@@ -55,64 +55,70 @@ class ClIndraCardReplacement extends Controller
                 $desStnId = 0;
 
                 if ($transaction['productId'] == 3) { // SV
-                    $svBalance =  $transaction['passBal'];
+                    $svBalance = $transaction['passBal'];
                 } else {
-                    $tpBalance =  $transaction['passBal'];
-                    $srcStnId =  $transaction['srcStnId'];
-                    $desStnId =  $transaction['desStnId'];
+                    $tpBalance = $transaction['passBal'];
+                    $srcStnId = $transaction['srcStnId'];
+                    $desStnId = $transaction['desStnId'];
                 }
 
                 try {
                     DB::table('cl_indra_rep')->insert([
-                        'atek_id'         => $transaction['atekId'],
-                        'txn_date'        => $transaction['txnDate'],
-                        'engraved_id'     => $transaction['engravedId'],
-                        'chip_id'         => $transaction['chipId'],
-                        'stn_id'          => $transaction['stnId'],
-                        'tp_balance'      => $tpBalance,
-                        'sv_balance'      => $svBalance,
-                        'card_sec'        => $transaction['cardSec'],
-                        'card_fee'        => $transaction['cardFee'],
-                        'pass_id'         => $transaction['passId'],
-                        'product_id'      => $transaction['productId'],
-                        'pass_expiry'     => $transaction['passExpiry'],
-                        'src_stn_id'      => $srcStnId,
-                        'des_stn_id'      => $desStnId,
-                        'tid'             => $transaction['tid'],
-                        'eq_id'           => $transaction['eqId'],
-                        'eq_type_id'      => $transaction['eqTypeId'],
-                        'pax_first_name'  => $paxFirstName,
-                        'pax_last_name'   => $paxLastName,
-                        'pax_mobile'      => $paxMobile,
+                        'atek_id' => $transaction['atekId'],
+                        'txn_date' => $transaction['txnDate'],
+                        'engraved_id' => $transaction['engravedId'],
+                        'chip_id' => $transaction['chipId'],
+                        'stn_id' => $transaction['stnId'],
+                        'tp_balance' => $tpBalance,
+                        'sv_balance' => $svBalance,
+                        'card_sec' => $transaction['cardSec'],
+                        'card_fee' => $transaction['cardFee'],
+                        'pass_id' => $transaction['passId'],
+                        'product_id' => $transaction['productId'],
+                        'pass_expiry' => $transaction['passExpiry'],
+                        'src_stn_id' => $srcStnId,
+                        'des_stn_id' => $desStnId,
+                        'tid' => $transaction['tid'],
+                        'eq_id' => $transaction['eqId'],
+                        'eq_type_id' => $transaction['eqTypeId'],
+                        'pax_first_name' => $paxFirstName,
+                        'pax_last_name' => $paxLastName,
+                        'pax_mobile' => $paxMobile,
                     ]);
                 } catch (\PDOException $e) {
 
                 }
 
-                DB::table('cl_status')->insert([
-                    'engraved_id'        => $transaction['engravedId'],
-                    'chip_id'            => $transaction['chipId'],
-                    'txn_date'           => $transaction['txnDate'],
-                    'pass_id'            => $transaction['passId'],
-                    'product_id'         => $transaction['productId'],
-                    'card_fee'           => $transaction['cardFee'],
-                    'card_sec'           => $transaction['cardSec'],
-                    'sv_balance'         => $svBalance,
-                    'tp_balance'         => $tpBalance,
-                    'pass_expiry'        => $transaction['passExpiry'],
-                    'src_stn_id'         => $srcStnId,
-                    'des_stn_id'         => $desStnId,
-                    'auto_topup_status'  => $autoTopUpStatus,
-                    'auto_topup_amt'     => $autoTopUpAmount,
-                    'bonus_points'       => $bonusPoints,
-                    'is_test'            => false,
-                    'pax_first_name'     => $paxFirstName,
-                    'pax_last_name'      => $paxLastName,
-                    'pax_gen_type'       => $paxGender,
-                    'pax_mobile'         => $paxMobile,
-                    'created_at'         => now(),
-                    'updated_at'         => now(),
-                ]);
+                try {
+                    DB::table('cl_status')->insert([
+                        'engraved_id' => $transaction['engravedId'],
+                        'chip_id' => $transaction['chipId'],
+                        'txn_date' => $transaction['txnDate'],
+                        'pass_id' => $transaction['passId'],
+                        'product_id' => $transaction['productId'],
+                        'card_fee' => $transaction['cardFee'],
+                        'card_sec' => $transaction['cardSec'],
+                        'sv_balance' => $svBalance,
+                        'tp_balance' => $tpBalance,
+                        'pass_expiry' => $transaction['passExpiry'],
+                        'src_stn_id' => $srcStnId,
+                        'des_stn_id' => $desStnId,
+                        'auto_topup_status' => $autoTopUpStatus,
+                        'auto_topup_amt' => $autoTopUpAmount,
+                        'bonus_points' => $bonusPoints,
+                        'is_test' => false,
+                        'pax_first_name' => $paxFirstName,
+                        'pax_last_name' => $paxLastName,
+                        'pax_gen_type' => $paxGender,
+                        'pax_mobile' => $paxMobile,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } catch (\PDOException $e) {
+                    return \response([
+                        'error' => $e->getMessage()
+                    ]);
+                }
 
                 $transData['is_settled'] = true;
                 $transData['atek_id'] = $transaction['atekId'];
