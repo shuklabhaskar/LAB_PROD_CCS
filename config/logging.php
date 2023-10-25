@@ -51,23 +51,18 @@ return [
     */
 
     'channels' => [
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ccs.log'),
+            'level' => 'error',
+            'days' => 30,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],
             'ignore_exceptions' => false,
-        ],
-
-        'single' => [
-            'driver' => 'single',
-            'path' => storage_path('logs/tom.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-        ],
-
-        'daily' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/TOMCrashalatics.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
         ],
 
         'slack' => [
@@ -85,7 +80,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
         ],
 
