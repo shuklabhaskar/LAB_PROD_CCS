@@ -45,7 +45,7 @@ class ClIndraCardReplacement extends Controller
             if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount = $transaction['auto_topup_amt'];
             if (array_key_exists("bonus_points", $transaction)) $bonusPoints = $transaction['bonus_points'];
 
-            DB::beginTransaction();
+            //DB::beginTransaction();
 
             try {
 
@@ -129,10 +129,10 @@ class ClIndraCardReplacement extends Controller
                 $transData['atek_id'] = $transaction['atekId'];
                 $transData['error'] = $e->getMessage();
                 $response[] = $transData;
-                DB::rollBack();
+                //DB::rollBack();
             }
 
-            DB::commit();
+           // DB::commit();
 
         }
 
