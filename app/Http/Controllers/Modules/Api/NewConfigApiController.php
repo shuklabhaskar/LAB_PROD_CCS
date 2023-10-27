@@ -192,10 +192,7 @@ class NewConfigApiController extends Controller
 
                     if ($config->config_version != $cl_black_list_version) {
 
-                        $Cl_blacklist = DB::table('config_gen')
-                            ->where('config_id', '=', 7)
-                            ->where('config_version', '=', $config->config_version)
-                            ->value('config_data');
+                        $Cl_blacklist = DB::table('cl_blacklist')->select('chip_id')->distinct('chip_id')->get()->toJson();
 
                         $data = json_decode($Cl_blacklist, true);
 
@@ -588,7 +585,7 @@ class NewConfigApiController extends Controller
 
                     $ConfigData['config'] = $tidData;
 
-                    $Cl_blacklist = DB::table('cl_blacklist')->select('chip_id')->get()->toJson();
+                    $Cl_blacklist = DB::table('cl_blacklist')->select('chip_id')->distinct('chip_id')->get()->toJson();
 
                     $data = json_decode($Cl_blacklist, true);
 
