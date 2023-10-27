@@ -64,11 +64,6 @@ class ConfigController extends Controller
             $configurations =DB::table('pass_inventory')
                 ->orderBy('pass_inv_id', 'ASC')
                 ->where('status', true)
-                ->where(function ($query) {
-                    $query->where('media_type_id', '=', 1)
-                        ->orWhere('media_type_id', '=', 2)
-                        ->orWhere('media_type_id', '=', 4);
-                })
                 ->get();
 
         }
