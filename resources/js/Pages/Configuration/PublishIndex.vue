@@ -103,7 +103,7 @@
                                 <button
                                     type="submit"
                                     class="btn btn-primary"
-                                    :disabled="!isSelectAllConfigSelected && !isSelectedConfigSelected"
+                                    :disabled="!isallParametersSelected && !isSelectedConfigSelected"
                                     data-bs-dismiss="modal">
                                     <font-awesome-icon
                                         icon="fa-solid fa-save"
@@ -132,8 +132,9 @@
                                     <th>CONFIGURATION NAME</th>
                                     <th>SELECT VERSION</th>
                                     <th>ACTIVATION TIME</th>
-                                    <th>SELECT</th>
-                                </tr>
+                                    <th><input  class="form-check-input" type="checkbox" v-model="form.allParameters"
+                                               id="allParameters" v-on:click="config_all"></th>
+                                    </tr>
                                 </thead>
 
                                 <tbody>
@@ -314,6 +315,7 @@
     import 'vue3-treeselect/dist/vue3-treeselect.css'
     import axios from 'axios'
     import Swal from 'sweetalert2';
+    import {fas} from "@fortawesome/free-solid-svg-icons";
 
     function  showSuccessSweetAlert() {
         Swal.fire({
@@ -374,6 +376,7 @@
                 form: useForm({
                     selected: [],
                     select_all: false,
+                    allParameters: false,
                     Equipment: {
                         config_id: 1,
                         version: -1,
@@ -444,6 +447,8 @@
                         console.log(error)
                     });
             },
+
+
 
             select: function () {
                 this.form.selected = [];
@@ -528,9 +533,23 @@
                 window.location.reload();
             });
 
+
+
         },
 
         computed: {
+
+            config_all() {
+                this.form.Equipment.isSelected      = !this.form.allParameters;
+                this.form.Station.isSelected        = !this.form.allParameters;
+                this.form.Pass.isSelected           = !this.form.allParameters;
+                this.form.Fare.isSelected           = !this.form.allParameters;
+                this.form.User.isSelected           = !this.form.allParameters;
+                this.form.CardBlacklist.isSelected  = !this.form.allParameters;
+                this.form.Scs.isSelected            = !this.form.allParameters;
+                this.form.Acquirer.isSelected       = !this.form.allParameters;
+            },
+
             isAnyConfigSelected() {
                 return (
                     this.form.Equipment.isSelected ||
@@ -544,13 +563,13 @@
                 );
             },
 
-            isSelectAllConfigSelected() {
+            isallParametersSelected() {
                 return this.form.select_all;
             },
 
             isSelectedConfigSelected() {
                 return this.form.selected.length > 0;
-            }
+            },
 
         }
 

@@ -10,7 +10,6 @@ use Inertia\Inertia;
 
 class ConfigController extends Controller
 {
-
     function index(){
 
         $Configs = DB::table('ms_config_type as a')
@@ -56,23 +55,23 @@ class ConfigController extends Controller
 
         else if ($config_id == 3) {
             /*STATION*/
-            $configurations = Stations::where('status', '=', 1)->get('stn_id');
+            $configurations = DB::table('station_inventory')
+                            ->where('status', '=', true)
+                            ->get('stn_id');
         }
 
         else if ($config_id == 4){
             /*PASSES*/
-            $configurations =DB::table('pass_inventory')
+            $configurations = DB::table('pass_inventory')
                 ->orderBy('pass_inv_id', 'ASC')
                 ->where('status', true)
                 ->get();
-
         }
 
         else if ($config_id == 6) /* EQUIPMENT BLACKLIST */
         {
             $configurations = DB::table('equipment_blacklist')->select('equipment_id')->get()->tojson();
             DB::table('equipment_blacklist')->update(['is_generated' => true]);
-
         }
 
         else if ($config_id == 7) /* CARD BLACKLISTS */ {
@@ -307,5 +306,4 @@ class ConfigController extends Controller
                 'message' => 'CONFIGURATION PUBLISHED SUCCESSFULLY.'
             ]);
     }
-
 }

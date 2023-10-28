@@ -121,7 +121,7 @@ Route::post('/sync/cl/accounting',[ClAccounting::class,'ClAccounting']);
 /* SETTLE CL SV & TP VALIDATION TRANSACTION */
 Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
 
-/*CL INDRA CARD REP */
+/* CL INDRA CARD REP */
 Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 
 /* GETTING CARD DATA FOR REPLACEMENT */
@@ -130,7 +130,7 @@ Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData'])
 
 
 /* REPORT API'S*/
-Route::middleware(['basic_auth'])->group(function (){
+    Route::middleware(['basic_auth'])->group(function (){
     /* OPEN LOOP API */
     Route::post('/oldailyRidership',[DailyRidership::class,'index']);
     Route::post('/olcashCollection',[CashCollection::class,'index']);

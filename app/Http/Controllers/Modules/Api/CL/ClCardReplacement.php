@@ -24,7 +24,6 @@ class ClCardReplacement extends Controller
                 ->where('engraved_id', '=', $engravedId)
                 ->first();
 
-
             if ($cardData == null) {
 
                 return response([

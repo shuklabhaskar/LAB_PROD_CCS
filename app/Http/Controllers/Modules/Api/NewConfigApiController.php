@@ -102,11 +102,11 @@ class NewConfigApiController extends Controller
     /* FOR AG CONFIGURATION*/
     private function getAGConfig(Request $request)
     {
-        $ip = $request->input('ip');
-        $config_version = $request->input('config_version');
-        $fare_version = $request->input('fare_version');
-        $pass_version = $request->input('pass_version');
-        $cl_black_list_version = $request->input('cl_blacklist_version');
+        $ip                     = $request->input('ip');
+        $config_version         = $request->input('config_version');
+        $fare_version           = $request->input('fare_version');
+        $pass_version           = $request->input('pass_version');
+        $cl_black_list_version  = $request->input('cl_blacklist_version');
 
 
         $equipment = DB::table('equipment_inventory as ei')
@@ -136,54 +136,69 @@ class NewConfigApiController extends Controller
             foreach ($configs as $config) {
 
                 if ($config->config_id == 1) {
+
                     if ($config->config_version != $config_version) {
-                        $scs = DB::table('equipment_inventory')->where('stn_id', '=', $equipment->stn_id)
-                            ->where('eq_type_id', '=', 1)->first();
-                        $eq_data = json_decode($equipment->eq_data);
-                        $eq_data->stn_name = $equipment->stn_name;
+
+                        $scs = DB::table('equipment_inventory')
+                            ->where('stn_id', '=', $equipment->stn_id)
+                            ->where('eq_type_id', '=', 1)
+                            ->first();
+
+                        $eq_data             = json_decode($equipment->eq_data);
+                        $eq_data->stn_name   = $equipment->stn_name;
                         $eq_data->scs_ip_add = $scs->ip_address;
-                        $configResponse['config'] = $eq_data;
+
+                        $configResponse['config']                = $eq_data;
                         $configResponse['version']['eq_version'] = $config->config_version;
+
                     } else {
                         $configResponse['version']['eq_version'] = $config_version;
                     }
+
                 }
 
                 if ($config->config_id == 2) {
+
                     if ($config->config_version != $fare_version) {
+
                         $FareData = DB::table('config_gen')
                             ->where('config_id', '=', 2)
                             ->where('config_version', '=', $config->config_version)
                             ->value('config_data');
 
-                        $data = json_decode($FareData, true);
+                        $data    = json_decode($FareData, true);
+                        $NewData = collect($data)
+                            ->sortBy('fare_table_id')
+                            ->values()
+                            ->all();
 
-                        $NewData = collect($data)->sortBy('fare_table_id')->values()->all();
-
-                        $configResponse['fares'] = $NewData;
-
+                        $configResponse['fares']                   = $NewData;
                         $configResponse['version']['fare_version'] = $config->config_version;
+
                     } else {
                         $configResponse['version']['fare_version'] = $fare_version;
                     }
+
                 }
 
                 if ($config->config_id == 4) {
                     if ($config->config_version != $pass_version) {
+
                         $PassData = DB::table('config_gen')
                             ->where('config_id', '=', 4)
                             ->where('config_version', '=', $config->config_version)
                             ->value('config_data');
 
-                        $data = json_decode($PassData, true);
+                        $data    = json_decode($PassData, true);
+                        $NewData = collect($data)
+                            ->sortBy('pass_inv_id')
+                            ->values()
+                            ->all();
 
-                        $NewData = collect($data)->sortBy('pass_inv_id')->values()->all();
-
-                        $configResponse['passes'] = $NewData;
-
-                        $configResponse['version']['pass_version'] = $config->config_version;
+                        $configResponse['passes']                   = $NewData;
+                        $configResponse['version']['pass_version']  = $config->config_version;
                     } else {
-                        $configResponse['version']['pass_version'] = $pass_version;
+                        $configResponse['version']['pass_version']  = $pass_version;
                     }
                 }
 
@@ -192,11 +207,17 @@ class NewConfigApiController extends Controller
 
                     if ($config->config_version != $cl_black_list_version) {
 
-                        $Cl_blacklist = DB::table('cl_blacklist')->select('chip_id')->distinct('chip_id')->get()->toJson();
+                        $Cl_blacklist = DB::table('cl_blacklist')
+                            ->select('chip_id')
+                            ->distinct('chip_id')
+                            ->get()
+                            ->toJson();
 
-                        $data = json_decode($Cl_blacklist, true);
-
-                        $NewData = collect($data)->sortBy('chip_id')->values()->all();
+                        $data       = json_decode($Cl_blacklist, true);
+                        $NewData    = collect($data)
+                            ->sortBy('chip_id')
+                            ->values()
+                            ->all();
 
                         $configResponse['cl_blacklist'] = $NewData;
 
@@ -209,22 +230,22 @@ class NewConfigApiController extends Controller
             DB::table('config_publish')
                 ->where('equipment_id', '=', $equipment->eq_id)
                 ->update([
-                    'is_sent' => true,
+                    'is_sent'    => true,
                     'updated_at' => Carbon::now()
                 ]);
 
             return response([
                 'status' => true,
-                'code' => 100,
-                'data' => $configResponse
+                'code'   => 100,
+                'data'   => $configResponse
             ]);
 
         }
 
         return response([
             'status' => false,
-            'code' => 102,
-            'error' => 'No config is available!'
+            'code'   => 102,
+            'error'  => 'No config is available!'
         ]);
 
     }
@@ -232,11 +253,10 @@ class NewConfigApiController extends Controller
     /* FOR TOM CONFIGURATION */
     private function getTOMConfig(Request $request)
     {
-        $ip = $request->input('ip');
-        $config_version = $request->input('config_version');
-        $fare_version = $request->input('fare_version');
-        $pass_version = $request->input('pass_version');
-        $cl_black_list_version = $request->input('cl_blacklist_version');
+        $ip                     = $request->input('ip');
+        $config_version         = $request->input('config_version');
+        $fare_version           = $request->input('fare_version');
+        $pass_version           = $request->input('pass_version');
 
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
@@ -279,8 +299,8 @@ class NewConfigApiController extends Controller
 
             return response([
                 'status' => false,
-                'code' => 102,
-                'error' => 'No config is available!'
+                'code'   => 102,
+                'error'  => 'No config is available!'
             ]);
 
         }
@@ -304,10 +324,13 @@ class NewConfigApiController extends Controller
 
                 /* FOR EQUIPMENT CONFIGURATION */
                 if ($config->config_id == 1) {
+
                     if ($config->config_version != $config_version) {
+
                         $configResponse['config'] = $equipment;
-                        $configResponse['config']->scs_ip_add = $scsIp->scs_ip_add;
+                        $configResponse['config']->scs_ip_add    = $scsIp->scs_ip_add;
                         $configResponse['version']['eq_version'] = $config->config_version;
+
                     } else {
                         $configResponse['version']['eq_version'] = $config_version;
                     }
@@ -322,13 +345,14 @@ class NewConfigApiController extends Controller
                             ->where('config_version', '=', $config->config_version)
                             ->value('config_data');
 
-                        $data = json_decode($FareData, true);
+                        $data    = json_decode($FareData, true);
+                        $NewData = collect($data)
+                            ->sortBy('fare_table_id')
+                            ->values()
+                            ->all();
 
-                        $NewData = collect($data)->sortBy('fare_table_id')->values()->all();
-
-                        $configResponse['fares'] = $NewData;
-
-                        $configResponse['version']['fare_version'] = $config->config_version;
+                        $configResponse['fares']                    = $NewData;
+                        $configResponse['version']['fare_version']  = $config->config_version;
 
                     } else {
                         $configResponse['version']['fare_version'] = $fare_version;
@@ -375,9 +399,11 @@ class NewConfigApiController extends Controller
                             ->where('config_version', '=', $config->config_version)
                             ->value('config_data');
 
-                        $data = json_decode($PassData, true);
-
-                        $NewData = collect($data)->sortBy('pass_inv_id')->values()->all();
+                        $data    = json_decode($PassData, true);
+                        $NewData = collect($data)
+                            ->sortBy('pass_inv_id')
+                            ->values()
+                            ->all();
 
                         $configResponse['passes'] = $NewData;
 
@@ -407,26 +433,6 @@ class NewConfigApiController extends Controller
                             'status',
                         ])
                         ->get();
-                }
-
-                /* FOR CARD BLACKLIST CONFIGURATION */
-                if ($config->config_id == 7) {
-
-                    if ($config->config_version != $cl_black_list_version) {
-
-                        $Cl_blacklist = DB::table('config_gen')
-                            ->where('config_id', '=', 7)
-                            ->where('config_version', '=', $config->config_version)
-                            ->value('config_data');
-
-                        $data = json_decode($Cl_blacklist, true);
-
-                        $NewData = collect($data)->sortBy('chip_id')->values()->all();
-
-                        $configResponse['cl_blacklist'] = $NewData;
-
-                    }
-                    $configResponse['version']['cl_blacklist_version'] = $config->config_version;
                 }
 
                 /* FOR ACQUIRER CONFIGURATION */
@@ -471,22 +477,22 @@ class NewConfigApiController extends Controller
             DB::table('config_publish')
                 ->where('equipment_id', '=', $equipment->eq_id)
                 ->update([
-                    'is_sent' => true,
+                    'is_sent'    => true,
                     'updated_at' => Carbon::now()
                 ]);
 
             return response([
                 'status' => true,
-                'code' => 100,
-                'data' => $configResponse
+                'code'   => 100,
+                'data'   => $configResponse
             ]);
 
         }
 
         return response([
             'status' => false,
-            'code' => 102,
-            'error' => 'No config is available!'
+            'code'   => 102,
+            'error'  => 'No config is available!'
         ]);
     }
 
@@ -585,14 +591,16 @@ class NewConfigApiController extends Controller
 
                     $ConfigData['config'] = $tidData;
 
-                    $Cl_blacklist = DB::table('cl_blacklist')->select('chip_id')->distinct('chip_id')->get()->toJson();
+                    $Cl_blacklist = DB::table('cl_blacklist')
+                        ->select('chip_id')
+                        ->distinct('chip_id')
+                        ->get()
+                        ->toJson();
 
-                    $data = json_decode($Cl_blacklist, true);
-
+                    $data    = json_decode($Cl_blacklist, true);
                     $NewData = collect($data)->sortBy('chip_id')->values()->all();
 
-                    $ConfigData['cl_blacklist'] = $NewData;
-
+                    $ConfigData['cl_blacklist']         = $NewData;
                     $ConfigData['cl_blacklist_version'] = $config->config_version;
 
                 }
@@ -614,14 +622,13 @@ class NewConfigApiController extends Controller
             'data'   => $ConfigData
         ]);
 
-
     }
 
     /* FOR READER CONFIGURATION */
     private function getReaderConfig(Request $request)
     {
-        $serial_no = $request->input('serial_no');
-        $eq_id = $request->input('eq_id');
+        $serial_no  = $request->input('serial_no');
+        $eq_id      = $request->input('eq_id');
 
         $readerData = DB::table('tid_inv')
             ->where('emv_serial_no', '=', $serial_no)
@@ -630,8 +637,8 @@ class NewConfigApiController extends Controller
         if ($readerData == null) {
             return response([
                 'status' => false,
-                'code' => 103,
-                'error' => 'Invalid serial number !'
+                'code'   => 103,
+                'error'  => 'Invalid serial number !'
             ]);
         }
 
@@ -640,10 +647,10 @@ class NewConfigApiController extends Controller
             if ($eq_id != $readerData->eq_id) {
 
                 DB::table('tid_hist')->insert([
-                    'eq_id' => $readerData->eq_id,
+                    'eq_id'         => $readerData->eq_id,
                     'emv_serial_no' => $readerData->emv_serial_no,
-                    'start_date' => $readerData->start_date,
-                    'end_date' => now()
+                    'start_date'    => $readerData->start_date,
+                    'end_date'      => now()
                 ]);
 
                 DB::table('tid_inv')->update(['eq_id' => $eq_id]);
@@ -653,7 +660,7 @@ class NewConfigApiController extends Controller
 
         return response([
             'status' => true,
-            'code' => 100,
+            'code'   => 100,
             'config' => DB::table('tid_inv')
                 ->join('acq_param', 'acq_param.acq_id', '=', 'tid_inv.acq_id')
                 ->where('emv_serial_no', '=', $serial_no)
@@ -661,7 +668,6 @@ class NewConfigApiController extends Controller
         ]);
 
     }
-
 
 }
 
