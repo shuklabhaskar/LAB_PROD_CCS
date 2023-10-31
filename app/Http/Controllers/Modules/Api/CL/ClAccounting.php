@@ -1483,7 +1483,7 @@ class ClAccounting extends Controller
                     ]);
 
 
-                    $clAccId = DB::table('cl_tp_accounting')
+                    $clAccId = DB::table('cl_sv_accounting')
                         ->where('atek_id','=',$transaction['atek_id'])
                         ->select('cl_acc_id')
                         ->value('cl_acc_id');
@@ -1658,7 +1658,7 @@ class ClAccounting extends Controller
                     ]);
 
 
-                    $clAccId = DB::table('cl_tp_accounting')
+                    $clAccId = DB::table('cl_sv_accounting')
                         ->where('atek_id','=',$transaction['atek_id'])
                         ->select('cl_acc_id')
                         ->value('cl_acc_id');
@@ -1833,7 +1833,7 @@ class ClAccounting extends Controller
                     ]);
 
 
-                    $clAccId = DB::table('cl_tp_accounting')
+                    $clAccId = DB::table('cl_sv_accounting')
                         ->where('atek_id','=',$transaction['atek_id'])
                         ->select('cl_acc_id')
                         ->value('cl_acc_id');
@@ -2008,7 +2008,7 @@ class ClAccounting extends Controller
                     ]);
 
 
-                    $clAccId = DB::table('cl_tp_accounting')
+                    $clAccId = DB::table('cl_sv_accounting')
                         ->where('atek_id','=',$transaction['atek_id'])
                         ->select('cl_acc_id')
                         ->value('cl_acc_id');
