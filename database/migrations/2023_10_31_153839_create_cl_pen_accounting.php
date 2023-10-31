@@ -22,7 +22,7 @@ return new class extends Migration
             $table->double('pen_price');
             $table->integer('stn_id');
             $table->integer('media_type_id');
-            $table->integer('product id');
+            $table->integer('product_id');
             $table->integer('pass_id');
             $table->timestamp('created_at')->useCurrent();
         });
