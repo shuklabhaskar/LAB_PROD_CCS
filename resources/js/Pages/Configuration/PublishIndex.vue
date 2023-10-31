@@ -310,14 +310,13 @@
 </template>
 
 <script>
-    import Layout from "../Base/Layout";
-    import {Link, useForm} from "@inertiajs/inertia-vue3";
-    import 'vue3-treeselect/dist/vue3-treeselect.css'
-    import axios from 'axios'
-    import Swal from 'sweetalert2';
-    import {fas} from "@fortawesome/free-solid-svg-icons";
+import Layout from "../Base/Layout";
+import {Link, useForm} from "@inertiajs/inertia-vue3";
+import 'vue3-treeselect/dist/vue3-treeselect.css'
+import axios from 'axios'
+import Swal from 'sweetalert2';
 
-    function  showSuccessSweetAlert() {
+function  showSuccessSweetAlert() {
         Swal.fire({
             title: 'Configuration Published Successfully',
             icon: 'success',

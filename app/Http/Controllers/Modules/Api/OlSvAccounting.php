@@ -100,6 +100,7 @@ class OlSvAccounting extends Controller
                         'pass_id'           => $transaction->pass_id,
                         'created_at'        => Carbon::now(),
                     ]);
+
                 }
 
                 /* FOR EXCESS TIME SAME STATION OP TYPE ID 61 */

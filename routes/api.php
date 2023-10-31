@@ -128,7 +128,6 @@ Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
 
-
 /* REPORT API'S*/
     Route::middleware(['basic_auth'])->group(function (){
     /* OPEN LOOP API */

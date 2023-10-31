@@ -88,14 +88,48 @@ class ClAccounting extends Controller
 
             }elseif ($opTypeId == 13) { // REFUND
 
-                /**
-                LOST CARD
-                 **/
-
+                /** LOST CARD **/
                 $transData = $this->lostCard($transaction);
                 $response[] = $transData;
 
-            }else {
+            }elseif ($opTypeId == 54){
+
+                /** overTravel **/
+                $transData = $this->overTravel($transaction);
+                $response[] = $transData;
+
+            }elseif ($opTypeId == 61){
+
+                /** excessTimeSameStation **/
+                $transData = $this->excessTimeSameStation($transaction);
+                $response[] = $transData;
+
+            }elseif ($opTypeId == 62){
+
+                /** excessTimeSameStation **/
+                $transData = $this->excessTimeExitStation($transaction);
+                $response[] = $transData;
+
+            }elseif ($opTypeId == 63){
+
+                /** excessTimeSameStation **/
+                $transData = $this->entryMismatchSameTime($transaction);
+                $response[] = $transData;
+
+            }elseif ($opTypeId == 64){
+
+                /** excessTimeSameStation **/
+                $transData = $this->exitMismatchNoExit($transaction);
+                $response[] = $transData;
+
+            }elseif ($opTypeId == 65){
+
+                /** excessTimeSameStation **/
+                $transData = $this->exitMismatchNoEntry($transaction);
+                $response[] = $transData;
+
+            }
+            else {
 
                 $transData['is_settled'] = false;
                 $transData['atek_id'] = $transaction['atek_id'];
@@ -1272,5 +1306,1003 @@ class ClAccounting extends Controller
 
         }
     }/* OP_TYPE_ID = 13*/
+
+    public function overTravel($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => $transaction['op_type_id'],
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 14,
+                            'pen_price'      => $transaction['total_charges'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                    /* PEN TYPE ID 24 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 24,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 14 & 24*/
+
+    public function excessTimeSameStation($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 3) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_sv_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 61,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                        'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 31,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 61,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 31 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 31,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 61*/
+
+    public function excessTimeExitStation($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 3) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_sv_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 62,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                        'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 32,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 62,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 31 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 32,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 62*/
+
+    public function entryMismatchSameTime($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 3) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_sv_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 63,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                        'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 33,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 63,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 31 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 33,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 63*/
+
+    public function exitMismatchNoExit($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 3) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_sv_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 64,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                        'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 34,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 64,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 31 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 34,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 64*/
+
+    public function exitMismatchNoEntry($transaction){
+
+        /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
+        $paxFirstName       = "";
+        $paxLastName        = "";
+        $paxMobile          = 123456789;
+        $paxGenType         = 0;
+
+        if(array_key_exists("pax_first_name", $transaction))  $paxFirstName = $transaction['pax_first_name'];
+        if(array_key_exists("pax_last_name", $transaction))  $paxLastName = $transaction['pax_last_name'];
+        if(array_key_exists("pax_mobile", $transaction))  $paxMobile = $transaction['pax_mobile'];
+        if(array_key_exists("pax_gen_type", $transaction))  $paxGenType = $transaction['pax_gen_type'];
+
+        try {
+
+            if ($transaction['product_id'] == 3) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_sv_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 65,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                        'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 14 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 35,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            if ($transaction['product_id'] == 4) {
+
+                DB::beginTransaction();
+
+                try {
+
+                    DB::table('cl_tp_accounting')->insert([
+                        'atek_id'           => $transaction['atek_id'],
+                        'txn_date'          => $transaction['txn_date'],
+                        'engraved_id'       => $transaction['engraved_id'],
+                        'op_type_id'        => 65,
+                        'stn_id'            => $transaction['stn_id'],
+                        'cash_col'          => $transaction['cash_col'],
+                        'cash_ret'          => $transaction['cash_ret'],
+                        'pass_price'        => $transaction['pass_price'],
+                        'card_fee'          => $transaction['card_fee'],
+                        'card_sec'          => $transaction['card_sec'],
+                        'processing_fee'    => $transaction['processing_fee'],
+                        'total_price'       => $transaction['total_price'],
+                        'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                        'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                        'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                        'num_trips'         => $transaction['num_trips'],
+                        'rem_trips'         => $transaction['rem_trips'],
+                        'media_type_id'     => $transaction['media_type_id'],
+                        'product_id'        => $transaction['product_id'],
+                        'pass_id'           => $transaction['pass_id'],
+                        'pass_expiry'       => $transaction['pass_expiry'],
+                        'src_stn_id'        => $transaction['src_stn_id'],
+                        'des_stn_id'        => $transaction['des_stn_id'],
+                        'pax_first_name'    => $paxFirstName,
+                        'pax_last_name'     => $paxLastName,
+                        'pax_mobile'        => $paxMobile,
+                        'pax_gen_type'      => $paxGenType,
+                        'shift_id'          => $transaction['shift_id'],
+                        'user_id'           => $transaction['user_id'],
+                        'eq_id'             => $transaction['eq_id'],
+                        'pay_type_id'       => $transaction['pay_type_id'],
+                        'pay_ref'           => $transaction['pay_ref'],
+                        'is_test'           => $transaction['is_test'],
+                        'old_engraved_id'   => $transaction['old_engraved_id'],
+                    ]);
+
+                    $clAccId = DB::table('cl_tp_accounting')
+                        ->where('atek_id','=',$transaction['atek_id'])
+                        ->select('cl_acc_id')
+                        ->value('cl_acc_id');
+
+                    /* PEN TYPE ID 31 */
+                    DB::table('cl_pen_accounting')
+                        ->insert([
+                            'cl_acc_id'      => $clAccId,
+                            'txn_date'       => $transaction['txn_date'],
+                            'engraved_id'    => $transaction['engraved_id'],
+                            'pen_type_id'    => 35,
+                            'pen_price'      => $transaction['total_penalty'],
+                            'stn_id'         => $transaction['stn_id'],
+                            'media_type_id'  => $transaction['media_type_id'],
+                            'product_id'     => $transaction['product_id'],
+                            'pass_id'        => $transaction['pass_id'],
+                        ]);
+
+                } catch (PDOException $e) {
+                    DB::rollBack();
+                }
+
+                DB::commit();
+
+            }
+
+            $transData['is_settled'] = true;
+            $transData['atek_id'] = $transaction['atek_id'];
+            return $transData;
+
+        } catch (PDOException $e) {
+
+            /* IF COLUMN IDENTITY FOUND AS ERROR */
+            if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
+                $transData['is_settled'] = true;
+            } else {
+                $transData['is_settled'] = false;
+            }
+            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['error'] = $e->getMessage();
+
+            return $transData;
+
+        }
+    }/* OP_TYPE_ID = 65*/
+
+
+
+
 
 }
