@@ -81,8 +81,9 @@ class ClValidation extends Controller
                         DB::table('cl_status')
                             ->where('engraved_id', '=', $transaction['engraved_id'])
                             ->update([
-                                'sv_balance' => $transaction['chip_balance'],
-                                'updated_at' => now()
+                                'sv_balance'    => $transaction['chip_balance'],
+                                'txn_date'      => $transaction['txn_date'],
+                                'updated_at'    => now()
                             ]);
                     }
 
@@ -107,8 +108,8 @@ class ClValidation extends Controller
                     /* IF VALIDATION FAILS */
                     if ($validator->fails()) {
                         return response()->json([
-                            'status' => true,
-                            'error' => str($validator->errors())
+                            'status'    => true,
+                            'error'     => str($validator->errors())
                         ]);
                     }
 
@@ -136,8 +137,9 @@ class ClValidation extends Controller
                             DB::table('cl_status')
                                 ->where('engraved_id', '=', $transaction['engraved_id'])
                                 ->update([
-                                    'tp_balance' => $transaction['trip_balance'],
-                                    'updated_at' => now()
+                                    'tp_balance'    => $transaction['trip_balance'],
+                                    'txn_date'      => $transaction['txn_date'],
+                                    'updated_at'    => now()
                                 ]);
                         }
                     }
