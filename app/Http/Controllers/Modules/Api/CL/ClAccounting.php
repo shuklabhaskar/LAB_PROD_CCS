@@ -15,15 +15,15 @@ class ClAccounting extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            '*.atek_id' => 'required',
-            '*.des_stn_id' => 'required|integer',
-            '*.engraved_id' => 'required',
-            '*.eq_id' => 'required|string',
-            '*.media_type_id' => 'required|integer',
-            '*.pass_id' => 'required',
-            '*.src_stn_id' => 'required|integer',
-            '*.stn_id' => 'required|integer',
-            '*.txn_date' => 'required'
+            '*.atek_id'         => 'required',
+            '*.des_stn_id'      => 'required|integer',
+            '*.engraved_id'     => 'required',
+            '*.eq_id'           => 'required|string',
+            '*.media_type_id'   => 'required|integer',
+            '*.pass_id'         => 'required',
+            '*.src_stn_id'      => 'required|integer',
+            '*.stn_id'          => 'required|integer',
+            '*.txn_date'        => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -100,31 +100,26 @@ class ClAccounting extends Controller
 
             } elseif ($opTypeId == 61) {
 
-                /** excessTimeSameStation **/
                 $transData = $this->excessTimeSameStation($transaction);
                 $response[] = $transData;
 
             } elseif ($opTypeId == 62) {
 
-                /** excessTimeSameStation **/
                 $transData = $this->excessTimeExitStation($transaction);
                 $response[] = $transData;
 
             } elseif ($opTypeId == 63) {
 
-                /** excessTimeSameStation **/
                 $transData = $this->entryMismatchSameTime($transaction);
                 $response[] = $transData;
 
             } elseif ($opTypeId == 64) {
 
-                /** excessTimeSameStation **/
                 $transData = $this->exitMismatchNoExit($transaction);
                 $response[] = $transData;
 
             } elseif ($opTypeId == 65) {
 
-                /** excessTimeSameStation **/
                 $transData = $this->exitMismatchNoEntry($transaction);
                 $response[] = $transData;
 
@@ -168,38 +163,38 @@ class ClAccounting extends Controller
             if ($transaction['product_id'] == 3) {
 
                 $svData = DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => $transaction['op_type_id'],
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => $transaction['op_type_id'],
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 if ($svData) {
@@ -210,26 +205,26 @@ class ClAccounting extends Controller
                         DB::table('cl_status')
                             ->where('engraved_id', '=', $transaction['engraved_id'])
                             ->update([
-                                'engraved_id' => $transaction['engraved_id'],
-                                'chip_id' => $transaction['chip_id'],
-                                'txn_date' => $transaction['txn_date'],
-                                'pass_id' => $transaction['pass_id'],
-                                'product_id' => $transaction['product_id'],
-                                'card_fee' => $transaction['card_fee'],
-                                'card_sec' => $transaction['card_sec'],
-                                'sv_balance' => $transaction['pos_chip_bal'],
-                                'pass_expiry' => $transaction['pass_expiry'],
-                                'src_stn_id' => $transaction['src_stn_id'],
-                                'des_stn_id' => $transaction['des_stn_id'],
-                                'auto_topup_status' => $autoTopUpStatus,
-                                'auto_topup_amt' => $autoTopUpAmount,
-                                'bonus_points' => $bonusPoints,
-                                'is_test' => $transaction['is_test'],
-                                'pax_first_name' => $paxFirstName,
-                                'pax_last_name' => $paxLastName,
-                                'pax_mobile' => $paxMobile,
-                                'pax_gen_type' => $paxGenType,
-                                'updated_at' => now(),
+                                'engraved_id'        => $transaction['engraved_id'],
+                                'chip_id'            => $transaction['chip_id'],
+                                'txn_date'           => $transaction['txn_date'],
+                                'pass_id'            => $transaction['pass_id'],
+                                'product_id'         => $transaction['product_id'],
+                                'card_fee'           => $transaction['card_fee'],
+                                'card_sec'           => $transaction['card_sec'],
+                                'sv_balance'         => $transaction['pos_chip_bal'],
+                                'pass_expiry'        => $transaction['pass_expiry'],
+                                'src_stn_id'         => $transaction['src_stn_id'],
+                                'des_stn_id'         => $transaction['des_stn_id'],
+                                'auto_topup_status'  => $autoTopUpStatus,
+                                'auto_topup_amt'     => $autoTopUpAmount,
+                                'bonus_points'       => $bonusPoints,
+                                'is_test'            => $transaction['is_test'],
+                                'pax_first_name'     => $paxFirstName,
+                                'pax_last_name'      => $paxLastName,
+                                'pax_mobile'         => $paxMobile,
+                                'pax_gen_type'       => $paxGenType,
+                                'updated_at'         => now(),
                             ]);
 
                     }
@@ -237,25 +232,25 @@ class ClAccounting extends Controller
                     if ($engravedIdExists == null) {
 
                         DB::table('cl_status')->insert([
-                            'engraved_id' => $transaction['engraved_id'],
-                            'chip_id' => $transaction['chip_id'],
-                            'txn_date' => $transaction['txn_date'],
-                            'pass_id' => $transaction['pass_id'],
-                            'product_id' => $transaction['product_id'],
-                            'card_fee' => $transaction['card_fee'],
-                            'card_sec' => $transaction['card_sec'],
-                            'sv_balance' => $transaction['pos_chip_bal'],
-                            'pass_expiry' => $transaction['pass_expiry'],
-                            'src_stn_id' => $transaction['src_stn_id'],
-                            'des_stn_id' => $transaction['des_stn_id'],
+                            'engraved_id'       => $transaction['engraved_id'],
+                            'chip_id'           => $transaction['chip_id'],
+                            'txn_date'          => $transaction['txn_date'],
+                            'pass_id'           => $transaction['pass_id'],
+                            'product_id'        => $transaction['product_id'],
+                            'card_fee'          => $transaction['card_fee'],
+                            'card_sec'          => $transaction['card_sec'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
+                            'pass_expiry'       => $transaction['pass_expiry'],
+                            'src_stn_id'        => $transaction['src_stn_id'],
+                            'des_stn_id'        => $transaction['des_stn_id'],
                             'auto_topup_status' => $autoTopUpStatus,
-                            'auto_topup_amt' => $autoTopUpAmount,
-                            'bonus_points' => $bonusPoints,
-                            'is_test' => $transaction['is_test'],
-                            'pax_first_name' => $paxFirstName,
-                            'pax_last_name' => $paxLastName,
-                            'pax_mobile' => $paxMobile,
-                            'pax_gen_type' => $paxGenType,
+                            'auto_topup_amt'    => $autoTopUpAmount,
+                            'bonus_points'      => $bonusPoints,
+                            'is_test'           => $transaction['is_test'],
+                            'pax_first_name'    => $paxFirstName,
+                            'pax_last_name'     => $paxLastName,
+                            'pax_mobile'        => $paxMobile,
+                            'pax_gen_type'      => $paxGenType,
                         ]);
 
                     }
@@ -1445,7 +1440,7 @@ class ClAccounting extends Controller
 
         if ($transaction['product_id'] == 3) {
 
-            DB::beginTransaction();
+            //DB::beginTransaction();
 
             try {
 
@@ -1514,13 +1509,13 @@ class ClAccounting extends Controller
                 $transData['atek_id'] = $transaction['atek_id'];
                 $transData['error'] = $e->getMessage();
 
-                DB::rollBack();
+                //DB::rollBack();
 
                 return $transData;
 
             }
 
-            DB::commit();
+            //DB::commit();
 
             $transData['is_settled'] = true;
             $transData['atek_id'] = $transaction['atek_id'];
@@ -1530,7 +1525,7 @@ class ClAccounting extends Controller
 
         if ($transaction['product_id'] == 4) {
 
-            //DB::beginTransaction();
+            DB::beginTransaction();
 
             try {
 
