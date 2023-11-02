@@ -78,14 +78,24 @@ class ClValidation extends Controller
 
                     if ($SvValidationTrue && $transaction['val_type_id'] == 2) {
 
-                        DB::table('cl_status')
-                            ->where('engraved_id', '=', $transaction['engraved_id'])
-                            ->update([
-                                'sv_balance'    => $transaction['chip_balance'],
-                                'txn_date'      => $transaction['txn_date'],
-                                'pass_expiry'   => $transaction['pass_expiry'],
-                                'updated_at'    => now()
-                            ]);
+                        if ($transaction['pass_expiry'] == null || $transaction['pass_expiry'] == "") {
+                            DB::table('cl_status')
+                                ->where('engraved_id', '=', $transaction['engraved_id'])
+                                ->update([
+                                    'sv_balance'    => $transaction['chip_balance'],
+                                    'txn_date'      => $transaction['txn_date'],
+                                    'updated_at'    => now()
+                                ]);
+                        } else {
+                            DB::table('cl_status')
+                                ->where('engraved_id', '=', $transaction['engraved_id'])
+                                ->update([
+                                    'sv_balance'    => $transaction['chip_balance'],
+                                    'txn_date'      => $transaction['txn_date'],
+                                    'pass_expiry'   => $transaction['pass_expiry'],
+                                    'updated_at'    => now()
+                                ]);
+                        }
                     }
 
                 } elseif ($transaction['product_id'] == 4) { /* FOR TRIP PASS ONLY */
@@ -133,14 +143,21 @@ class ClValidation extends Controller
 
                     if ($TpValidationTrue) {
 
-                        if ($transaction['val_type_id'] == 2) {
-
+                        if ($transaction['pass_expiry'] == null || $transaction['pass_expiry'] == "") {
                             DB::table('cl_status')
                                 ->where('engraved_id', '=', $transaction['engraved_id'])
                                 ->update([
-                                    'tp_balance'    => $transaction['trip_balance'],
-                                    'pass_expiry'   => $transaction['pass_expiry'],
+                                    'sv_balance'    => $transaction['chip_balance'],
                                     'txn_date'      => $transaction['txn_date'],
+                                    'updated_at'    => now()
+                                ]);
+                        } else {
+                            DB::table('cl_status')
+                                ->where('engraved_id', '=', $transaction['engraved_id'])
+                                ->update([
+                                    'sv_balance'    => $transaction['chip_balance'],
+                                    'txn_date'      => $transaction['txn_date'],
+                                    'pass_expiry'   => $transaction['pass_expiry'],
                                     'updated_at'    => now()
                                 ]);
                         }
