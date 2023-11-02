@@ -83,6 +83,7 @@ class ClValidation extends Controller
                             ->update([
                                 'sv_balance'    => $transaction['chip_balance'],
                                 'txn_date'      => $transaction['txn_date'],
+                                'pass_expiry'   => $transaction['pass_expiry'],
                                 'updated_at'    => now()
                             ]);
                     }
@@ -138,6 +139,7 @@ class ClValidation extends Controller
                                 ->where('engraved_id', '=', $transaction['engraved_id'])
                                 ->update([
                                     'tp_balance'    => $transaction['trip_balance'],
+                                    'pass_expiry'   => $transaction['pass_expiry'],
                                     'txn_date'      => $transaction['txn_date'],
                                     'updated_at'    => now()
                                 ]);
