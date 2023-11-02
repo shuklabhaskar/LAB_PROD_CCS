@@ -14,6 +14,8 @@ class ClAccounting extends Controller
     public function ClAccounting(Request $request)
     {
 
+
+
         $validator = Validator::make($request->all(), [
             '*.atek_id'         => 'required',
             '*.des_stn_id'      => 'required|integer',
@@ -46,6 +48,7 @@ class ClAccounting extends Controller
         }
 
         foreach ($transactions as $transaction) {
+
 
             $opTypeId = $transaction['op_type_id'];
 
@@ -808,11 +811,16 @@ class ClAccounting extends Controller
                             'updated_at' => now(),
                         ]);
 
+
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 3,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 3,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
                 }
 
@@ -885,11 +893,15 @@ class ClAccounting extends Controller
 
                         ]);
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 3,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 3,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
 
 
@@ -1002,11 +1014,15 @@ class ClAccounting extends Controller
                             'updated_at' => now(),
                         ]);
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 2,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 2,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
 
 
@@ -1080,11 +1096,15 @@ class ClAccounting extends Controller
 
                         ]);
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 2,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 2,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
 
 
@@ -1137,16 +1157,16 @@ class ClAccounting extends Controller
             if ($transaction['product_id'] == 3) {
 
                 $svData = DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => $transaction['op_type_id'],
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
+                    'atek_id'       => $transaction['atek_id'],
+                    'txn_date'      => $transaction['txn_date'],
+                    'engraved_id'   => $transaction['engraved_id'],
+                    'op_type_id'    => $transaction['op_type_id'],
+                    'stn_id'        => $transaction['stn_id'],
+                    'cash_col'      => $transaction['cash_col'],
+                    'cash_ret'      => $transaction['cash_ret'],
+                    'pass_price'    => $transaction['pass_price'],
+                    'card_fee'      => $transaction['card_fee'],
+                    'card_sec'      => $transaction['card_sec'],
                     'processing_fee' => $transaction['processing_fee'],
                     'total_price' => $transaction['total_price'],
                     'pass_ref_chr' => $transaction['pass_ref_chr'],
@@ -1197,11 +1217,15 @@ class ClAccounting extends Controller
                             'updated_at' => now(),
                         ]);
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 1,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 1,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
 
                 }
@@ -1274,11 +1298,15 @@ class ClAccounting extends Controller
 
                         ]);
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
                     DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id' => 1,
-                        'start_date' => Carbon::now(),
-                        'engraved_id' => $transaction['old_engraved_id'],
-                        'chip_id' => $transaction['chip_id'],
+                        'ms_blk_reason_id'  => 1,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
                     ]);
 
                 }
