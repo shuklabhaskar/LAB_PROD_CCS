@@ -447,6 +447,7 @@ class ClAccounting extends Controller
                         $newTxnDate = Carbon::make($transaction['txn_date']);
 
                         if ($newTxnDate > $oldTxnDate) {
+
                             DB::table('cl_status')
                                 ->where('engraved_id', '=', $transaction['engraved_id'])
                                 ->update([
@@ -1558,8 +1559,6 @@ class ClAccounting extends Controller
         }
 
         if ($transaction['product_id'] == 4) {
-
-            DB::beginTransaction();
 
             try {
 
