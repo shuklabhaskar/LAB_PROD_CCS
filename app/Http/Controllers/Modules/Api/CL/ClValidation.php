@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Modules\Api\CL;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PDOException;
 
@@ -30,6 +32,10 @@ class ClValidation extends Controller
             $is_test = null;
             if (array_key_exists("is_test", $transaction)) $is_test = $transaction['is_test'];
 
+            $clStatus = DB::table('cl_status')
+                ->where('engraved_id', '=', $transaction['engraved_id'])
+                ->first();
+
             try {
 
                 /* FOR STORE VALUE PASS ONLY  */
@@ -37,25 +43,25 @@ class ClValidation extends Controller
 
                     /* VALIDATION */
                     $validator = Validator::make($request->all(), [
-                        '*.atek_id'         => 'required',
-                        '*.txn_date'        => 'required',
-                        '*.engraved_id'     => 'required',
-                        '*.val_type_id'     => 'required|integer',
-                        '*.amt_deducted'    => 'required',
-                        '*.chip_balance'    => 'required',
-                        '*.media_type_id'   => 'required|integer',
-                        '*.product_id'      => 'required|integer',
-                        '*.pass_id'         => 'required',
-                        '*.card_type_id'    => 'required',
-                        '*.eq_id'           => 'required',
-                        '*.stn_id'          => 'required|integer',
+                        '*.atek_id'       => 'required',
+                        '*.txn_date'      => 'required',
+                        '*.engraved_id'   => 'required',
+                        '*.val_type_id'   => 'required|integer',
+                        '*.amt_deducted'  => 'required',
+                        '*.chip_balance'  => 'required',
+                        '*.media_type_id' => 'required|integer',
+                        '*.product_id'    => 'required|integer',
+                        '*.pass_id'       => 'required',
+                        '*.card_type_id'  => 'required',
+                        '*.eq_id'         => 'required',
+                        '*.stn_id'        => 'required|integer',
                     ]);
 
                     /* IF VALIDATION FAILS */
                     if ($validator->fails()) {
                         return response()->json([
                             'status' => true,
-                            'error' => str($validator->errors())
+                            'error'  => str($validator->errors())
                         ]);
                     }
 
@@ -78,25 +84,38 @@ class ClValidation extends Controller
 
                     if ($SvValidationTrue && $transaction['val_type_id'] == 2) {
 
-                        if ($transaction['pass_expiry'] == null || $transaction['pass_expiry'] == "") {
-                            DB::table('cl_status')
-                                ->where('engraved_id', '=', $transaction['engraved_id'])
-                                ->update([
-                                    'sv_balance'    => $transaction['chip_balance'],
-                                    'txn_date'      => $transaction['txn_date'],
-                                    'updated_at'    => now()
-                                ]);
-                        } else {
-                            DB::table('cl_status')
-                                ->where('engraved_id', '=', $transaction['engraved_id'])
-                                ->update([
-                                    'sv_balance'    => $transaction['chip_balance'],
-                                    'txn_date'      => $transaction['txn_date'],
-                                    'pass_expiry'   => $transaction['pass_expiry'],
-                                    'updated_at'    => now()
-                                ]);
+                        if ($clStatus != null) {
+
+                            $oldTxnDate = Carbon::make($clStatus->txn_date);
+                            $newTxnDate = Carbon::make($transaction['txn_date']);
+
+                            if ($newTxnDate > $oldTxnDate) {
+
+                                $updates = [
+                                    'sv_balance' => $transaction['chip_balance'],
+                                    'txn_date'   => $transaction['txn_date'],
+                                    'updated_at' => now()
+                                ];
+
+                                if (!empty($transaction['pass_expiry'])) {
+                                    $updates['pass_expiry'] = $transaction['pass_expiry'];
+                                }
+
+                                DB::table('cl_status')
+                                    ->where('engraved_id', '=', $transaction['engraved_id'])
+                                    ->update($updates);
+
+                            }
+
+                        }else{
+                            $message = "Txn Date is not available for the given engraved_id in Cl Status: {$transaction['engraved_id']}";
+                            Log::channel('clAccounting')->info($message);
                         }
+
+
+
                     }
+
 
                 } elseif ($transaction['product_id'] == 4) { /* FOR TRIP PASS ONLY */
 
@@ -119,8 +138,8 @@ class ClValidation extends Controller
                     /* IF VALIDATION FAILS */
                     if ($validator->fails()) {
                         return response()->json([
-                            'status'    => true,
-                            'error'     => str($validator->errors())
+                            'status' => true,
+                            'error'  => str($validator->errors())
                         ]);
                     }
 
@@ -143,30 +162,47 @@ class ClValidation extends Controller
 
                     if ($TpValidationTrue) {
 
-                        if ($transaction['pass_expiry'] == null || $transaction['pass_expiry'] == "") {
-                            DB::table('cl_status')
-                                ->where('engraved_id', '=', $transaction['engraved_id'])
-                                ->update([
-                                    'sv_balance'    => $transaction['chip_balance'],
+                        if ($clStatus != null) {
+
+                            $oldTxnDate = Carbon::make($clStatus->txn_date);
+                            $newTxnDate = Carbon::make($transaction['txn_date']);
+
+                            if ($newTxnDate > $oldTxnDate) {
+
+                                $updates = [
+                                    'tp_balance'    => $transaction['trip_balance'],
                                     'txn_date'      => $transaction['txn_date'],
                                     'updated_at'    => now()
-                                ]);
-                        } else {
-                            DB::table('cl_status')
-                                ->where('engraved_id', '=', $transaction['engraved_id'])
-                                ->update([
-                                    'sv_balance'    => $transaction['chip_balance'],
-                                    'txn_date'      => $transaction['txn_date'],
-                                    'pass_expiry'   => $transaction['pass_expiry'],
-                                    'updated_at'    => now()
-                                ]);
+                                ];
+
+                                if (!empty($transaction['pass_expiry'])) {
+                                    $updates['pass_expiry'] = $transaction['pass_expiry'];
+                                }
+
+                                DB::table('cl_status')
+                                    ->where('engraved_id', '=', $transaction['engraved_id'])
+                                    ->update($updates);
+
+                            }
+
+                        }else{
+                            $message = "Txn Date is not available for the given engraved_id in Cl Status: {$transaction['engraved_id']}";
+                            Log::channel('clAccounting')->info($message);
                         }
+
+
+
                     }
 
+
                 } else {
+
+                    $message = "Invalid Product Id Provided";
+                    Log::channel('clValidation')->info($message);
+
                     return response([
                         'status' => false,
-                        'trans' => "Invalid Product id !"
+                        'trans'  => "Invalid Product Id !"
                     ]);
                 }
 
@@ -185,7 +221,8 @@ class ClValidation extends Controller
                     $transData['is_settled'] = false;
                 }
                 $transData['atek_id'] = $transaction['atek_id'];
-                $transData['error'] = $e->getMessage();
+                $transData['error']   = $e->getMessage();
+                Log::channel('clValidation')->info($e->getMessage());
 
                 $response[] = $transData;
 
@@ -193,8 +230,10 @@ class ClValidation extends Controller
 
         }
 
-        return response(['status' => true,
-            'trans' => $response]);
+        return response([
+            'status' => true,
+            'trans' => $response
+        ]);
 
     }
 

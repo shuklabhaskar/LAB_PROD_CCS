@@ -54,10 +54,28 @@ return [
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/ccs.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 30,
+            'path'   => storage_path('logs/ccs.log'),
+            'level'  => env('LOG_LEVEL', 'debug'),
+            'days'   => 30,
         ],
+
+        'clAccounting' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/CL/ClAccounting/'),
+            'filename'  => 'clAccounting_' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
+
+
+        'clValidation' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/CL/ClValidation/'),
+            'filename'  => 'clAccounting_' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
+
 
         'slack' => [
             'driver' => 'slack',
