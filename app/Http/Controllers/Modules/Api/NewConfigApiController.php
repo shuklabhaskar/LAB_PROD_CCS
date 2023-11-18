@@ -39,7 +39,15 @@ class NewConfigApiController extends Controller
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
             ->where('ip_address', '=', $ip)
             ->where('eq_type_id', '=', 4)
-            ->select(['ei.*', 'stn.stn_name'])
+            ->select([
+                'ei.eq_type_id',
+                'ei.eq_num',
+                'ei.status',
+                'ei.eq_id',
+                'ei.stn_id',
+                'stn.stn_name',
+                'ei.eq_version',
+            ])
             ->first();
 
         if ($equipment == null) {
@@ -64,25 +72,63 @@ class NewConfigApiController extends Controller
                 if ($config->config_id == 1) {
 
                     if ($config->config_version != $config_version) {
-                        $scs = DB::table('equipment_inventory')->where('stn_id', '=', $equipment->stn_id)
-                            ->where('eq_type_id', '=', 4)->first();
-                        $eq_data = json_decode($equipment->eq_data);
-                        $eq_data->stn_name = $equipment->stn_name;
-                        $eq_data->scs_ip_add = $scs->ip_address;
-                        $configResponse['config'] = $eq_data;
 
-                        $configResponse['equipments'] = DB::table('equipment_inventory')
-                            ->where('stn_id', '=', $equipment->stn_id)
-                            ->where('eq_type_id', '!=', 4)
+                        $configResponse['config'] = $equipment;
+
+                        $configResponse['equipments'] = DB::table('equipment_inventory as ei')
+                            ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
+                            ->where('ei.stn_id', '=', $equipment->stn_id)
+                            ->where('ei.eq_type_id', '!=', 4)
+                            ->select([
+                                'ei.eq_type_id',
+                                'ei.eq_mode_id',
+                                'ei.eq_role_id',
+                                'ei.eq_num',
+                                'ei.eq_id',
+                                'ei.eq_location_id',
+                                'ei.cord_x',
+                                'ei.cord_y',
+                                'ei.status',
+                                'ei.stn_id',
+                                'stn_name',
+                                'ei.eq_version'
+                            ])
                             ->get();
 
-                        $configResponse['version']['eq_version'] = $config->config_version;
+
                     } else {
                         $configResponse['version']['eq_version'] = $config_version;
                     }
                 }
 
+                if ($config->config_id == 5) {
+                    $configResponse['users'] = DB::table('user_inventory')
+                        ->where('status', '=', true)
+                        ->orderBy('user_id', 'ASC')
+                        ->select([
+                            'user_id',
+                            'first_name',
+                            'middle_name',
+                            'last_name',
+                            'emp_mobile',
+                            'emp_email',
+                            'emp_dob',
+                            'user_login',
+                            'user_pwd',
+                            'status',
+                        ])
+                        ->get();
+                }
+
             }
+
+
+            DB::table('config_publish')
+                ->where('equipment_id', '=', $equipment->eq_id)
+                ->update([
+                    'is_sent'    => true,
+                    'updated_at' => Carbon::now()
+                ]);
 
             return response([
                 'status' => true,
