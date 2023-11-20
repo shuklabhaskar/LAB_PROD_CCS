@@ -91,7 +91,8 @@ class NewConfigApiController extends Controller
                                 'ei.status',
                                 'ei.stn_id',
                                 'stn_name',
-                                'ei.eq_version'
+                                'ei.eq_version',
+                                'ei.ip_address'
                             ])
                             ->get();
 
