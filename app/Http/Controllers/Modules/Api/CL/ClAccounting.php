@@ -739,7 +739,7 @@ class ClAccounting extends Controller
 
     } /* OP_TYPE_ID = 6*/
 
-    public function cardNotReadablePhysicallyOkay($transaction,$clStatus)
+    public function cardNotReadablePhysicallyOkay($transaction)
     {
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */

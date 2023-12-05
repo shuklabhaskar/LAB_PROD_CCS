@@ -12,6 +12,7 @@ use PDOException;
 
 class ClValidation extends Controller
 {
+
     function setClTransaction(Request $request)
     {
         $transactions = json_decode($request->getContent(), true);
@@ -220,6 +221,7 @@ class ClValidation extends Controller
                 } else {
                     $transData['is_settled'] = false;
                 }
+
                 $transData['atek_id'] = $transaction['atek_id'];
                 $transData['error']   = $e->getMessage();
                 Log::channel('clValidation')->info($e->getMessage());

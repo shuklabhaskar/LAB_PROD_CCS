@@ -75,6 +75,7 @@
             Stations:Array,
             Station_inactive:Array,
             Equipments_inactive:Array,
+            indraReplaced:Array,
         },
     }
 </script>

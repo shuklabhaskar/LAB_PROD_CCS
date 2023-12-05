@@ -22,9 +22,16 @@ use App\Http\Controllers\Modules\Api\SettleOlTransaction;
 use App\Http\Controllers\Modules\Api\TidController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\ReportApi\CashCollection;
+use App\Http\Controllers\Modules\ReportApi\CL\CardDetail;
+use App\Http\Controllers\Modules\ReportApi\CL\ClAccReport;
+use App\Http\Controllers\Modules\ReportApi\CL\ClFicoReport;
+use App\Http\Controllers\Modules\ReportApi\CL\ClSapReport;
+use App\Http\Controllers\Modules\ReportApi\CL\ClTravelApi;
 use App\Http\Controllers\Modules\ReportApi\CL\DailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\CL\RevenueReport;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
+use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
+use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
 use Illuminate\Http\Request;
@@ -127,23 +134,38 @@ Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 /* GETTING CARD DATA FOR REPLACEMENT */
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
-
 /* REPORT API'S*/
-    Route::middleware(['basic_auth'])->group(function (){
+Route::middleware(['basic_auth'])->group(function (){
+
     /* OPEN LOOP API */
     Route::post('/oldailyRidership',[DailyRidership::class,'index']);
     Route::post('/olcashCollection',[CashCollection::class,'index']);
     Route::post('/olrevenue',[Revenue::class,'index']);
     Route::post('/olValReport',[TravelApiController::class,'getReport']);
+
+    /* OL TOM API */
+    Route::post('/olSaleReport',[OlAccReport::class,'olSaleReport']);
+    Route::post('/olSvAccReport',[OlAccReport::class,'olSvAccReport']);
+
     /* MMOPL OL SAP FICO POSTING */
-    /* Route::get('/olFicoReport', [OlFicoReport::class, 'index']);*/
+    Route::get('/olFicoReport', [OlFicoReport::class, 'index']);
+    Route::get('/clFicoReport', [ClFicoReport::class, 'index']);
 
     /* CLOSED LOOP API */
     Route::post('/cl/Daily/Ridership',[DailyRidershipReport::class,'dailyRidership']);
     Route::post('/cl/revenue',[RevenueReport::class,'revenue']);
+    Route::post('/cl/cardDetail/mobileNumber',[CardDetail::class,'cardDetailUsingMobileNumber']);
+    Route::post('/cl/cardDetail/cardNumber',[CardDetail::class,'cardDetailUsingCardNumber']);
+    Route::post('/clSap',[ClSapReport::class,'index']);
+
+    Route::post('/clSvValReport',[ClTravelApi::class,'svValReport']);
+    Route::post('/clTpValReport',[ClTravelApi::class,'tpValReport']);
+
+    /* TOM API */
+    Route::post('/clSvAccReport',[ClAccReport::class,'svAccReport']);
+    Route::post('/clTpAccReport',[ClAccReport::class,'tpAccReport']);
 
 });
-
 
 
 
