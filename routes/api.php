@@ -29,6 +29,8 @@ use App\Http\Controllers\Modules\ReportApi\CL\ClSapReport;
 use App\Http\Controllers\Modules\ReportApi\CL\ClTravelApi;
 use App\Http\Controllers\Modules\ReportApi\CL\DailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\CL\RevenueReport;
+use App\Http\Controllers\Modules\ReportApi\CL\StoreValueExitRevenue;
+use App\Http\Controllers\Modules\ReportApi\CL\TripPassExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
@@ -133,6 +135,18 @@ Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 
 /* GETTING CARD DATA FOR REPLACEMENT */
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
+
+
+/* TRIP PASS*/
+Route::post('/cl/tp/exit/revenue',[TripPassExitRevenue::class,'tpExitRevenue']);
+Route::post('/cl/tp/stale/revenue/atek',[TripPassExitRevenue::class,'tpStaleRevenueAtek']);
+Route::post('/cl/tp/stale/revenue/indra',[TripPassExitRevenue::class,'tpStaleRevenueIndra']);
+Route::post('/cl/tp/stale/revenue/ul',[TripPassExitRevenue::class,'tpStaleUL']);
+
+/* STORE VALUE PASS */
+Route::post('/cl/sv/stale/revenue/indra',[StoreValueExitRevenue::class,'storeValueStaleIndra']);
+
+
 
 /* REPORT API'S*/
 Route::middleware(['basic_auth'])->group(function (){
