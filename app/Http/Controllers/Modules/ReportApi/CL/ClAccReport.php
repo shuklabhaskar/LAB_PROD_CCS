@@ -27,23 +27,26 @@ class ClAccReport extends Controller
 
         try {
             $svAccounting = DB::table('cl_sv_accounting')
-                ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('pass_id', [23, 63, 73, 83])
-                ->orderBy('txn_date','ASC')
+                ->leftJoin('cl_status', function ($join) {
+                    $join->on('cl_sv_accounting.engraved_id', '=', 'cl_status.engraved_id');
+                })
+                ->whereBetween('cl_sv_accounting.txn_date', [$request->input('from_date'), $request->input('to_date')])
+                ->whereIn('cl_sv_accounting.pass_id', [23, 63, 73, 83])
+                ->orderBy('cl_sv_accounting.txn_date', 'ASC')
                 ->get([
-                    'txn_date',
-                    'engraved_id',
-                    'pass_id',
-                    'op_type_id',
-                    'pay_type_id',
-                    'pass_price',
-                    'card_sec as deposit',
-                    'pax_first_name as name',
-                    'pax_mobile as mobile_no',
-                    'old_engraved_id',
-                    'user_id',
-                    'shift_id',
-                    'eq_id'
+                    'cl_sv_accounting.txn_date',
+                    'cl_sv_accounting.engraved_id',
+                    'cl_sv_accounting.pass_id',
+                    'cl_sv_accounting.op_type_id',
+                    'cl_sv_accounting.pay_type_id',
+                    'cl_sv_accounting.pass_price',
+                    'cl_sv_accounting.card_sec as deposit',
+                    DB::raw("cl_status.pax_first_name"),
+                    DB::raw("cl_status.pax_mobile"),
+                    'cl_sv_accounting.old_engraved_id',
+                    'cl_sv_accounting.user_id',
+                    'cl_sv_accounting.shift_id',
+                    'cl_sv_accounting.eq_id'
                 ]);
 
             if ($svAccounting->isEmpty()) {
@@ -55,7 +58,7 @@ class ClAccReport extends Controller
 
             $dateWiseData = [];
             /******
-             STORING DATE IN STRING TYPE ONLY SO THAT WE CAN SHOW IN RESPONSE DATE WISE
+             * STORING DATE IN STRING TYPE ONLY SO THAT WE CAN SHOW IN RESPONSE DATE WISE
              ******/
             foreach ($svAccounting as $transaction) {
                 $date = substr($transaction->txn_date, 0, 10);
@@ -91,28 +94,32 @@ class ClAccReport extends Controller
         }
 
         try {
-            $svAccounting = DB::table('cl_tp_accounting')
-                ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('pass_id', [23, 63, 73, 83])
-                ->orderBy('txn_date','ASC')
+
+            $tpAccounting = DB::table('cl_tp_accounting')
+                ->leftJoin('cl_status', function ($join) {
+                    $join->on('cl_tp_accounting.engraved_id', '=', 'cl_status.engraved_id');
+                })
+                ->whereBetween('cl_tp_accounting.txn_date', [$request->input('from_date'), $request->input('to_date')])
+                ->whereIn('cl_tp_accounting.pass_id', [23, 63, 73, 83])
+                ->orderBy('cl_tp_accounting.txn_date', 'ASC')
                 ->get([
-                    'txn_date',
-                    'engraved_id',
-                    'pass_id',
-                    'op_type_id',
-                    'pay_type_id',
-                    'num_trips',
-                    'card_sec as deposit',
-                    'pass_price',
-                    'pax_first_name as name',
-                    'pax_mobile as mobile_no',
-                    'old_engraved_id',
-                    'user_id',
-                    'shift_id',
-                    'eq_id'
+                    'cl_tp_accounting.txn_date',
+                    'cl_tp_accounting.engraved_id',
+                    'cl_tp_accounting.pass_id',
+                    'cl_tp_accounting.op_type_id',
+                    'cl_tp_accounting.pay_type_id',
+                    'cl_tp_accounting.num_trips',
+                    'cl_tp_accounting.card_sec as deposit',
+                    'cl_tp_accounting.pass_price',
+                    DB::raw("cl_status.pax_first_name"),
+                    DB::raw("cl_status.pax_mobile"),
+                    'cl_tp_accounting.old_engraved_id',
+                    'cl_tp_accounting.user_id',
+                    'cl_tp_accounting.shift_id',
+                    'cl_tp_accounting.eq_id',
                 ]);
 
-            if ($svAccounting->isEmpty()) {
+            if ($tpAccounting->isEmpty()) {
                 return response([
                     'status' => false,
                     'error' => 'No records found!'
@@ -120,10 +127,7 @@ class ClAccReport extends Controller
             }
 
             $dateWiseData = [];
-            /******
-            STORING DATE IN STRING TYPE ONLY SO THAT WE CAN SHOW IN RESPONSE DATE WISE
-             ******/
-            foreach ($svAccounting as $transaction) {
+            foreach ($tpAccounting as $transaction) {
                 $date = substr($transaction->txn_date, 0, 10);
                 $dateWiseData[$date][] = $transaction;
             }
@@ -139,7 +143,5 @@ class ClAccReport extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-
-
     }
 }

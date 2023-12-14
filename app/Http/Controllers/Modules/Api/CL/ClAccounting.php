@@ -69,7 +69,7 @@ class ClAccounting extends Controller
                 $transData = $this->Refund($transaction, $clStatus);
                 $response[] = $transData;
 
-            } elseif ($opTypeId == 11) {
+            } elseif ($opTypeId == 11) { // REPLACE
 
                 /**
                  * REPLACEMENT IN CASE OF CARD NOT READABLE & PHYSICALLY OKAY
@@ -78,7 +78,7 @@ class ClAccounting extends Controller
                 $transData = $this->cardNotReadablePhysicallyOkay($transaction,$clStatus);
                 $response[] = $transData;
 
-            } elseif ($opTypeId == 12) { // REFUND
+            } elseif ($opTypeId == 12) { // REPLACE
 
                 /**
                  * REPLACEMENT IN CASE OF CARD NOT READABLE & PHYSICALLY NOT OKAY
@@ -87,7 +87,7 @@ class ClAccounting extends Controller
                 $transData = $this->cardNotReadablePhysicallyNotOkay($transaction,$clStatus);
                 $response[] = $transData;
 
-            } elseif ($opTypeId == 13) { // REFUND
+            } elseif ($opTypeId == 13) { // REPLACE
 
                 /**
                  * REPLACEMENT IN CASE LOST CARD

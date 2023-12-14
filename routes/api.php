@@ -147,7 +147,6 @@ Route::post('/cl/tp/stale/revenue/ul',[TripPassExitRevenue::class,'tpStaleUL']);
 Route::post('/cl/sv/stale/revenue/indra',[StoreValueExitRevenue::class,'storeValueStaleIndra']);
 
 
-
 /* REPORT API'S*/
 Route::middleware(['basic_auth'])->group(function (){
 
