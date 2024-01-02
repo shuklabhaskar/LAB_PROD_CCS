@@ -123,7 +123,6 @@ class NewConfigApiController extends Controller
 
             }
 
-
             DB::table('config_publish')
                 ->where('equipment_id', '=', $equipment->eq_id)
                 ->update([

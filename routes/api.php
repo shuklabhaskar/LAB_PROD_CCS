@@ -22,6 +22,8 @@ use App\Http\Controllers\Modules\Api\SettleOlTransaction;
 use App\Http\Controllers\Modules\Api\TidController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\ReportApi\CashCollection;
+use App\Http\Controllers\Modules\ReportApi\CL\AfcAuditApi\StoreValueAuditApi;
+use App\Http\Controllers\Modules\ReportApi\CL\AfcAuditApi\TripPassAuditApi;
 use App\Http\Controllers\Modules\ReportApi\CL\CardDetail;
 use App\Http\Controllers\Modules\ReportApi\CL\ClAccReport;
 use App\Http\Controllers\Modules\ReportApi\CL\ClFicoReport;
@@ -136,7 +138,6 @@ Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
 /* GETTING CARD DATA FOR REPLACEMENT */
 Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
 
-
 /* TRIP PASS*/
 Route::post('/cl/tp/exit/revenue',[TripPassExitRevenue::class,'tpExitRevenue']);
 Route::post('/cl/tp/stale/revenue/atek',[TripPassExitRevenue::class,'tpStaleRevenueAtek']);
@@ -145,6 +146,12 @@ Route::post('/cl/tp/stale/revenue/ul',[TripPassExitRevenue::class,'tpStaleUL']);
 
 /* STORE VALUE PASS */
 Route::post('/cl/sv/stale/revenue/indra',[StoreValueExitRevenue::class,'storeValueStaleIndra']);
+Route::post('/cl/sv/stale/revenue/atek',[StoreValueExitRevenue::class,'storeValueStaleAtek']);
+Route::post('/cl/sv/exit/revenue',[StoreValueExitRevenue::class,'svExitRevenue']);
+
+/* AFC AUDIT API */
+Route::get('/cl/audit/sv/{startDate}/{endDate}',[StoreValueAuditApi::class,'index']);
+Route::get('/cl/audit/tp/{startDate}/{endDate}',[TripPassAuditApi::class,'index']);
 
 
 /* REPORT API'S*/

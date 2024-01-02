@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection UnknownColumnInspection */
 
 namespace App\Http\Controllers\Modules\ReportApi\CL;
 
@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+
 class TripPassExitRevenue extends Controller
 {
-    /* TRIP PASS EXIT REVENUE FOR PASS ID 23 */
     function tpExitRevenue(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date_format:Y-m-d',
             'to_date' => 'required|date_format:Y-m-d',
@@ -40,7 +41,7 @@ class TripPassExitRevenue extends Controller
                 ->whereRaw("TO_CHAR(txn_date, 'YYYY-MM-DD') = ?", [$processDate])
                 ->where('pass_id', '=', 23)
                 ->where('val_type_id', '=', 2)
-                ->orderBy('txn_date', 'ASC')
+                ->orderBy('txn_date', 'DESC')
                 ->pluck('engraved_id');
 
             $sum = 0;
@@ -49,13 +50,48 @@ class TripPassExitRevenue extends Controller
 
                 $accTrans = DB::table('cl_tp_accounting')
                     ->where('pass_id', '=', 23)
-                    ->where('op_type_id', [1, 3])
+                    ->where('op_type_id', [1, 3, 11, 12, 13])
                     ->where('engraved_id', $engravedId)
+                    ->orderBy('txn_date', 'DESC')
                     ->first();
 
                 if ($accTrans != null) {
-                    $sum += ($accTrans->pass_price / $accTrans->num_trips);
-                    continue;
+
+                    if ($accTrans->op_type_id == 1 || $accTrans->op_type_id == 3) {
+                        $sum += ($accTrans->pass_price / $accTrans->num_trips);
+                        continue;
+                    }
+
+                    if ($accTrans->op_type_id == 11 || $accTrans->op_type_id == 12 || $accTrans->op_type_id == 13) {
+
+                        $accRepTrans = $accTrans;
+
+                        while (true) {
+
+                            $repTrans = DB::table('cl_tp_accounting')
+                                ->where('engraved_id', '=', $accRepTrans->old_engraved_id)
+                                ->whereIn('op_type_id', [1, 3, 11, 12, 13])
+                                ->select(['old_engraved_id', 'engraved_id', 'pass_price', 'num_trips', 'op_type_id'])
+                                ->first();
+
+                            if (
+                                $repTrans != null &&
+                                ($repTrans->op_type_id == 11 || $repTrans->op_type_id == 12 || $repTrans->op_type_id == 13)
+                            ) {
+                                $accRepTrans = $repTrans;
+                                continue;
+                            }
+
+                            if ($repTrans != null) {
+                                $sum += ($repTrans->pass_price / $repTrans->num_trips);
+                            }
+
+                            break;
+
+                        }
+
+                    }
+
                 }
 
                 $repTrans = DB::table('cl_indra_rep')
@@ -136,18 +172,42 @@ class TripPassExitRevenue extends Controller
 
             foreach ($accTrans as $trans) {
 
-                $validation = DB::table('cl_tp_validation')
-                    ->where('txn_date', '<=', $processDate . " 01:10:00")
-                    ->where('engraved_id', $trans->engraved_id)
+                $repTrans = DB::table('cl_tp_accounting')
+                    ->where('old_engraved_id', '=', $trans->engraved_id)
+                    ->whereBetween('pass_expiry', [$trans->txn_date, $processDate . " 01:10:00"])
                     ->orderBy('txn_date', 'DESC')
                     ->first();
 
+                $engravedId = null;
+
+                if ($repTrans != null) {
+                    $engravedId = $repTrans->engraved_id;
+                } else {
+                    $engravedId = $trans->engraved_id;
+                }
+
                 $unitPrice = ($trans->pass_price / $trans->num_trips);
 
-                if ($validation != null) {
-                    $staleAmount = $unitPrice * $validation->trip_balance;
+                $validationWithZeroTrips = DB::table('cl_tp_validation')
+                    ->where('txn_date', '<=', $processDate . " 01:10:00")
+                    ->where('engraved_id', $engravedId)
+                    ->where('trip_balance', 0)
+                    ->orderBy('txn_date', 'DESC')
+                    ->first();
+
+                if ($validationWithZeroTrips != null) {
+                    $staleAmount = $unitPrice * $validationWithZeroTrips->trip_balance;
                 } else {
-                    $staleAmount = $unitPrice * $trans->num_trips;
+                    $validation = DB::table('cl_tp_validation')
+                        ->where('txn_date', '<=', $processDate . " 01:10:00")
+                        ->where('engraved_id', $engravedId)
+                        ->orderBy('txn_date', 'DESC')
+                        ->first();
+                    if ($validation != null) {
+                        $staleAmount = $unitPrice * $validation->trip_balance;
+                    } else {
+                        $staleAmount = $unitPrice * $trans->num_trips;
+                    }
                 }
 
                 $sum += $staleAmount;
@@ -173,20 +233,22 @@ class TripPassExitRevenue extends Controller
     {
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date_format:Y-m-d',
-            'to_date'   => 'required|date_format:Y-m-d',
+            'to_date' => 'required|date_format:Y-m-d',
         ]);
 
         if ($validator->fails()) {
+
             return response()->json([
                 'status' => false,
                 'error' => $validator->errors(),
             ]);
+
         }
 
         set_time_limit(0);
 
-        $startDate  = Carbon::parse($request->input('from_date'));
-        $endDate    = Carbon::parse($request->input('to_date'));
+        $startDate = Carbon::parse($request->input('from_date'));
+        $endDate = Carbon::parse($request->input('to_date'));
 
         $response = [];
 
@@ -197,7 +259,7 @@ class TripPassExitRevenue extends Controller
             $accTrans = DB::table('cl_indra_rep')
                 ->where('pass_id', '=', 23)
                 ->where('pass_expiry', '=', $processDate . " 01:10:00")
-                ->where('tp_balance','!=',0)
+                ->where('tp_balance', '!=', 0)
                 ->orderBy('txn_date', 'DESC')
                 ->get();
 
@@ -206,12 +268,27 @@ class TripPassExitRevenue extends Controller
             foreach ($accTrans as $trans) {
 
                 $passExpiry = Carbon::parse($trans->pass_expiry);
-                $createdAt  = Carbon::parse($trans->created_at);
+                $createdAt = Carbon::parse($trans->created_at);
 
                 if ($passExpiry < $createdAt) continue;
 
-                $sourceId       = $trans->src_stn_id;
-                $destinationId  = $trans->des_stn_id;
+                $repTrans = DB::table('cl_tp_accounting')
+                    ->where('old_engraved_id', '=', $trans->engraved_id)
+                    ->whereBetween('pass_expiry', [$trans->txn_date, $processDate . " 01:10:00"])
+                    ->orderBy('txn_date', 'DESC')
+                    ->first();
+
+                $engravedId = null;
+
+                if ($repTrans != null) {
+                    $engravedId = $repTrans->engraved_id;
+                } else {
+                    $engravedId = $trans->engraved_id;
+                }
+
+
+                $sourceId = $trans->src_stn_id;
+                $destinationId = $trans->des_stn_id;
 
                 $pass = DB::table('pass_inventory')
                     ->where('pass_id', '=', $trans->pass_id)
@@ -224,18 +301,32 @@ class TripPassExitRevenue extends Controller
                     ->where('destination_id', '=', $destinationId)
                     ->value('fare');
 
-                $validation = DB::table('cl_tp_validation')
+                $unitPrice = ($fare / $pass->trip_count);
+
+                $validationWithZeroTrips = DB::table('cl_tp_validation')
                     ->where('txn_date', '<=', $processDate . " 01:10:00")
-                    ->where('engraved_id', $trans->engraved_id)
+                    ->where('engraved_id', $engravedId)
+                    ->where('trip_balance', 0)
                     ->orderBy('txn_date', 'DESC')
                     ->first();
 
-                $unitPrice = ($fare / $pass->trip_count);
 
-                if ($validation != null) {
-                    $staleAmount = $unitPrice * $validation->trip_balance;
+                if ($validationWithZeroTrips != null) {
+                    $staleAmount = $unitPrice * $validationWithZeroTrips->trip_balance;
                 } else {
-                    $staleAmount = $unitPrice * $trans->tp_balance;
+
+                    $validation = DB::table('cl_tp_validation')
+                        ->where('txn_date', '<=', $processDate . " 01:10:00")
+                        ->where('engraved_id', $engravedId)
+                        ->orderBy('txn_date', 'DESC')
+                        ->first();
+
+                    if ($validation != null) {
+                        $staleAmount = $unitPrice * $validation->trip_balance;
+                    } else {
+                        $staleAmount = $unitPrice * $trans->tp_balance;
+                    }
+
                 }
 
                 $sum += $staleAmount;
@@ -256,54 +347,105 @@ class TripPassExitRevenue extends Controller
 
     }
 
-    /*TP STALE FOR UNLIMITED TRIP PASS ID 73 83 */
+    /*TP STALE FOR UNLIMITED TRIP PASS ID 63 */
     function tpStaleUL(Request $request)
     {
 
+        // SET TIMEOUT
         set_time_limit(0);
 
-        $startDate = Carbon::parse($request->input('from_date'));
-        $endDate = Carbon::parse($request->input('to_date'));
+        $startDate = Carbon::parse('01-11-2023');
+        $endDate = Carbon::now();
 
-        $previousDateSum = 0;
-        $numberOfDays = $startDate->diffInDays($endDate);
-        $response = [];
-
+        // FILL DATA
         for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-
-            $sum = 0;
 
             $processDate = $date->format('Y-m-d');
 
-            $accTrans = DB::table('cl_tp_accounting')
-                ->whereIn('op_type_id', [1, 3])
-                ->whereRaw("TO_CHAR(txn_date, 'YYYY-MM-DD') = ?", [$processDate])
-                ->where('pass_id', '=', 63)
-                ->orderBy('txn_date', 'DESC')
-                ->get();
+            $result = DB::selectOne("
+                    SELECT (
+                        SUM(CASE WHEN pass_id = 63 AND op_type_id IN (1, 3) THEN ROUND(CAST(FLOAT8 ((pass_price) / 30) AS NUMERIC), 2) ELSE 0 END) -
+                        SUM(CASE WHEN pass_id = 63 AND op_type_id IN (2, 4, 6) THEN ROUND(CAST(FLOAT8 ((pass_price) / 30) AS NUMERIC), 2) ELSE 0 END)
+                    ) AS TOTAL_AMOUNT
+                    FROM cl_tp_accounting
+                    WHERE DATE(txn_date) = ?
+                ", [$processDate]);
 
-            foreach ($accTrans as $trans) {
+            if ($result != null) {
 
-                $pricePerDay = $trans->pass_price / $numberOfDays;
-                $sum += $pricePerDay;
+                $this->insertOrUpdate(
+                    $processDate,
+                    $result->total_amount ?: 0,
+                    0
+                );
+
             }
-
-            $response[] = [
-                'date' => $processDate,
-                'amount' => number_format(($previousDateSum + $sum), 2)
-            ];
-
-            $previousDateSum += $sum;
 
         }
 
+        $updateTrans = DB::table('cl_tp_ul_stale_exit')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // UPDATE STABLE AMOUNT
+        foreach ($updateTrans as $tran) {
+
+            $startCalDate = Carbon::parse($tran->date);
+            $endCalDate = Carbon::parse($tran->date)->subDays(30);
+
+            $staleAmount = DB::table('cl_tp_ul_stale_exit')
+                ->whereBetween('date', [$endCalDate, $startCalDate])
+                ->sum('distribution_amount');
+
+            $this->insertOrUpdate(
+                $tran->date,
+                $tran->distribution_amount ?: 0,
+                $staleAmount ?: 0
+            );
+
+        }
+
+        // GET RESPONSE
+        $startDate = Carbon::parse($request->input('from_date'));
+        $endDate = Carbon::parse($request->input('to_date'));
+
+        $responseData = DB::table('cl_tp_ul_stale_exit')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->orderBy('date','DESC')
+            ->get(['date', 'stale_amount']);
+
         return response([
             'status' => true,
-            'data' => $response
+            'data' => $responseData
         ]);
 
     }
 
+    function insertOrUpdate($date, $disAmount, $stableAmount)
+    {
+        $isAlreadyExit = DB::table('cl_tp_ul_stale_exit')
+            ->where('date', '=', $date)
+            ->first();
+
+        if ($isAlreadyExit != null) {
+            DB::table('cl_tp_ul_stale_exit')
+                ->where('date', $date)
+                ->update([
+                    'distribution_amount' => round($disAmount, 2),
+                    'stale_amount' => round($stableAmount, 2)
+                ]);
+        } else {
+            DB::table('cl_tp_ul_stale_exit')->insert([
+                'date' => $date,
+                'distribution_amount' => round($disAmount, 2),
+                'stale_amount' => round($stableAmount, 2)
+            ]);
+        }
+
+    }
+
 }
+
+
 
 

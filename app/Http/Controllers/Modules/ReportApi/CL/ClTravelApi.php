@@ -30,7 +30,7 @@ class ClTravelApi extends Controller
             $data = DB::table('cl_sv_validation')
                 ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
                 ->whereIn('pass_id', [23, 63, 73, 83])
-                ->get(['txn_date', 'engraved_id', 'pass_id', 'val_type_id','stn_id']);
+                ->get(['txn_date', 'engraved_id', 'pass_id', 'val_type_id','stn_id','amt_deducted','chip_balance as bal_amount']);
 
             if ($data->isEmpty()) {
                 return response([
@@ -71,7 +71,7 @@ class ClTravelApi extends Controller
             $data = DB::table('cl_tp_validation')
                 ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
                 ->whereIn('pass_id', [23, 63, 73, 83])
-                ->get(['txn_date', 'engraved_id', 'pass_id', 'val_type_id','stn_id']);
+                ->get(['txn_date', 'engraved_id', 'pass_id', 'val_type_id','stn_id','trip_deducted as amt_deducted','trip_balance as bal_amount']);
 
             if ($data->isEmpty()) {
                 return response([
