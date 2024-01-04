@@ -40,6 +40,7 @@ class Firmware extends Controller
             'status' => true,
             'code' => 100,
             'uploadID' => $update->firmware_publish_id,
+            'updatedVersion' => $update->firmware_version,
             'message' => "Yes, New version is available."
         ]);
 
