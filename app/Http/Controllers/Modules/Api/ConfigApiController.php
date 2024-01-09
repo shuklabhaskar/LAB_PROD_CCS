@@ -306,11 +306,6 @@ class ConfigApiController extends Controller
                 if ($config->config_id == 4) {
                     if ($config->config_version != $pass_version) {
 
-                       /* $configResponse['passes'] = DB::table('pass_inventory')
-                            ->orderBy('pass_inv_id','ASC')
-                            ->where('media_type_id','=',1)
-                            ->get();*/
-
                         $configResponse['passes'] = DB::table('pass_inventory')
                                                     ->orderBy('pass_inv_id','ASC')
                                                     ->where(function ($query) {

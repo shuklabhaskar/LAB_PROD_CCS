@@ -34,22 +34,38 @@ class ClAccReport extends Controller
                 ->whereIn('cl_sv_accounting.pass_id', [23, 63, 73, 83])
                 ->orderBy('cl_sv_accounting.txn_date', 'ASC')
                 ->get([
+                    'cl_sv_accounting.atek_id as order_id',
                     'cl_sv_accounting.txn_date',
                     'cl_sv_accounting.engraved_id',
-                    'cl_sv_accounting.pass_id',
                     'cl_sv_accounting.op_type_id',
-                    'cl_sv_accounting.pay_type_id',
+                    'cl_sv_accounting.stn_id',
                     'cl_sv_accounting.pass_price',
-                    'cl_sv_accounting.total_price',
-                    'cl_sv_accounting.pass_expiry',
+                    'cl_sv_accounting.card_fee',
                     'cl_sv_accounting.card_sec as deposit',
-                    DB::raw("cl_status.pax_first_name as name"),
+                    'cl_sv_accounting.processing_fee as process_fee',
+                    'cl_sv_accounting.total_price',
+                    'cl_sv_accounting.pass_ref_chr as ref_chr',
+                    'cl_sv_accounting.card_fee_ref_chr as csc_fee_ref_chr',
+                    'cl_sv_accounting.card_sec_ref_chr as csc_dep_ref_chr',
+                    'cl_sv_accounting.pre_chip_bal as pre_card_bal',
+                    'cl_sv_accounting.pos_chip_bal as card_bal',
+                    'cl_sv_accounting.media_type_id',
+                    'cl_sv_accounting.product_id',
+                    'cl_sv_accounting.pass_id',
+                    'cl_sv_accounting.pass_expiry',
+                    DB::raw("cl_status.pax_first_name as first_name"),
+                    DB::raw("cl_status.pax_last_name as last_name"),
                     DB::raw("cl_status.pax_mobile as mobile_no"),
-                    'cl_sv_accounting.old_engraved_id',
-                    'cl_sv_accounting.user_id',
+                    'cl_sv_accounting.pax_gen_type as gender',
                     'cl_sv_accounting.shift_id',
-                    'cl_sv_accounting.eq_id'
+                    'cl_sv_accounting.user_id',
+                    'cl_sv_accounting.eq_id',
+                    'cl_sv_accounting.pay_type_id',
+                    'cl_sv_accounting.pay_ref',
+                    'cl_sv_accounting.is_test',
+                    'cl_sv_accounting.old_engraved_id',
                 ]);
+
 
             if ($svAccounting->isEmpty()) {
                 return response([
@@ -105,23 +121,40 @@ class ClAccReport extends Controller
                 ->whereIn('cl_tp_accounting.pass_id', [23, 63, 73, 83])
                 ->orderBy('cl_tp_accounting.txn_date', 'ASC')
                 ->get([
+                    'cl_tp_accounting.atek_id as order_id',
                     'cl_tp_accounting.txn_date',
                     'cl_tp_accounting.engraved_id',
-                    'cl_tp_accounting.pass_id',
                     'cl_tp_accounting.op_type_id',
-                    'cl_tp_accounting.pay_type_id',
-                    'cl_tp_accounting.num_trips',
-                    'cl_tp_accounting.card_sec as deposit',
+                    'cl_tp_accounting.stn_id',
                     'cl_tp_accounting.pass_price',
+                    'cl_tp_accounting.card_fee',
+                    'cl_tp_accounting.card_sec as deposit',
+                    'cl_tp_accounting.processing_fee as process_fee',
                     'cl_tp_accounting.total_price',
+                    'cl_tp_accounting.pass_ref_chr as refund_chr',
+                    'cl_tp_accounting.card_fee_ref_chr as csc_fee_ref_chr',
+                    'cl_tp_accounting.card_sec_ref_chr as csc_dep_ref_chr',
+                    'cl_tp_accounting.num_trips',
+                    'cl_tp_accounting.rem_trips as card_bal',
+                    'cl_tp_accounting.media_type_id',
+                    'cl_tp_accounting.product_id',
+                    'cl_tp_accounting.pass_id',
                     'cl_tp_accounting.pass_expiry',
-                    DB::raw("cl_status.pax_first_name as name"),
+                    'cl_tp_accounting.src_stn_id as source_stn',
+                    'cl_tp_accounting.des_stn_id as destination_stn',
+                    DB::raw("cl_status.pax_first_name as first_name"),
+                    DB::raw("cl_status.pax_last_name as last_name"),
                     DB::raw("cl_status.pax_mobile as mobile_no"),
-                    'cl_tp_accounting.old_engraved_id',
-                    'cl_tp_accounting.user_id',
+                    'cl_tp_accounting.pax_gen_type as gender',
                     'cl_tp_accounting.shift_id',
+                    'cl_tp_accounting.user_id',
                     'cl_tp_accounting.eq_id',
+                    'cl_tp_accounting.pay_type_id',
+                    'cl_tp_accounting.pay_ref',
+                    'cl_tp_accounting.is_test',
+                    'cl_tp_accounting.old_engraved_id',
                 ]);
+
 
             if ($tpAccounting->isEmpty()) {
                 return response([
