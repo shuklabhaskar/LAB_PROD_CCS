@@ -23,6 +23,7 @@ class ClFicoReport extends Controller
             ]);
         }
 
+
         $ficoReport = DB::table('mmopl_cl_sap_fico_posting')
             ->whereBetween('record_date', [$request->input('from'), $request->input('to')])
             ->select([
@@ -40,7 +41,6 @@ class ClFicoReport extends Controller
                 'message' => 'No data available for the specified date range',
             ]);
         }
-
 
         return response()->json([
             'status' => true,

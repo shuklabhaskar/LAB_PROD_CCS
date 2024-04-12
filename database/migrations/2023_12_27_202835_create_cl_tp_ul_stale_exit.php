@@ -21,6 +21,7 @@ return new class extends Migration
         });
 
         $table_name = 'cl_tp_ul_stale_exit';
+
         Schema::table($table_name, function (Blueprint $table) {
             $table->index('date', 'index_cl_tp_ul_stale_exit__date');
         });

@@ -40,6 +40,7 @@ class AcqParamController extends Controller
             'Lines'     => $Lines,
             'EmvTypes'     => $EmvTypes,
         ]);
+
     }
 
     /* INSERTING ACQUIRER DATA */
@@ -87,7 +88,6 @@ class AcqParamController extends Controller
             ]);
         }
 
-
         return redirect('acq') ->with([
             'message' => $request->input('acq_name') . ' ACQUIRER CREATED SUCCESSFULLY.'
         ]);
@@ -96,7 +96,6 @@ class AcqParamController extends Controller
     /* WHILE EDITING ACQUIRER DATA */
     public function edit($id): Response
     {
-
 
         $acqParam = DB::table('acq_param')
             ->where('acq_param_id','=',$id)

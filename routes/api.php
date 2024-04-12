@@ -17,6 +17,7 @@ use App\Http\Controllers\Modules\Api\paySchemeFare;
 use App\Http\Controllers\Modules\Api\Paytm\AcqApiManager;
 use App\Http\Controllers\Modules\Api\Paytm\IssuanceApiManager;
 use App\Http\Controllers\Modules\Api\Paytm\OlAcqTxn;
+use App\Http\Controllers\Modules\Api\Paytm\Settlement\Settlement;
 use App\Http\Controllers\Modules\Api\Paytm\VerifyTerminal;
 use App\Http\Controllers\Modules\Api\SettleOlTransaction;
 use App\Http\Controllers\Modules\Api\TidController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\Modules\ReportApi\CL\RevenueReport;
 use App\Http\Controllers\Modules\ReportApi\CL\StoreValueExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\CL\TripPassExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
+use App\Http\Controllers\Modules\ReportApi\KnowYourLoad;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
@@ -66,7 +68,7 @@ Route::get('/getFirmware/{uploadId}', [Firmware::class, 'getFirmware']);
 Route::post('config', [ConfigApiController::class, 'getConfig']);
 
 /* API CONTROLLER V1 */
-Route::post('v1/config',[NewConfigApiController::class,'getConfig']);
+Route::post('v1/config', [NewConfigApiController::class, 'getConfig']);
 
 /* SETTLE OPEN LOOP TRANSACTION */
 Route::post('settleOlTransaction', [SettleOlTransaction::class, 'setOlTransaction']);
@@ -103,23 +105,23 @@ Route::post('/verifyTerminal', [VerifyTerminal::class, 'verify']);
 Route::get('/olAcqTxn', [OlAcqTxn::class, 'index']);
 
 /* PAYTM */
-Route::post('/otp/send',[IssuanceApiManager::class,'sendOtp']);
-Route::post('/otp/verify',[IssuanceApiManager::class,'verifyOtp']);
-Route::post('/kyc/details',[IssuanceApiManager::class,'kycDetail']);
-Route::post('/kyc/submit',[IssuanceApiManager::class,'submitKyc']);
-Route::post('/card/activation',[IssuanceApiManager::class,'activateCard']);
-Route::post('/card/status',[IssuanceApiManager::class,'activationStatus']);
+Route::post('/otp/send', [IssuanceApiManager::class, 'sendOtp']);
+Route::post('/otp/verify', [IssuanceApiManager::class, 'verifyOtp']);
+Route::post('/kyc/details', [IssuanceApiManager::class, 'kycDetail']);
+Route::post('/kyc/submit', [IssuanceApiManager::class, 'submitKyc']);
+Route::post('/card/activation', [IssuanceApiManager::class, 'activateCard']);
+Route::post('/card/status', [IssuanceApiManager::class, 'activationStatus']);
 
-Route::post('/verifyTerminal',[AcqApiManager::class,'verifyTerminal']);
-Route::post('/moneyLoad',[AcqApiManager::class,'moneyLoad']);
-Route::post('/sale',[AcqApiManager::class,'sale']);
-Route::post('/balanceUpdate',[AcqApiManager::class,'balanceUpdate']);
-Route::post('/void',[AcqApiManager::class,'voidTrans']);
-Route::post('/serviceCreation',[AcqApiManager::class,'serviceCreation']);
-Route::post('/updateReceiptAndRevertLastTxn',[AcqApiManager::class,'updateReceiptAndRevertLastTxn']);
+Route::post('/verifyTerminal', [AcqApiManager::class, 'verifyTerminal']);
+Route::post('/moneyLoad', [AcqApiManager::class, 'moneyLoad']);
+Route::post('/sale', [AcqApiManager::class, 'sale']);
+Route::post('/balanceUpdate', [AcqApiManager::class, 'balanceUpdate']);
+Route::post('/void', [AcqApiManager::class, 'voidTrans']);
+Route::post('/serviceCreation', [AcqApiManager::class, 'serviceCreation']);
+Route::post('/updateReceiptAndRevertLastTxn', [AcqApiManager::class, 'updateReceiptAndRevertLastTxn']);
 
 /*CRASH REPORTS*/
-Route::post('/gateCrashReport', [crashReports::class,'gateLog']);
+Route::post('/gateCrashReport', [crashReports::class, 'gateLog']);
 Route::post('/tomCrashReport', [crashReports::class, 'tomLog']);
 Route::post('/edcCrashReport', [crashReports::class, 'edcLog']);
 
@@ -127,63 +129,64 @@ Route::post('/edcCrashReport', [crashReports::class, 'edcLog']);
 Route::get('/clSnMapping', [ClSnMapping::class, 'index']);
 
 /* SETTLE CL SV & TP ACCOUNTING TRANSACTION */
-Route::post('/sync/cl/accounting',[ClAccounting::class,'ClAccounting']);
+Route::post('/sync/cl/accounting', [ClAccounting::class, 'ClAccounting']);
 
 /* SETTLE CL SV & TP VALIDATION TRANSACTION */
 Route::post('/sync/cl/validation', [ClValidation::class, 'setClTransaction']);
 
 /* CL INDRA CARD REP */
-Route::post('/cl/indra/card/rep',[ClIndraCardReplacement::class,'store']);
+Route::post('/cl/indra/card/rep', [ClIndraCardReplacement::class, 'store']);
 
 /* GETTING CARD DATA FOR REPLACEMENT */
-Route::get('/cl/card/rep/{engravedId}',[ClCardReplacement::class,'getCardData']);
+Route::get('/cl/card/rep/{engravedId}', [ClCardReplacement::class, 'getCardData']);
 
 /* TRIP PASS*/
-Route::post('/cl/tp/exit/revenue',[TripPassExitRevenue::class,'tpExitRevenue']);
-Route::post('/cl/tp/stale/revenue/atek',[TripPassExitRevenue::class,'tpStaleRevenueAtek']);
-Route::post('/cl/tp/stale/revenue/indra',[TripPassExitRevenue::class,'tpStaleRevenueIndra']);
-Route::post('/cl/tp/stale/revenue/ul',[TripPassExitRevenue::class,'tpStaleUL']);
+Route::post('/cl/tp/exit/revenue', [TripPassExitRevenue::class, 'tpExitRevenue']);
+Route::post('/cl/tp/stale/revenue/atek', [TripPassExitRevenue::class, 'tpStaleRevenueAtek']);
+Route::post('/cl/tp/stale/revenue/indra', [TripPassExitRevenue::class, 'tpStaleRevenueIndra']);
+Route::post('/cl/tp/stale/revenue/ul', [TripPassExitRevenue::class, 'tpStaleUL']);
 
 /* STORE VALUE PASS */
-Route::post('/cl/sv/stale/revenue/indra',[StoreValueExitRevenue::class,'storeValueStaleIndra']);
-Route::post('/cl/sv/stale/revenue/atek',[StoreValueExitRevenue::class,'storeValueStaleAtek']);
-Route::post('/cl/sv/exit/revenue',[StoreValueExitRevenue::class,'svExitRevenue']);
+Route::post('/cl/sv/stale/revenue/indra', [StoreValueExitRevenue::class, 'storeValueStaleIndra']);
+Route::post('/cl/sv/stale/revenue/atek', [StoreValueExitRevenue::class, 'storeValueStaleAtek']);
+Route::post('/cl/sv/exit/revenue', [StoreValueExitRevenue::class, 'svExitRevenue']);
 
 /* AFC AUDIT API */
-Route::get('/cl/audit/sv/{startDate}/{endDate}',[StoreValueAuditApi::class,'index']);
-Route::get('/cl/audit/tp/{startDate}/{endDate}',[TripPassAuditApi::class,'index']);
+Route::post('/cl/audit/sv/', [StoreValueAuditApi::class, 'lag']);
+Route::get('/cl/audit/tp/{startDate}/{endDate}', [TripPassAuditApi::class, 'index']);
 
 
 /* REPORT API'S*/
-Route::middleware(['basic_auth'])->group(function (){
+Route::middleware(['basic_auth'])->group(function () {
 
     /* OPEN LOOP API */
-    Route::post('/oldailyRidership',[DailyRidership::class,'index']);
-    Route::post('/olcashCollection',[CashCollection::class,'index']);
-    Route::post('/olrevenue',[Revenue::class,'index']);
-    Route::post('/olValReport',[TravelApiController::class,'getReport']);
+    Route::post('/oldailyRidership', [DailyRidership::class, 'index']);
+    Route::post('/olcashCollection', [CashCollection::class, 'index']);
+    Route::post('/olrevenue', [Revenue::class, 'index']);
+    Route::post('/olPrevDay', [Revenue::class, 'olPrevDay']);
+    Route::post('/olValReport', [TravelApiController::class, 'getReport']);
 
     /* OL TOM API */
-    Route::post('/olSaleReport',[OlAccReport::class,'olSaleReport']);
-    Route::post('/olSvAccReport',[OlAccReport::class,'olSvAccReport']);
+    Route::post('/olSaleReport', [OlAccReport::class, 'olSaleReport']);
+    Route::post('/olSvAccReport', [OlAccReport::class, 'olSvAccReport']);
 
     /* MMOPL OL SAP FICO POSTING */
     Route::get('/olFicoReport', [OlFicoReport::class, 'index']);
     Route::get('/clFicoReport', [ClFicoReport::class, 'index']);
 
     /* CLOSED LOOP API */
-    Route::post('/cl/Daily/Ridership',[DailyRidershipReport::class,'dailyRidership']);
-    Route::post('/cl/revenue',[RevenueReport::class,'revenue']);
-    Route::post('/cl/cardDetail/mobileNumber',[CardDetail::class,'cardDetailUsingMobileNumber']);
-    Route::post('/cl/cardDetail/cardNumber',[CardDetail::class,'cardDetailUsingCardNumber']);
-    Route::post('/clSap',[ClSapReport::class,'index']);
+    Route::post('/cl/Daily/Ridership', [DailyRidershipReport::class, 'dailyRidership']);
+    Route::post('/cl/revenue', [RevenueReport::class, 'revenue']);
+    Route::post('/cl/cardDetail/mobileNumber', [CardDetail::class, 'cardDetailUsingMobileNumber']);
+    Route::post('/cl/cardDetail/cardNumber', [CardDetail::class, 'cardDetailUsingCardNumber']);
+    Route::post('/clSap', [ClSapReport::class, 'index']);
 
-    Route::post('/clSvValReport',[ClTravelApi::class,'svValReport']);
-    Route::post('/clTpValReport',[ClTravelApi::class,'tpValReport']);
+    Route::post('/clSvValReport', [ClTravelApi::class, 'svValReport']);
+    Route::post('/clTpValReport', [ClTravelApi::class, 'tpValReport']);
 
     /* TOM API */
-    Route::post('/clSvAccReport',[ClAccReport::class,'svAccReport']);
-    Route::post('/clTpAccReport',[ClAccReport::class,'tpAccReport']);
+    Route::post('/clSvAccReport', [ClAccReport::class, 'svAccReport']);
+    Route::post('/clTpAccReport', [ClAccReport::class, 'tpAccReport']);
 
 });
 

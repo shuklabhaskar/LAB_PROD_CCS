@@ -283,7 +283,7 @@ class RevenueReport extends Controller
                     $data['tp_iss_count']  = floatval($tpIssCount);
                     $data['tp_ref_count']  = floatval($tpRefCount);
                     $data['tp_rel_count']  = floatval($tpRelCount);
-                    $data['cl_revenue']    = $clIssueAmount + $clReloadAmount + $clGRA + $clReplacement + $clRefundAmount - $clIssCancel -$clRelCancel;
+                    $data['cl_revenue']    = $clIssueAmount + $clReloadAmount + $clGRA + $clReplacement - $clRefundAmount - $clIssCancel -$clRelCancel;
 
                     $clRevenue[] = $data;
 

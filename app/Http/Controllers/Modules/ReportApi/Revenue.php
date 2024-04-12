@@ -204,4 +204,133 @@ class Revenue extends Controller
 
     }
 
+    public function olPrevDay(Request $request)
+    {
+
+        $from   = $request->input('from_date');
+        $to     = $request->input('to_date');
+
+        /* VALIDATION */
+        $validator = Validator::make($request->all(), [
+            'from_date' => 'required|date_format:Y-m-d H:i:s',
+            'to_date'   => 'required|date_format:Y-m-d H:i:s',
+        ]);
+
+        /* IF VALIDATION FAILS */
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'error'  => $validator->errors()
+            ]);
+        } else {
+
+            set_time_limit(0);
+
+            $cardData = [];
+
+            /* TO GET NUMBER OF STATION AND STATION NAME */
+            $stations = DB::table('station_inventory')->select('stn_name', 'stn_id')->orderBy('stn_id','ASC')->get();
+
+            foreach ($stations as $stn_data) {
+
+                try {
+
+                    $issueCount = DB::table('ol_card_sale as ocs')
+                        ->whereBetween('ocs.txn_date', [$from, $to])
+                        ->where('ocs.op_type_id', '=', 11)
+                        ->where('ocs.stn_id', '=', $stn_data->stn_id)
+                        ->count();
+
+                    $totalRefund = DB::table('ol_sv_accounting as osa')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->where('stn_id','=',$stn_data->stn_id)
+                        ->where('op_type_id','=',6)
+                        ->count();
+
+                    $totalReload = DB::table('ol_sv_accounting as osa')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->where('stn_id','=',$stn_data->stn_id)
+                        ->where('op_type_id','=',3)
+                        ->count();
+
+                    /* PPBL  REVENUE */
+                    $ppbl_revenue = DB::table('ol_sv_validation')
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->where('val_type_id', '=', 2)
+                        ->where('card_mask_no','LIKE','8173'.'%')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->sum('amt_deducted');
+
+                    $ppbl_stnPenAmount = DB::table('ol_sv_accounting as osa')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->where('card_mask_no','LIKE','8173'.'%')
+                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->sum('total_price');
+
+                    /* SBI  REVENUE */
+                    $sbi_revenue = DB::table('ol_sv_validation')
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->where('val_type_id', '=', 2)
+                        ->where('card_mask_no','LIKE','8174'.'%')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->sum('amt_deducted');
+
+                    $sbi_stnPenAmount = DB::table('ol_sv_accounting as osa')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->where('card_mask_no','LIKE','8174'.'%')
+                        ->sum('total_price');
+
+                    /* OTHER  REVENUE */
+                    $other_revenue = DB::table('ol_sv_validation')
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->where('val_type_id', '=', 2)
+                        ->where('card_mask_no','NOT LIKE','8173'.'%')
+                        ->where('card_mask_no','NOT LIKE','8174'.'%')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->sum('amt_deducted');
+
+                    $other_stnPenAmount = DB::table('ol_sv_accounting as osa')
+                        ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
+                        ->where('stn_id', '=', $stn_data->stn_id)
+                        ->where('pass_id','=',82)
+                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->where('card_mask_no','NOT LIKE','8173'.'%')
+                        ->where('card_mask_no','NOT LIKE','8174'.'%')
+                        ->sum('total_price');
+
+                    $total = $ppbl_revenue + $ppbl_stnPenAmount + $sbi_revenue + $sbi_stnPenAmount + $other_revenue + $other_stnPenAmount;
+
+                    $data['stn_name']       = $stn_data ->stn_name;
+                    $data['stn_code']       = $stn_data ->stn_id;
+                    $data['sv_iss_count']   = $issueCount;
+                    $data['sv_ref_count']   = $totalRefund;
+                    $data['sv_rel_count']   = $totalReload;
+                    $data['ol_revenue']     = $total;
+
+                    $cardData[] = $data;
+
+                } catch (PDOException $e) {
+                    $data['success']    = false;
+                    $cardData[]         = $data;
+                }
+
+            }
+
+            return response([
+                'status' => true,
+                'data'   => $cardData,
+            ]);
+
+        }
+
+    }
+
 }

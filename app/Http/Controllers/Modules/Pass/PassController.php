@@ -204,13 +204,13 @@ class PassController extends Controller
         $cardTypes  = DB::table('card_type')->get();
 
         return Inertia::render('Pass/Edit', [
-            'Pass'          =>$Pass,
-            'MediaTypes'    =>$MediaTypes,
-            'Companies'     =>$Companies,
-            'ProductTypes'  =>$ProductTypes,
-            'Units'         =>$Units,
-            'Fares'         =>$Fares,
-            'cardTypes'     =>$cardTypes,
+            'Pass'          => $Pass,
+            'MediaTypes'    => $MediaTypes,
+            'Companies'     => $Companies,
+            'ProductTypes'  => $ProductTypes,
+            'Units'         => $Units,
+            'Fares'         => $Fares,
+            'cardTypes'     => $cardTypes,
         ]);
 
     }

@@ -2145,7 +2145,7 @@ class ClAccounting extends Controller
                     ->select('cl_acc_id')
                     ->value('cl_acc_id');
 
-                /* PEN TYPE ID 31 */
+                /* PEN TYPE ID 34 */
                 DB::table('cl_pen_accounting')
                     ->insert([
                         'cl_acc_id'     => $clAccId,

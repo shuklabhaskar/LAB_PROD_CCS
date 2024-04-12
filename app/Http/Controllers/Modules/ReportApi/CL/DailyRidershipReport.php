@@ -11,6 +11,9 @@ class DailyRidershipReport extends Controller
 {
     public function dailyRidership(Request $request)
     {
+
+        set_time_limit(0);
+
         $from = $request->input('from_date');
         $to = $request->input('to_date');
 
@@ -19,6 +22,7 @@ class DailyRidershipReport extends Controller
             'from_date' => 'required|date_format:Y-m-d H:i:s',
             'to_date' => 'required|date_format:Y-m-d H:i:s',
         ]);
+
 
         /* IF VALIDATION FAILS */
         if ($validator->fails()) {
@@ -29,6 +33,7 @@ class DailyRidershipReport extends Controller
         } else {
 
             $clDailyRidership = [];
+
 
             /* TO GET NUMBER OF STATION AND STATION NAME */
             $stations = DB::table('station_inventory')
@@ -45,6 +50,7 @@ class DailyRidershipReport extends Controller
                 ->get();
 
             foreach ($stations as $station) {
+
                 $data = [
                     'stn_name' => $station->stn_short_name,
                     'stn_code' => $station->stn_id,

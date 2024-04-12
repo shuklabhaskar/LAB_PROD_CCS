@@ -169,7 +169,6 @@ class ConfigController extends Controller
 
     public function publishCreate(Request $request)
     {
-
         $data = json_decode($request->getContent());
 
         /* Equipment Config */
@@ -188,7 +187,7 @@ class ConfigController extends Controller
                     'config_version'  => $eq_version->eq_version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->Equipment->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -205,7 +204,7 @@ class ConfigController extends Controller
                     'config_version'  => $data->Fare->version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->Fare->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -222,7 +221,7 @@ class ConfigController extends Controller
                     'config_version'  => 1,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->Station->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -239,7 +238,7 @@ class ConfigController extends Controller
                     'config_version'  => $data->Pass->version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->Pass->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -257,7 +256,7 @@ class ConfigController extends Controller
                     'config_version'  => $data->User->version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->User->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -274,7 +273,7 @@ class ConfigController extends Controller
                     'config_version'  => $data->CardBlacklist->version,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->CardBlacklist->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
@@ -291,7 +290,7 @@ class ConfigController extends Controller
                     'config_version'  => 1,
                     'sent_by'         => 1,
                     'is_published'    => 1,
-                    'activation_time' => $data->Acquirer->activation_time
+                    'activation_time' => $data->activation_time
                 ]);
 
             }
