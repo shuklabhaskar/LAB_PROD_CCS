@@ -120,6 +120,9 @@ Route::post('/void', [AcqApiManager::class, 'voidTrans']);
 Route::post('/serviceCreation', [AcqApiManager::class, 'serviceCreation']);
 Route::post('/updateReceiptAndRevertLastTxn', [AcqApiManager::class, 'updateReceiptAndRevertLastTxn']);
 
+/* PAYTM SETTLEMENT */
+Route::post('/settlement', [Settlement::class, 'settlement']);
+
 /*CRASH REPORTS*/
 Route::post('/gateCrashReport', [crashReports::class, 'gateLog']);
 Route::post('/tomCrashReport', [crashReports::class, 'tomLog']);
@@ -155,6 +158,8 @@ Route::post('/cl/sv/exit/revenue', [StoreValueExitRevenue::class, 'svExitRevenue
 Route::post('/cl/audit/sv/', [StoreValueAuditApi::class, 'lag']);
 Route::get('/cl/audit/tp/{startDate}/{endDate}', [TripPassAuditApi::class, 'index']);
 
+Route::post('/cl/train/load', [KnowYourLoad::class, 'cl']);
+Route::post('/ol/train/load', [KnowYourLoad::class, 'ol']);
 
 /* REPORT API'S*/
 Route::middleware(['basic_auth'])->group(function () {
