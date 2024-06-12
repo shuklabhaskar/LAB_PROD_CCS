@@ -36,6 +36,8 @@ use App\Http\Controllers\Modules\ReportApi\CL\StoreValueExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\CL\TripPassExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\KnowYourLoad;
+use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
+use App\Http\Controllers\Modules\ReportApi\Mqr\PreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
@@ -192,6 +194,12 @@ Route::middleware(['basic_auth'])->group(function () {
     /* TOM API */
     Route::post('/clSvAccReport', [ClAccReport::class, 'svAccReport']);
     Route::post('/clTpAccReport', [ClAccReport::class, 'tpAccReport']);
+
+    /* QR API */
+    Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']);
+    Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);
+
+
 
 });
 
