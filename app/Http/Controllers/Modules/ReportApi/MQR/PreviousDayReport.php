@@ -51,7 +51,7 @@ class PreviousDayReport extends Controller
                     ->whereBetween(DB::raw('(msjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
                     ->where('src_stn_id', '=', $station->stn_id)
-                    ->count();
+                    ->sum('units');
 
                 $sjtRefundCount = DB::table('msjt_ms_accounting')
                     ->whereBetween(DB::raw('(msjt_ms_accounting.txn_date)'), [$from, $to])
@@ -80,7 +80,7 @@ class PreviousDayReport extends Controller
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
                     ->where('src_stn_id', '=', $station->stn_id)
-                    ->sum('unit');
+                    ->sum('units');
 
                 $rjtRefundCount = DB::table('mrjt_ms_accounting')
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
