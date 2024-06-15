@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Modules\ReportApi\Mqr;
+namespace App\Http\Controllers\Modules\ReportApi\MQR;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -74,14 +74,13 @@ class PreviousDayReport extends Controller
 
                 $sjtRevenue = $sjtIssueAmount + $sjtGra;
 
-
                 /* FOR RJT */
 
                 $rjtIssueCount = DB::table('mrjt_ms_accounting')
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
                     ->where('src_stn_id', '=', $station->stn_id)
-                    ->count();
+                    ->sum('unit');
 
                 $rjtRefundCount = DB::table('mrjt_ms_accounting')
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
