@@ -38,7 +38,7 @@ use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\KnowYourLoad;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MqrTravelApi;
-use App\Http\Controllers\Modules\ReportApi\Mqr\PreviousDayReport;
+use App\Http\Controllers\Modules\ReportApi\MQR\PreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
