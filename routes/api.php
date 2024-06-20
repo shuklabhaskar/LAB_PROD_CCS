@@ -7,7 +7,6 @@ use App\Http\Controllers\Modules\Api\CL\ClIndraCardReplacement;
 use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
 use App\Http\Controllers\Modules\Api\CL\ClValidation;
 use App\Http\Controllers\Modules\Api\ConfigApiController;
-use App\Http\Controllers\Modules\Api\CrashReport\crashReports;
 use App\Http\Controllers\Modules\Api\Equipment;
 use App\Http\Controllers\Modules\Api\Firmware\Firmware;
 use App\Http\Controllers\Modules\Api\NewConfigApiController;
@@ -108,6 +107,7 @@ Route::post('/verifyTerminal', [VerifyTerminal::class, 'verify']);
 Route::get('/olAcqTxn', [OlAcqTxn::class, 'index']);
 
 /* PAYTM */
+/* ISSUANCE API */
 Route::post('/otp/send', [IssuanceApiManager::class, 'sendOtp']);
 Route::post('/otp/verify', [IssuanceApiManager::class, 'verifyOtp']);
 Route::post('/kyc/details', [IssuanceApiManager::class, 'kycDetail']);
@@ -115,6 +115,7 @@ Route::post('/kyc/submit', [IssuanceApiManager::class, 'submitKyc']);
 Route::post('/card/activation', [IssuanceApiManager::class, 'activateCard']);
 Route::post('/card/status', [IssuanceApiManager::class, 'activationStatus']);
 
+/* ACQUIRER API */
 Route::post('/verifyTerminal', [AcqApiManager::class, 'verifyTerminal']);
 Route::post('/moneyLoad', [AcqApiManager::class, 'moneyLoad']);
 Route::post('/sale', [AcqApiManager::class, 'sale']);
@@ -125,11 +126,6 @@ Route::post('/updateReceiptAndRevertLastTxn', [AcqApiManager::class, 'updateRece
 
 /* PAYTM SETTLEMENT */
 Route::post('/settlement', [Settlement::class, 'settlement']);
-
-/*CRASH REPORTS*/
-Route::post('/gateCrashReport', [crashReports::class, 'gateLog']);
-Route::post('/tomCrashReport', [crashReports::class, 'tomLog']);
-Route::post('/edcCrashReport', [crashReports::class, 'edcLog']);
 
 /*CLOSE LOOP API*/
 Route::get('/clSnMapping', [ClSnMapping::class, 'index']);
@@ -196,16 +192,17 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::post('/clSvAccReport', [ClAccReport::class, 'svAccReport']);
     Route::post('/clTpAccReport', [ClAccReport::class, 'tpAccReport']);
 
-    /* QR API */
+    /* MQR API */
+    /* MQR HOURLY REPORT (DAILY RIDERSHIP) */
     Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']);
     Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);
 
-    Route::post('mqr/sjtValReport',[MqrTravelApi::class,'sjtValReport']);
-    Route::post('mqr/rjtValReport',[MqrTravelApi::class,'rjtValReport']);
+    /* MQR BOARDING ALIGHTING (TRAVEL API)*/
+    Route::get('mqr/sjtValReport', [MqrTravelApi::class, 'sjtValReport']);
+    Route::get('mqr/rjtValReport', [MqrTravelApi::class, 'rjtValReport']);
+
+    /*ACCOUNTING REPORTS TO BE ON HOLD BY RAHUL SIR*/
+    /*Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
+    Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']);*/
 
 });
-
-
-
-
-

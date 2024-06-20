@@ -68,14 +68,13 @@ class PreviousDayReport extends Controller
 
                 $sjtGra = DB::table('msjt_ms_accounting')
                     ->whereBetween(DB::raw('(msjt_ms_accounting.txn_date)'), [$from, $to])
-                    ->whereIn('op_type_id', [54, 61, 62, 63, 64, 65])
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->whereNotIn('op_type_id', [1, 6])
+                    ->where('des_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $sjtRevenue = $sjtIssueAmount + $sjtGra;
 
                 /* FOR RJT */
-
                 $rjtIssueCount = DB::table('mrjt_ms_accounting')
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
@@ -97,8 +96,8 @@ class PreviousDayReport extends Controller
 
                 $rjtGra = DB::table('mrjt_ms_accounting')
                     ->whereBetween(DB::raw('(mrjt_ms_accounting.txn_date)'), [$from, $to])
-                    ->whereIn('op_type_id', [54, 61, 62, 63, 64, 65])
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->whereNotIn('op_type_id', [1, 6])
+                    ->where('des_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $rjtRevenue = $rjtIssueAmount + $rjtGra;

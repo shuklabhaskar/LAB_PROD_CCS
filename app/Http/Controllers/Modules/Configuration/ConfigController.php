@@ -36,7 +36,9 @@ class ConfigController extends Controller
         if ($config_id == 1) {
             /*EQUIPMENTS*/
             DB::table('equipment_inventory')->where('status', '=', 1)->update(['is_generated' => true]);
-            $configurations = DB::table('equipment_inventory')->where('status', '=', 1)->get(['eq_inv_id', 'status']);
+            $configurations = DB::table('equipment_inventory')
+                ->where('status', '=', 1)
+                ->get(['eq_inv_id', 'status']);
         }
 
         else if ($config_id == 2) {

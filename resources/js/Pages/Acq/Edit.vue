@@ -141,7 +141,6 @@
             errors:Object,
             acqParam:Object,
             EmvTypes: Array,
-
         },
 
         /*FORM DATA*/

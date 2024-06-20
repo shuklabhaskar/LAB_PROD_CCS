@@ -7,11 +7,11 @@ use App\Http\Controllers\Modules\CardBlacklist\CardBlacklistController;
 use App\Http\Controllers\Modules\CardSnMapping\CardSnMappingController;
 use App\Http\Controllers\Modules\CardType\CardTypeController;
 use App\Http\Controllers\Modules\Configuration\ConfigController;
-use App\Http\Controllers\Modules\CrashReport\ViewCrashReport;
 use App\Http\Controllers\Modules\Equipment\EquipmentController;
 use App\Http\Controllers\Modules\Fare\FareController;
 use App\Http\Controllers\Modules\Firmware\FirmwareController;
 use App\Http\Controllers\Modules\Firmware\FirmwarePublish;
+use App\Http\Controllers\Modules\Operator\OperatorController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\Product\ProductController;
 use App\Http\Controllers\Modules\Station\StationController;
@@ -22,10 +22,10 @@ use App\Http\Controllers\Modules\User\UserRole;
 use App\Http\Controllers\Modules\Vendor\VendorController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/',[LoginController::class,'index']);
-Route::post('/',[LoginController::class,'verify']);
+Route::get('/', [LoginController::class, 'index']);
+Route::post('/', [LoginController::class, 'verify']);
 
-Route::get('/dashboard',[DashboardController::class,'index']);
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::get('/stations', [StationController::class, 'index']);
 Route::get('/stations/create', [StationController::class, 'create']);
@@ -39,11 +39,6 @@ Route::get('/equipments/create', [EquipmentController::class, 'create']);
 Route::post('/equipments', [EquipmentController::class, 'store']);
 Route::get('/equipments/edit/{id}', [EquipmentController::class, 'edit']);
 Route::post('/equipments/edit/{id}', [EquipmentController::class, 'update']);
-
-/*CRASH REPORT VIEW*/
-Route::get('/gate/log/{id}', [ViewCrashReport::class, 'viewGateLog']);
-Route::get('/tom/log/{id}', [ViewCrashReport::class, 'viewTomLog']);
-Route::get('/edc/log/{id}', [ViewCrashReport::class, 'viewEdcLog']);
 
 // FARES
 Route::get('/fares', [FareController::class, 'index']);
@@ -97,10 +92,10 @@ Route::get('/userPrivilege/edit/{id}', [UserPrivilege::class, 'edit']);
 Route::post('/userPrivilege/edit/{id}', [UserPrivilege::class, 'update']);
 
 /*CONFIGURATION*/
-Route::get('/config',[ConfigController::class,'index']);
+Route::get('/config', [ConfigController::class, 'index']);
 Route::get('config/create/{id}', [ConfigController::class, 'create']);
-Route::get('/publish',[ConfigController::class,'PublishIndex']);
-Route::post('/publish/create',[ConfigController::class,'publishCreate']);
+Route::get('/publish', [ConfigController::class, 'PublishIndex']);
+Route::post('/publish/create', [ConfigController::class, 'publishCreate']);
 
 /*TID INVENTORY*/
 Route::get('/tids', [TidController::class, 'index']);
@@ -135,16 +130,8 @@ Route::post('/card/blacklist', [CardBlacklistController::class, 'store']);
 Route::post('/card/blacklist/delete/{id}', [CardBlacklistController::class, 'delete']);
 
 // CARD SN MAPPING
-Route::get('/card/sn/mapping',[CardSnMappingController::class,'index']);
-Route::post('/card/sn/mapping',[CardSnMappingController::class,'store']);
+Route::get('/card/sn/mapping', [CardSnMappingController::class, 'index']);
+Route::post('/card/sn/mapping', [CardSnMappingController::class, 'store']);
 
-
-Route::get('/crashReport', [ViewCrashReport::class, 'index']);
-
-
-
-
-
-
-
-
+/*OPERATOR*/
+Route::get('/operators', [OperatorController::class, 'index']);

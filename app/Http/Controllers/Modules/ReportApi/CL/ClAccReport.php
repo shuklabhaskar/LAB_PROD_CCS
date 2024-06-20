@@ -31,7 +31,7 @@ class ClAccReport extends Controller
                     $join->on('cl_sv_accounting.engraved_id', '=', 'cl_status.engraved_id');
                 })
                 ->whereBetween('cl_sv_accounting.txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('cl_sv_accounting.pass_id', [23, 63, 73, 83])
+                ->whereIn('cl_sv_accounting.pass_id', [23, 63, 73, 83,84])
                 ->orderBy('cl_sv_accounting.txn_date', 'ASC')
                 ->get([
                     'cl_sv_accounting.atek_id as order_id',
@@ -118,7 +118,7 @@ class ClAccReport extends Controller
                     $join->on('cl_tp_accounting.engraved_id', '=', 'cl_status.engraved_id');
                 })
                 ->whereBetween('cl_tp_accounting.txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('cl_tp_accounting.pass_id', [23, 63, 73, 83])
+                ->whereIn('cl_tp_accounting.pass_id', [23, 63, 73, 83, 24, 64])
                 ->orderBy('cl_tp_accounting.txn_date', 'ASC')
                 ->get([
                     'cl_tp_accounting.atek_id as order_id',
@@ -181,4 +181,5 @@ class ClAccReport extends Controller
             ], 500);
         }
     }
+
 }

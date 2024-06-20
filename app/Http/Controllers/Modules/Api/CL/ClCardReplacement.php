@@ -10,7 +10,6 @@ class ClCardReplacement extends Controller
 {
     public function getCardData($engravedId)
     {
-
         if ($engravedId == null) {
             return response([
                 'status' => false,

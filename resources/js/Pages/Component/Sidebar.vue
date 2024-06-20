@@ -134,7 +134,7 @@
                     </Link>
                 </li>
 
-                <!--FOR OPERATORS-->
+                <!--FOR VENDORS-->
                 <li class="sidebar-header">
                     VENDORS MODULE
                 </li>
@@ -143,6 +143,18 @@
                     <Link :href="'/vendors'" class="sidebar-link">
                         <font-awesome-icon icon="fa-solid fa-user"/>
                         <span class="align-middle">Vendors</span>
+                    </Link>
+                </li>
+
+                <!--FOR OPERATORS-->
+                <li class="sidebar-header">
+                    OPERATORS MODULE
+                </li>
+
+                <li class="sidebar-item ">
+                    <Link :href="'/operators'" class="sidebar-link">
+                        <font-awesome-icon icon="fa-solid fa-user"/>
+                        <span class="align-middle">Operators</span>
                     </Link>
                 </li>
 

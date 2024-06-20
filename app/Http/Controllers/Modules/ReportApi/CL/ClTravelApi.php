@@ -29,7 +29,7 @@ class ClTravelApi extends Controller
 
             $data = DB::table('cl_sv_validation')
                 ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('pass_id', [23, 63, 73, 83])
+                ->whereIn('pass_id', [23, 63, 73, 83, 84])
                 ->get([
                     'atek_id as order_id',
                     'txn_date',
@@ -83,7 +83,7 @@ class ClTravelApi extends Controller
 
             $data = DB::table('cl_tp_validation')
                 ->whereBetween('txn_date', [$request->input('from_date'), $request->input('to_date')])
-                ->whereIn('pass_id', [23, 63, 73, 83])
+                ->whereIn('pass_id', [23, 63, 73, 83, 24, 64])
                 ->get([
                     'atek_id as order_id',
                     'txn_date',

@@ -23,8 +23,8 @@ class NewConfigApiController extends Controller
 
         return response([
             'status' => false,
-            'code' => 101,
-            'error' => "Equipment identification failed !"
+            'code'   => 101,
+            'error'  => "Equipment identification failed !"
         ]);
 
     }
@@ -53,8 +53,8 @@ class NewConfigApiController extends Controller
         if ($equipment == null) {
             return response([
                 'status' => false,
-                'code' => 102,
-                'error' => 'No config is available!'
+                'code'   => 102,
+                'error'  => 'No config is available!'
             ]);
         }
 
@@ -132,16 +132,16 @@ class NewConfigApiController extends Controller
 
             return response([
                 'status' => true,
-                'code' => 100,
-                'data' => $configResponse
+                'code'   => 100,
+                'data'   => $configResponse
             ]);
 
         }
 
         return response([
             'status' => false,
-            'code' => 102,
-            'error' => 'No config is available!'
+            'code'   => 102,
+            'error'  => 'No config is available!'
         ]);
     }
 
@@ -165,8 +165,8 @@ class NewConfigApiController extends Controller
         if ($equipment == null) {
             return response([
                 'status' => false,
-                'code' => 102,
-                'error' => 'No config is available!'
+                'code'   => 102,
+                'error'  => 'No config is available!'
             ]);
         }
 
@@ -178,6 +178,8 @@ class NewConfigApiController extends Controller
         $configResponse = [];
 
         if ($configs->count() > 0) {
+
+            $configResponse['activation_time'] = $configs[0]->activation_time;
 
             foreach ($configs as $config) {
 
@@ -341,6 +343,7 @@ class NewConfigApiController extends Controller
             ])
             ->first();
 
+
         if ($equipment == null || $equipment == "") {
 
             return response([
@@ -365,6 +368,8 @@ class NewConfigApiController extends Controller
         $configResponse = [];
 
         if ($configs->count() > 0) {
+
+            $configResponse['activation_time'] = $configs[0]->activation_time;
 
             foreach ($configs as $config) {
 

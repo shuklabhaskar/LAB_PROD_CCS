@@ -4,17 +4,18 @@ namespace App\Http\Controllers\Modules\ReportApi\CL\AfcAuditApi;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class TripPassAuditApi extends Controller
 {
+
     function index($startDate, $endDate)
     {
+
         set_time_limit(0);
 
         $result = [];
+
         $valTrans = DB::table('cl_tp_validation')
             ->whereIn('trip_balance', [45, 500])
             ->whereIn('pass_id',[23,63])

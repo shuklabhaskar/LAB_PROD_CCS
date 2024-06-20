@@ -109,7 +109,7 @@ class StoreValueExitRevenue extends Controller
             $processDate = $date->format('Y-m-d');
 
             $accTrans = DB::table('cl_sv_accounting')
-                ->whereIn('pass_id', [83, 73])
+                ->whereIn('pass_id', [83, 84, 73])
                 ->whereRaw('pass_expiry + INTERVAL \'180 days\' = ?', [$processDate . " 01:10:00"])
                 ->whereIn('op_type_id', [1, 3])
                 ->orderBy('txn_date', 'DESC')
@@ -206,7 +206,7 @@ class StoreValueExitRevenue extends Controller
             END AS DT,
             SUM(
                 CASE
-                    WHEN val_type_id = 2 AND pass_id IN (73, 83)
+                    WHEN val_type_id = 2 AND pass_id IN (73, 83, 84)
                     THEN amt_deducted
                     ELSE 0
                 END

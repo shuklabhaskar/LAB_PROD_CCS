@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-
 class TripPassExitRevenue extends Controller
 {
     function tpExitRevenue(Request $request)
@@ -39,7 +38,7 @@ class TripPassExitRevenue extends Controller
 
             $engravedIds = DB::table('cl_tp_validation')
                 ->whereRaw("TO_CHAR(txn_date, 'YYYY-MM-DD') = ?", [$processDate])
-                ->where('pass_id', '=', 23)
+                ->whereIn('pass_id',  [23,24])
                 ->where('val_type_id', '=', 2)
                 ->orderBy('txn_date', 'DESC')
                 ->pluck('engraved_id');
@@ -99,6 +98,7 @@ class TripPassExitRevenue extends Controller
                     ->orderBy('txn_date', 'ASC')
                     ->first();
 
+
                 if ($repTrans != null) {
 
                     $sourceId = $repTrans->src_stn_id;
@@ -115,7 +115,7 @@ class TripPassExitRevenue extends Controller
                         ->where('destination_id', '=', $destinationId)
                         ->value('fare');
 
-                    $sum += ($fare / $pass->trip_count);
+                    $pass->trip_count == 0 ?: $sum +=  ($fare / $pass->trip_count);
 
                 }
 
@@ -128,11 +128,11 @@ class TripPassExitRevenue extends Controller
 
         }
 
-
         return response([
             'status' => true,
             'data' => $response
         ]);
+
     }
 
     /* TP STALE REVENUE FOR ATEK SYSTEM PASS ID 23*/
@@ -162,7 +162,7 @@ class TripPassExitRevenue extends Controller
             $processDate = $date->format('Y-m-d');
 
             $accTrans = DB::table('cl_tp_accounting')
-                ->where('pass_id', '=', 23)
+                ->whereIn('pass_id',  [23,24])
                 ->where('pass_expiry', '=', $processDate . " 01:10:00")
                 ->whereIn('op_type_id', [1, 3])
                 ->orderBy('txn_date', 'DESC')

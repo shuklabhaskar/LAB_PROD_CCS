@@ -59,6 +59,22 @@ return [
             'days'   => 30,
         ],
 
+        'mqrAccounting' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/MQR/MqrAccounting/'),
+            'filename'  => 'MqrAccounting_' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
+
+        'mqrValidation' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/MQR/MqrValidation/'),
+            'filename'  => 'MqrValidation_' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
+
         'clAccounting' => [
             'driver'    => 'daily',
             'path'      => storage_path('logs/CL/ClAccounting/'),
@@ -76,6 +92,13 @@ return [
             'days'      => 30,
         ],
 
+        'paytmSettlement' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/OL/PaytmSettlement/'),
+            'filename'  => 'paytmSettlement' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
 
         'slack' => [
             'driver' => 'slack',
