@@ -28,6 +28,8 @@ class ClInitialisation extends Controller
         /* ACCESSING TRANSACTION SINGLE USING FOR EACH */
         foreach ($transactions as $transaction) {
 
+            $transData = [];
+
             /* VALIDATION FOR INPUT REQUEST */
             $validator = Validator::make($request->all(), [
                 '*.id'            => 'required',
@@ -79,7 +81,7 @@ class ClInitialisation extends Controller
                 /*UPDATING OR INSERTING THE ROW ON BASIS OF ENGRAVED ID EXISTS IN TABLE OR NOT */
                 DB::table('cl_status')
                     ->updateOrInsert(
-                        ['engraved_id'=> $transaction['engraved_id']], /* TO CHECK WHERE ENGRAVED ID ALREADY EXIST IN TABLE OR NOT  */
+                        ['engraved_id' => $transaction['engraved_id']], /* TO CHECK WHERE ENGRAVED ID ALREADY EXIST IN TABLE OR NOT  */
                         [
                             'chip_id'           => $transaction['chip_id'],
                             'txn_date'          => Carbon::now(),
