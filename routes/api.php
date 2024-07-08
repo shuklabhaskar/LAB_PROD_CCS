@@ -4,6 +4,7 @@ use App\Http\Controllers\Modules\Api\CardSaleSettlement;
 use App\Http\Controllers\Modules\Api\CL\ClAccounting;
 use App\Http\Controllers\Modules\Api\CL\ClCardReplacement;
 use App\Http\Controllers\Modules\Api\CL\ClIndraCardReplacement;
+use App\Http\Controllers\Modules\Api\CL\ClInitialisation;
 use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
 use App\Http\Controllers\Modules\Api\CL\ClValidation;
 use App\Http\Controllers\Modules\Api\ConfigApiController;
@@ -60,6 +61,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/cl/initialisation',[ClInitialisation::class,'initialisation']);
 Route::post('get/params', [PassController::class, 'getParamsForPass']);
 
 /*DOWNLOAD AND CHECK UPDATE OF FIRMWARE*/
