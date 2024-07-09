@@ -359,7 +359,6 @@ class ClAccounting extends Controller
                             'pax_last_name'     => $paxLastName,
                             'pax_mobile'        => $paxMobile,
                             'pax_gen_type'      => $paxGenType,
-
                         ]);
 
                     }
@@ -387,7 +386,7 @@ class ClAccounting extends Controller
 
     } /* OP_TYPE_ID = 1*/
 
-    public function Reload($transaction, $clStatus)
+    public function Reload($transaction)
     {
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName = "";
@@ -438,17 +437,15 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting for sv");
-
+                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
                 $pass = DB::table("pass_inventory")
                     ->where('pass_id', '=', $transaction['pass_id'])
-                    ->first() ?: throw new PDOException("Failed to insert in cl_sv_accounting");
-
+                    ->first() ?: throw new PDOException("Failed to found given Pass ID");
 
                 $cardSecDeposit = DB::table('card_type')
                     ->where('card_type_id', '=', $pass->card_type_id)
-                    ->first('card_sec') ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                    ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
 
                 /*** MAKING
                  * TRIP PASS
@@ -471,7 +468,7 @@ class ClAccounting extends Controller
                         'src_stn_id'     => 0,
                         'des_stn_id'     => 0,
                         'updated_at'     => now(),
-                    ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                    ]) ?: throw new PDOException("Failed to insert in cl_status");
 
             }
 
@@ -512,17 +509,17 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting for sv");
+                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
 
                 $pass = DB::table("pass_inventory")
                     ->where('pass_id', '=', $transaction['pass_id'])
-                    ->first() ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                    ->first() ?: throw new PDOException("Failed to found given Pass ID");
 
 
                 $cardSecDeposit = DB::table('card_type')
                     ->where('card_type_id', '=', $pass->card_type_id)
-                    ->first('card_sec') ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                    ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
 
                 DB::table('cl_status')
                     ->where('engraved_id', '=', $transaction['engraved_id'])
@@ -539,7 +536,7 @@ class ClAccounting extends Controller
                         'pax_last_name'  => $paxLastName,
                         'pax_mobile'     => $paxMobile,
                         'updated_at'     => now()
-                    ])?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                    ])?: throw new PDOException("Failed to insert in cl_status");
 
 
             }
@@ -940,6 +937,7 @@ class ClAccounting extends Controller
 
         } catch (PDOException $e) {
 
+            Log::channel('ClAccounting')->error($e);
             /* IF COLUMN IDENTITY FOUND AS ERROR */
             if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
                 $transData['is_settled'] = true;
@@ -1143,6 +1141,7 @@ class ClAccounting extends Controller
 
         } catch (PDOException $e) {
 
+            Log::channel('ClAccounting')->error($e);
             /* IF COLUMN IDENTITY FOUND AS ERROR */
             if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
                 $transData['is_settled'] = true;
@@ -1346,6 +1345,7 @@ class ClAccounting extends Controller
 
         } catch (PDOException $e) {
 
+            Log::channel('ClAccounting')->error($e);
             /* IF COLUMN IDENTITY FOUND AS ERROR */
             if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
                 $transData['is_settled'] = true;
@@ -2428,6 +2428,5 @@ class ClAccounting extends Controller
 
 
     }/* OP_TYPE_ID = 65*/
-
 
 }
