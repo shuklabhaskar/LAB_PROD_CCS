@@ -217,6 +217,7 @@ class ClAccounting extends Controller
                                 'card_fee'           => $transaction['card_fee'],
                                 'card_sec'           => $transaction['card_sec'],
                                 'sv_balance'         => $transaction['pos_chip_bal'],
+                                'tp_balance'         => $transaction['rem_trips'],
                                 'pass_expiry'        => $transaction['pass_expiry'],
                                 'src_stn_id'         => $transaction['src_stn_id'],
                                 'des_stn_id'         => $transaction['des_stn_id'],
@@ -243,10 +244,11 @@ class ClAccounting extends Controller
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
                             'card_sec'          => $transaction['card_sec'],
-                            'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
                             'des_stn_id'        => $transaction['des_stn_id'],
+                            'tp_balance'        => $transaction['rem_trips'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
                             'auto_topup_status' => $autoTopUpStatus,
                             'auto_topup_amt'    => $autoTopUpAmount,
                             'bonus_points'      => $bonusPoints,
@@ -318,6 +320,7 @@ class ClAccounting extends Controller
                                 'card_fee'          => $transaction['card_fee'],
                                 'card_sec'          => $transaction['card_sec'],
                                 'tp_balance'        => $transaction['rem_trips'],
+                                'sv_balance'        => $transaction['pos_chip_bal'],
                                 'pass_expiry'       => $transaction['pass_expiry'],
                                 'src_stn_id'        => $transaction['src_stn_id'],
                                 'des_stn_id'        => $transaction['des_stn_id'],
@@ -344,6 +347,7 @@ class ClAccounting extends Controller
                             'card_fee'          => $transaction['card_fee'],
                             'card_sec'          => $transaction['card_sec'],
                             'tp_balance'        => $transaction['rem_trips'],
+                            'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
                             'des_stn_id'        => $transaction['des_stn_id'],
@@ -380,7 +384,6 @@ class ClAccounting extends Controller
             return $transData;
 
         }
-
 
     } /* OP_TYPE_ID = 1*/
 
@@ -458,6 +461,7 @@ class ClAccounting extends Controller
                                 ->update([
                                     'txn_date'       => $transaction['txn_date'],
                                     'sv_balance'     => $transaction['pos_chip_bal'],
+                                    'tp_balance'     => $transaction['rem_trips'],
                                     'pass_expiry'    => $transaction['pass_expiry'],
                                     'pass_id'        => $transaction['pass_id'],
                                     'product_id'     => $transaction['product_id'],
@@ -465,7 +469,6 @@ class ClAccounting extends Controller
                                     'pax_last_name'  => $paxLastName,
                                     'pax_mobile'     => $paxMobile,
                                     'card_sec'       => $gettingCardSec ? null :0,
-                                    'tp_balance'     => 0,
                                     'src_stn_id'     => 0,
                                     'des_stn_id'     => 0,
                                     'updated_at'     => now(),
@@ -537,6 +540,7 @@ class ClAccounting extends Controller
                             ->update([
                                 'txn_date'       => $transaction['txn_date'],
                                 'tp_balance'     => $transaction['rem_trips'],
+                                'sv_balance'     => $transaction['pos_chip_bal'],
                                 'pass_id'        => $transaction['pass_id'],
                                 'product_id'     => $transaction['product_id'],
                                 'card_sec'       => $gettingCardSec ? null :0,
@@ -545,7 +549,6 @@ class ClAccounting extends Controller
                                 'pax_first_name' => $paxFirstName,
                                 'pax_last_name'  => $paxLastName,
                                 'pax_mobile'     => $paxMobile,
-                                'sv_balance'     => 0,
                                 'updated_at'     => now()
                             ]);
 
@@ -634,6 +637,7 @@ class ClAccounting extends Controller
                 ]);
 
                 if ($svData) {
+
                     if ($engravedIdExists) {
 
                         DB::table('cl_status')
@@ -647,6 +651,7 @@ class ClAccounting extends Controller
                                 'card_fee'          => 0,
                                 'card_sec'          => 0,
                                 'sv_balance'        => 0,
+                                'tp_balance'        => 0,
                                 'pass_expiry'       => Carbon::now(),
                                 'src_stn_id'        => 0,
                                 'des_stn_id'        => 0,
@@ -717,6 +722,7 @@ class ClAccounting extends Controller
                                 'product_id'        => 0,
                                 'card_fee'          => 0,
                                 'card_sec'          => 0,
+                                'sv_balance'        => 0,
                                 'tp_balance'        => 0,
                                 'pass_expiry'       => Carbon::now(),
                                 'src_stn_id'        => 0,
