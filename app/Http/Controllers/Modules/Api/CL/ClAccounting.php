@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Modules\Api\CL;
 
-use _PHPStan_993c0a2e7\Nette\Neon\Exception;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -10,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PDOException;
-use function PHPUnit\Framework\throwException;
 
 class ClAccounting extends Controller
 {
@@ -440,11 +438,13 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting for sv");
+
 
                 $pass = DB::table("pass_inventory")
                     ->where('pass_id', '=', $transaction['pass_id'])
                     ->first() ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+
 
                 $cardSecDeposit = DB::table('card_type')
                     ->where('card_type_id', '=', $pass->card_type_id)
@@ -467,7 +467,7 @@ class ClAccounting extends Controller
                         'pax_first_name' => $paxFirstName,
                         'pax_last_name'  => $paxLastName,
                         'pax_mobile'     => $paxMobile,
-                        'card_sec'       => $cardSecDeposit,
+                        'card_sec'       => $cardSecDeposit->card_sec,
                         'src_stn_id'     => 0,
                         'des_stn_id'     => 0,
                         'updated_at'     => now(),
@@ -512,45 +512,35 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]);
+                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting for sv");
 
-                if ($tpData) {
 
-                    if ($clStatus) {
+                $pass = DB::table("pass_inventory")
+                    ->where('pass_id', '=', $transaction['pass_id'])
+                    ->first() ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                        $gettingCardSec = DB::table('pass_inventory')
-                            ->where('pass_id', '=', $transaction['pass_id'])
-                            ->get('card_sec');
 
-                        /*** MAKING
-                         * STORE VALUE
-                         * VARIABLES AS ZERO AND
-                         * DOING TRANSACTION ONLY FOR TRIP PASS
-                         */
+                $cardSecDeposit = DB::table('card_type')
+                    ->where('card_type_id', '=', $pass->card_type_id)
+                    ->first('card_sec') ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                            DB::table('cl_status')
-                            ->where('engraved_id', '=', $transaction['engraved_id'])
-                            ->update([
-                                'txn_date'       => $transaction['txn_date'],
-                                'tp_balance'     => $transaction['rem_trips'],
-                                'sv_balance'     => $transaction['pos_chip_bal'],
-                                'pass_id'        => $transaction['pass_id'],
-                                'product_id'     => $transaction['product_id'],
-                                'card_sec'       => $gettingCardSec ? null :0,
-                                'src_stn_id'     => $transaction['src_stn_id'],
-                                'des_stn_id'     => $transaction['des_stn_id'],
-                                'pax_first_name' => $paxFirstName,
-                                'pax_last_name'  => $paxLastName,
-                                'pax_mobile'     => $paxMobile,
-                                'updated_at'     => now()
-                            ]);
+                DB::table('cl_status')
+                    ->where('engraved_id', '=', $transaction['engraved_id'])
+                    ->update([
+                        'txn_date'       => $transaction['txn_date'],
+                        'tp_balance'     => $transaction['rem_trips'],
+                        'sv_balance'     => $transaction['pos_chip_bal'],
+                        'pass_id'        => $transaction['pass_id'],
+                        'product_id'     => $transaction['product_id'],
+                        'card_sec'       => $cardSecDeposit->card_sec,
+                        'src_stn_id'     => $transaction['src_stn_id'],
+                        'des_stn_id'     => $transaction['des_stn_id'],
+                        'pax_first_name' => $paxFirstName,
+                        'pax_last_name'  => $paxLastName,
+                        'pax_mobile'     => $paxMobile,
+                        'updated_at'     => now()
+                    ])?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                    }else {
-                        $message = "Unable to update the given engraved_id in Cl Status: {$transaction['engraved_id']}";
-                        Log::channel('clAccounting')->info($message);
-                    }
-
-                }
 
             }
 
