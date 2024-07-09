@@ -807,6 +807,15 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -816,7 +825,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
@@ -889,6 +898,15 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -898,7 +916,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'tp_balance'        => $transaction['rem_trips'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
@@ -1012,6 +1030,15 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -1021,7 +1048,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
@@ -1094,6 +1121,15 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -1103,7 +1139,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'tp_balance'        => $transaction['rem_trips'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
@@ -1217,6 +1253,15 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -1226,7 +1271,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
@@ -1298,6 +1343,15 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $pass = DB::table("pass_inventory")
+                        ->where('pass_id', '=', $transaction['pass_id'])
+                        ->first() ?: throw new PDOException("Failed to found given Pass ID");
+
+                    $cardSecDeposit = DB::table('card_type')
+                        ->where('card_type_id', '=', $pass->card_type_id)
+                        ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
+
+
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -1307,7 +1361,7 @@ class ClAccounting extends Controller
                             'pass_id'           => $transaction['pass_id'],
                             'product_id'        => $transaction['product_id'],
                             'card_fee'          => $transaction['card_fee'],
-                            'card_sec'          => $transaction['card_sec'],
+                            'card_sec'          => $cardSecDeposit,
                             'tp_balance'        => $transaction['rem_trips'],
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
