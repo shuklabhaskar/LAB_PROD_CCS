@@ -479,7 +479,11 @@ class ClAccounting extends Controller
                         Log::channel('clAccounting')->info($message);
                     }
 
+                }else {
+                    $message = "Not Found in Sv Accounting: {$transaction['engraved_id']}";
+                    Log::channel('clAccounting')->info($message);
                 }
+
             }
 
             if ($transaction['product_id'] == 4) {
