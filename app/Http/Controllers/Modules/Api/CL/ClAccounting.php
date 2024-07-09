@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Modules\Api\CL;
 
+use _PHPStan_993c0a2e7\Nette\Neon\Exception;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PDOException;
+use function PHPUnit\Framework\throwException;
 
 class ClAccounting extends Controller
 {
@@ -399,16 +401,13 @@ class ClAccounting extends Controller
         if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
         if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
         if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
-        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus = $transaction['auto_topup_status'];
-        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount = $transaction['auto_topup_amt'];
-        if (array_key_exists("bonus_points", $transaction)) $bonusPoints = $transaction['bonus_points'];
 
 
         try {
 
             if ($transaction['product_id'] == 3) {
 
-                $svData = DB::table('cl_sv_accounting')->insert([
+                DB::table('cl_sv_accounting')->insert([
                     'atek_id'           => $transaction['atek_id'],
                     'txn_date'          => $transaction['txn_date'],
                     'engraved_id'       => $transaction['engraved_id'],
@@ -441,48 +440,38 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]);
+                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                if ($svData) {
+                $pass = DB::table("pass_inventory")
+                    ->where('pass_id', '=', $transaction['pass_id'])
+                    ->first() ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                    if ($clStatus != null) {
+                $cardSecDeposit = DB::table('card_type')
+                    ->where('card_type_id', '=', $pass->card_type_id)
+                    ->first('card_sec') ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
-                        $gettingCardSec = DB::table('pass_inventory')
-                            ->where('pass_id', '=', $transaction['pass_id'])
-                            ->get('card_sec');
-
-                        /*** MAKING
-                         * TRIP PASS
-                         * VARIABLES AS ZERO AND
-                         * DOING TRANSACTION ONLY FOR STORE VALUE
-                         */
-                            DB::table('cl_status')
-                                ->where('engraved_id', '=', $transaction['engraved_id'])
-                                ->update([
-                                    'txn_date'       => $transaction['txn_date'],
-                                    'sv_balance'     => $transaction['pos_chip_bal'],
-                                    'tp_balance'     => $transaction['rem_trips'],
-                                    'pass_expiry'    => $transaction['pass_expiry'],
-                                    'pass_id'        => $transaction['pass_id'],
-                                    'product_id'     => $transaction['product_id'],
-                                    'pax_first_name' => $paxFirstName,
-                                    'pax_last_name'  => $paxLastName,
-                                    'pax_mobile'     => $paxMobile,
-                                    'card_sec'       => $gettingCardSec ? null :0,
-                                    'src_stn_id'     => 0,
-                                    'des_stn_id'     => 0,
-                                    'updated_at'     => now(),
-                                ]);
-
-                    } else {
-                        $message = "Unable to update the given engraved_id in Cl Status: {$transaction['engraved_id']}";
-                        Log::channel('clAccounting')->info($message);
-                    }
-
-                }else {
-                    $message = "Not Found in Sv Accounting: {$transaction['engraved_id']}";
-                    Log::channel('clAccounting')->info($message);
-                }
+                /*** MAKING
+                 * TRIP PASS
+                 * VARIABLES AS ZERO AND
+                 * DOING TRANSACTION ONLY FOR STORE VALUE
+                 */
+                DB::table('cl_status')
+                    ->where('engraved_id', '=', $transaction['engraved_id'])
+                    ->update([
+                        'txn_date'       => $transaction['txn_date'],
+                        'sv_balance'     => $transaction['pos_chip_bal'],
+                        'tp_balance'     => $transaction['rem_trips'],
+                        'pass_expiry'    => $transaction['pass_expiry'],
+                        'pass_id'        => $transaction['pass_id'],
+                        'product_id'     => $transaction['product_id'],
+                        'pax_first_name' => $paxFirstName,
+                        'pax_last_name'  => $paxLastName,
+                        'pax_mobile'     => $paxMobile,
+                        'card_sec'       => $cardSecDeposit,
+                        'src_stn_id'     => 0,
+                        'des_stn_id'     => 0,
+                        'updated_at'     => now(),
+                    ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
 
             }
 
@@ -570,6 +559,8 @@ class ClAccounting extends Controller
             return $transData;
 
         } catch (PDOException $e) {
+
+            Log::channel("clAccounting")->error($e);
 
             /* IF COLUMN IDENTITY FOUND AS ERROR */
             if ($e->getCode() == 23505) { /* 23505 IS ERROR CODE FROM POSTGRESQL */
