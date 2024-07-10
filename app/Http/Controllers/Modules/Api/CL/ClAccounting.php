@@ -807,6 +807,17 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 3,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -841,17 +852,6 @@ class ClAccounting extends Controller
                             'updated_at'        => now(),
                         ]);
 
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 3,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
                 }
 
             }
@@ -898,6 +898,17 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 3,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -932,18 +943,6 @@ class ClAccounting extends Controller
                             'updated_at'        => now()
 
                         ]);
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 3,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
-
 
                 }
 
@@ -1030,6 +1029,17 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 2,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -1037,7 +1047,6 @@ class ClAccounting extends Controller
                     $cardSecDeposit = DB::table('card_type')
                         ->where('card_type_id', '=', $pass->card_type_id)
                         ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
-
 
                     DB::table('cl_status')
                         ->updateOrInsert(
@@ -1063,18 +1072,6 @@ class ClAccounting extends Controller
                             'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now(),
                         ]);
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 2,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
-
 
                 }
 
@@ -1121,6 +1118,17 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 2,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -1155,17 +1163,6 @@ class ClAccounting extends Controller
                             'updated_at'        => now()
 
                         ]);
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 2,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
 
                 }
 
@@ -1253,6 +1250,17 @@ class ClAccounting extends Controller
 
                 if ($svData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 1,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -1286,17 +1294,6 @@ class ClAccounting extends Controller
                             'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now(),
                         ]);
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 1,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
 
                 }
 
@@ -1343,6 +1340,17 @@ class ClAccounting extends Controller
 
                 if ($tpData) {
 
+                    $oldData = DB::table('cl_sn_mapping')
+                        ->where('engraved_id','=',$transaction['old_engraved_id'])
+                        ->first();
+
+                    DB::table('cl_blacklist')->insert([
+                        'ms_blk_reason_id'  => 1,
+                        'start_date'        => Carbon::now(),
+                        'engraved_id'       => $oldData->engraved_id,
+                        'chip_id'           => $oldData->chip_id,
+                    ]);
+
                     $pass = DB::table("pass_inventory")
                         ->where('pass_id', '=', $transaction['pass_id'])
                         ->first() ?: throw new PDOException("Failed to found given Pass ID");
@@ -1375,19 +1383,7 @@ class ClAccounting extends Controller
                             'pax_mobile'        => $paxMobile,
                             'pax_gen_type'      => $paxGenType,
                             'updated_at'        => now()
-
                         ]);
-
-                    $oldData = DB::table('cl_sn_mapping')
-                        ->where('engraved_id','=',$transaction['old_engraved_id'])
-                        ->first();
-
-                    DB::table('cl_blacklist')->insert([
-                        'ms_blk_reason_id'  => 1,
-                        'start_date'        => Carbon::now(),
-                        'engraved_id'       => $oldData->engraved_id,
-                        'chip_id'           => $oldData->chip_id,
-                    ]);
 
                 }
 
