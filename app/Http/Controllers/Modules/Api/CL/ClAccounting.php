@@ -757,13 +757,13 @@ class ClAccounting extends Controller
         $autoTopUpAmount  = 0.0;
         $bonusPoints      = 0.0;
 
-        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
-        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus = $transaction['auto_topup_status'];
-        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount = $transaction['auto_topup_amt'];
-        if (array_key_exists("bonus_points", $transaction)) $bonusPoints = $transaction['bonus_points'];
+        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName         = $transaction['pax_first_name'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName           = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile                = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType             = $transaction['pax_gen_type'];
+        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus   = $transaction['auto_topup_status'];
+        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount      = $transaction['auto_topup_amt'];
+        if (array_key_exists("bonus_points", $transaction)) $bonusPoints            = $transaction['bonus_points'];
 
 
         try {
@@ -979,13 +979,13 @@ class ClAccounting extends Controller
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
 
-        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
-        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus = $transaction['auto_topup_status'];
-        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount = $transaction['auto_topup_amt'];
-        if (array_key_exists("bonus_points", $transaction)) $bonusPoints = $transaction['bonus_points'];
+        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName         = $transaction['pax_first_name'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName           = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile                = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType             = $transaction['pax_gen_type'];
+        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus   = $transaction['auto_topup_status'];
+        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount      = $transaction['auto_topup_amt'];
+        if (array_key_exists("bonus_points", $transaction)) $bonusPoints            = $transaction['bonus_points'];
 
         try {
 
@@ -1199,13 +1199,13 @@ class ClAccounting extends Controller
         $autoTopUpAmount    = 0.0;
         $bonusPoints        = 0.0;
 
-        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
-        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus = $transaction['auto_topup_status'];
-        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount = $transaction['auto_topup_amt'];
-        if (array_key_exists("bonus_points", $transaction)) $bonusPoints = $transaction['bonus_points'];
+        if (array_key_exists("pax_first_name", $transaction)) $paxFirstName         = $transaction['pax_first_name'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName           = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile                = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType             = $transaction['pax_gen_type'];
+        if (array_key_exists("auto_topup_status", $transaction)) $autoTopUpStatus   = $transaction['auto_topup_status'];
+        if (array_key_exists("auto_topup_amt", $transaction)) $autoTopUpAmount      = $transaction['auto_topup_amt'];
+        if (array_key_exists("bonus_points", $transaction)) $bonusPoints            = $transaction['bonus_points'];
 
         try {
 
