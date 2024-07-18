@@ -148,7 +148,7 @@ class PreviousDayReport extends Controller
                     ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
                     ->whereIn('op_type_id', [54,61,61,63,64,65])
                     ->where('pass_id','=',21)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('des_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $trpRefundAmount = DB::table('mtp_ms_accounting')
