@@ -65,26 +65,35 @@ class MQRDailyRidershipReport extends Controller
                     ->count();
 
                 /* 45 TRIP PASS */
-                /*$normalTripValidation = DB::table('mtp_validation')
+                $tpValidation = DB::table('mtp_validation')
                     ->where('pass_id', 21)
                     ->where('is_test', false)
                     ->whereBetween('txn_date', [$from, $to])
                     ->where('stn_id', $station->stn_id)
                     ->where('val_type_id', 1)
-                    ->count();*/
+                    ->count();
 
                 /* STORE VALUE PASS */
-                /*$storeValueValidation = DB::table('msv_validation')
+                $svValidation = DB::table('msv_validation')
                     ->where('pass_id', 81)
                     ->where('is_test', false)
                     ->whereBetween('txn_date', [$from, $to])
                     ->where('stn_id', $station->stn_id)
                     ->where('val_type_id', 1)
-                    ->count();*/
+                    ->count();
+
+                /***
+                BELOW PASS ID FOR RESPECTIVE DATA
+                 * SJT = 10
+                 * RJT = 90
+                 * 45T = 21
+                 * ULT = NULL
+                 * SVP = 81
+                 */
 
                 $data["SJT"] = $sjtValidation;
                 $data["RJT"] = $rjtValidation;
-                $data["45T"] = 0;
+                $data["45T"] = $tpValidation;
                 $data["ULT"] = 0;
                 $data["SVP"] = 0;
 

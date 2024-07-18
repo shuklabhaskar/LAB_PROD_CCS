@@ -32,8 +32,6 @@ class PreviousDayReport extends Controller
 
             set_time_limit(0);
 
-            $mqrData = [];
-
             /* TO GET NUMBER OF STATION AND STATION NAME */
             $stations = DB::table('station_inventory')
                 ->select( 'stn_id')
@@ -102,8 +100,68 @@ class PreviousDayReport extends Controller
 
                 $rjtRevenue = $rjtIssueAmount + $rjtGra;
 
+                /*FOR TRIP PASS*/
+                $trpIssueCount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 1)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $trpRefundCount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 6)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $trpRelaodCount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 3)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $tpValidation = DB::table('mtp_validation')
+                    ->where('pass_id', 21)
+                    ->where('is_test', false)
+                    ->whereBetween('txn_date', [$from, $to])
+                    ->where('stn_id', $station->stn_id)
+                    ->where('val_type_id', 1)
+                    ->count();
+
+                /* FOR TP GRA */
+                $trpIssueAmount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 1)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $trpRelaodAmount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 3)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $trpGra = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->whereIn('op_type_id', [54,61,61,63,64,65])
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $trpRefundAmount = DB::table('mtp_ms_accounting')
+                    ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 6)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                /*** Revenue = IssueAmount+ ReloadAmount + GraAmount - RefundAmount */
+                $trpRevenue = $trpIssueAmount + $trpRelaodAmount + $trpGra - $trpRefundAmount;
+
                 /* SEGREGATING STATION WISE DATA*/
-                $data['station_id']= $station->stn_id;
+                $data['station_id'] = $station->stn_id;
 
                 /*FOR SJT ONLY */
                 $data['sjt']['issue_count']   = $sjtIssueCount;
@@ -117,13 +175,27 @@ class PreviousDayReport extends Controller
                 $data['rjt']['total_revenue']    = $rjtRevenue;
                 $data['rjt']['ridership']        = $rjtIssueCount*2;
 
+                /* FOR SVP ONLY */
+                $data['svp']['svp_issue_count']  = 0;
+                $data['svp']['svp_refund_count'] = 0;
+                $data['svp']['svp_reload_count'] = 0;
+                $data['svp']['total_revenue']    = 0;
+                $data['svp']['ridership']        = 0;
+
+                /* FOR TRP ONLY */
+                $data['trp']['trp_issue_count']  = $trpIssueCount;   /*1*/
+                $data['trp']['trp_refund_count'] = $trpRefundCount; /*6*/
+                $data['trp']['trp_reload_count'] = $trpRelaodCount; /*3*/
+                $data['trp']['total_revenue']    = $trpRevenue; /* Revenue = IssueAmount+ ReloadAmount + GraAmount - RefundAmount */
+                $data['trp']['ridership']        = $tpValidation; /* VAL TYPE = 1*/
+
                 $entries[] = $data;
 
             }
 
             return response([
                 'status' => true,
-                'data' => $entries,
+                'data'   => $entries,
             ]);
 
         }
