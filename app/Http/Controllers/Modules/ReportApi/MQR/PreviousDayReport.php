@@ -146,7 +146,7 @@ class PreviousDayReport extends Controller
 
                 $trpGra = DB::table('mtp_ms_accounting')
                     ->whereBetween(DB::raw('(mtp_ms_accounting.txn_date)'), [$from, $to])
-                    ->whereIn('op_type_id', [54,61,61,63,64,65])
+                    ->whereNotIn('op_type_id', [1,3,6])
                     ->where('pass_id','=',21)
                     ->where('des_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
