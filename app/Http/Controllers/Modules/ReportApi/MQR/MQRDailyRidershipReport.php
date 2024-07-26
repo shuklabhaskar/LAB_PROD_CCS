@@ -82,6 +82,7 @@ class MQRDailyRidershipReport extends Controller
                     ->where('val_type_id', 1)
                     ->count();
 
+
                 /***
                 BELOW PASS ID FOR RESPECTIVE DATA
                  * SJT = 10

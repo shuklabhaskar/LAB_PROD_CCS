@@ -165,7 +165,7 @@ class PreviousDayReport extends Controller
                 $svIssueCount = DB::table('msv_ms_accounting')
                     ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('pass_id','=',21)
+                    ->where('pass_id','=',81)
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->count();
 
@@ -178,37 +178,37 @@ class PreviousDayReport extends Controller
                 $svRelaodCount = DB::table('msv_ms_accounting')
                     ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 3)
-                    ->where('pass_id','=',21)
+                    ->where('pass_id','=',81)
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->count();
 
                 $svValidation = DB::table('msv_validation')
-                    ->where('pass_id', 21)
+                    ->where('pass_id', 81)
                     ->where('is_test', false)
                     ->whereBetween('txn_date', [$from, $to])
                     ->where('stn_id', $station->stn_id)
-                    ->where('val_type_id', 2)
+                    ->where('val_type_id', 1)
                     ->count();
 
                 /* FOR TP GRA */
                 $svIssueAmount = DB::table('msv_ms_accounting')
                     ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('pass_id','=',21)
+                    ->where('pass_id','=',81)
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $svRelaodAmount = DB::table('msv_ms_accounting')
                     ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 3)
-                    ->where('pass_id','=',21)
+                    ->where('pass_id','=',81)
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $svGra = DB::table('msv_ms_accounting')
                     ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
                     ->whereNotIn('op_type_id', [1,3,6])
-                    ->where('pass_id','=',21)
+                    ->where('pass_id','=',81)
                     ->where('des_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
