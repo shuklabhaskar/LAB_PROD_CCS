@@ -70,6 +70,7 @@ class ClInitialisation extends Controller
                         'chip_id'       => $transaction['chip_id'],
                         'txn_date'      => $transaction['txn_date'],
                         'eq_id'         => $transaction['eq_id'],
+                        'card_expiry'   => $transaction['card_expiry'],
                         'created_at'    => Carbon::now(),
                     ]);
 
