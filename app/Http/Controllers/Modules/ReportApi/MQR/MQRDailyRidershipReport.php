@@ -26,7 +26,7 @@ class MQRDailyRidershipReport extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'error' => $validator->errors(),
+                'error'  => $validator->errors(),
             ]);
         }
 
@@ -95,7 +95,7 @@ class MQRDailyRidershipReport extends Controller
                 $data["RJT"] = $rjtValidation;
                 $data["45T"] = $tpValidation;
                 $data["ULT"] = 0;
-                $data["SVP"] = 0;
+                $data["SVP"] = $svValidation;
 
                 $MqrDailyRidership[] = $data;
             }

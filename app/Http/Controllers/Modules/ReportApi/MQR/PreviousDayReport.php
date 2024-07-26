@@ -160,6 +160,68 @@ class PreviousDayReport extends Controller
                 /*** Revenue = IssueAmount+ ReloadAmount + GraAmount - RefundAmount */
                 $trpRevenue = $trpIssueAmount + $trpRelaodAmount + $trpGra - $trpRefundAmount;
 
+
+                /*FOR STORE VALUE PASS*/
+                $svIssueCount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 1)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $svRefundCount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 6)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $svRelaodCount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 3)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->count();
+
+                $svValidation = DB::table('msv_validation')
+                    ->where('pass_id', 21)
+                    ->where('is_test', false)
+                    ->whereBetween('txn_date', [$from, $to])
+                    ->where('stn_id', $station->stn_id)
+                    ->where('val_type_id', 2)
+                    ->count();
+
+                /* FOR TP GRA */
+                $svIssueAmount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 1)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $svRelaodAmount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 3)
+                    ->where('pass_id','=',21)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $svGra = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->whereNotIn('op_type_id', [1,3,6])
+                    ->where('pass_id','=',21)
+                    ->where('des_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                $svRefundAmount = DB::table('msv_ms_accounting')
+                    ->whereBetween(DB::raw('(msv_ms_accounting.txn_date)'), [$from, $to])
+                    ->where('op_type_id', '=', 6)
+                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->sum('total_price');
+
+                /*** Revenue = IssueAmount+ ReloadAmount + GraAmount - RefundAmount */
+                $svRevenue = $svIssueAmount + $svRelaodAmount + $svGra - $svRefundAmount;
+
+
                 /* SEGREGATING STATION WISE DATA*/
                 $data['station_id'] = $station->stn_id;
 
@@ -176,11 +238,11 @@ class PreviousDayReport extends Controller
                 $data['rjt']['ridership']        = $rjtIssueCount*2;
 
                 /* FOR SVP ONLY */
-                $data['svp']['svp_issue_count']  = 0;
-                $data['svp']['svp_refund_count'] = 0;
-                $data['svp']['svp_reload_count'] = 0;
-                $data['svp']['total_revenue']    = 0;
-                $data['svp']['ridership']        = 0;
+                $data['svp']['svp_issue_count']  = $svIssueCount;
+                $data['svp']['svp_refund_count'] = $svRefundCount;
+                $data['svp']['svp_reload_count'] = $svRelaodCount;
+                $data['svp']['total_revenue']    = $svRevenue;
+                $data['svp']['ridership']        = $svValidation;
 
                 /* FOR TRP ONLY */
                 $data['trp']['trp_issue_count']  = $trpIssueCount;   /*1*/
