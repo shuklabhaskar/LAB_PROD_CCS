@@ -347,13 +347,19 @@ class V2ConfigApiController extends Controller
             ]);
         }
 
+
         if (!empty($published_config) && isset($published_config[0])) {
-            $datetime   = $published_config[0]->activation_time;
-            $epochTime  = strtotime($datetime);
-            $config_response['activation_time'] = $epochTime;
+            if ($published_config[0]->activation_time == null) {
+                $config_response['activation_time'] = Carbon::now()->timestamp * 1000;
+            } else {
+                $datetime   = $published_config[0]->activation_time;
+                $epochTime  = strtotime($datetime);
+                $config_response['activation_time'] = $epochTime * 1000;
+            }
         } else {
             $config_response['activation_time'] = null;
         }
+
 
 
         $scsIp = DB::table('equipment_inventory as ei')
@@ -584,7 +590,15 @@ class V2ConfigApiController extends Controller
 
         if ($configs->count() > 0) {
 
-            $configResponse['activation_time']  = strtotime($configs[0]->activation_time);
+            if ($configs[0]->activation_time == null) {
+                $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
+            }else{
+            $datetime   = $configs[0]->activation_time;
+            $epochTime  = strtotime($datetime);
+            $configResponse['activation_time'] = $epochTime * 1000;
+            }
+
+            /*$configResponse['activation_time']  = strtotime($configs[0]->activation_time)*1000;*/
             $configResponse['config']           = $edcData;
 
             foreach ($configs as $config) {
@@ -662,8 +676,8 @@ class V2ConfigApiController extends Controller
 
             return response([
                 'status' => true,
-                'code' => 100,
-                'data' => $configResponse
+                'code'  => 100,
+                'data'  => $configResponse
             ]);
 
         }
