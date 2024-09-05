@@ -490,12 +490,12 @@ class V2ConfigApiController extends Controller
     /* FOR EDC CONFIGURATION */
     private function getEDCConfig(Request $request)
     {
-        $serial_no = $request->input('emv_serial_no');
-        $eq_type_id = $request->input('eq_type_id');
-        $eq_id = $request->input('eq_id');
-        $cl_black_list_version = $request->input('cl_blacklist_version');
-        $pass_version = $request->input('pass_version');
-        $configResponse = null;
+        $serial_no              = $request->input('emv_serial_no');
+        $eq_type_id             = $request->input('eq_type_id');
+        $eq_id                  = $request->input('eq_id');
+        $cl_black_list_version  = $request->input('cl_blacklist_version');
+        $pass_version           = $request->input('pass_version');
+        $configResponse         = null;
 
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
@@ -584,13 +584,13 @@ class V2ConfigApiController extends Controller
 
         if ($configs->count() > 0) {
 
-            $configResponse['activation_time'] = $configs[0]->activation_time;
-            $configResponse['config'] = $edcData;
+            $configResponse['activation_time']  = strtotime($configs[0]->activation_time);
+            $configResponse['config']           = $edcData;
 
             foreach ($configs as $config) {
 
                 /* FOR CARD TYPES CONFIGURATION */
-                $configResponse['card_types'] = DB::table('card_type')
+                $configResponse['cards'] = DB::table('card_type')
                     ->where('status', '=', true)
                     ->select([
                         'card_type_id',
