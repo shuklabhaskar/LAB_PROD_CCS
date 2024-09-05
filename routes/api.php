@@ -7,6 +7,7 @@ use App\Http\Controllers\Modules\Api\CL\ClIndraCardReplacement;
 use App\Http\Controllers\Modules\Api\CL\ClInitialisation;
 use App\Http\Controllers\Modules\Api\CL\ClSnMapping;
 use App\Http\Controllers\Modules\Api\CL\ClValidation;
+use App\Http\Controllers\Modules\Api\ConfigApi\V2ConfigApiController;
 use App\Http\Controllers\Modules\Api\ConfigApiController;
 use App\Http\Controllers\Modules\Api\Equipment;
 use App\Http\Controllers\Modules\Api\Firmware\Firmware;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Modules\Api\Paytm\Settlement\Settlement;
 use App\Http\Controllers\Modules\Api\Paytm\VerifyTerminal;
 use App\Http\Controllers\Modules\Api\SettleOlTransaction;
 use App\Http\Controllers\Modules\Api\TidController;
+use App\Http\Controllers\Modules\CardBlacklist\CardBlacklistController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\ReportApi\CashCollection;
 use App\Http\Controllers\Modules\ReportApi\CL\AfcAuditApi\StoreValueAuditApi;
@@ -37,10 +39,12 @@ use App\Http\Controllers\Modules\ReportApi\CL\TripPassExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\KnowYourLoad;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
+use App\Http\Controllers\Modules\ReportApi\MQR\MQRSapReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MqrTravelApi;
 use App\Http\Controllers\Modules\ReportApi\MQR\PreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
+use App\Http\Controllers\Modules\ReportApi\OL\OlSapReport;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
 use Illuminate\Http\Request;
@@ -73,6 +77,7 @@ Route::post('config', [ConfigApiController::class, 'getConfig']);
 
 /* API CONTROLLER V1 */
 Route::post('v1/config', [NewConfigApiController::class, 'getConfig']);
+Route::post('v2/config', [V2ConfigApiController::class, 'getConfig']);
 
 /* SETTLE OPEN LOOP TRANSACTION */
 Route::post('settleOlTransaction', [SettleOlTransaction::class, 'setOlTransaction']);
@@ -82,6 +87,9 @@ Route::post('syncOlAccTrans', [OlSvAccounting::class, 'OlSvAccounting']);
 
 /* FOR GETTING TERMINAL ID */
 Route::post('tidDetails', [TidController::class, 'tidDetails']);
+
+/*FOR GETTING CARD IN CARD BLACKLIST */
+Route::get('/get/blacklisted/cardDetail/{id}',[CardBlacklistController::class,'search']);
 
 /* EDIT TID DETAILS */
 Route::post('editEdcDetails', [TidController::class, 'editEdcDetails']);
@@ -171,6 +179,7 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::post('/olrevenue', [Revenue::class, 'index']);
     Route::post('/olPrevDay', [Revenue::class, 'olPrevDay']);
     Route::post('/olValReport', [TravelApiController::class, 'getReport']);
+    Route::post('/olSap', [OlSapReport::class, 'index']);
 
     /* OL TOM API */
     Route::post('/olSaleReport', [OlAccReport::class, 'olSaleReport']);
@@ -196,15 +205,21 @@ Route::middleware(['basic_auth'])->group(function () {
 
     /* MQR API */
     /* MQR HOURLY REPORT (DAILY RIDERSHIP) */
-    Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']);
-    Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);
+    Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
+    Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);  /*Previous Day*/
 
     /* MQR BOARDING ALIGHTING (TRAVEL API)*/
     Route::get('mqr/sjtValReport', [MqrTravelApi::class, 'sjtValReport']);
     Route::get('mqr/rjtValReport', [MqrTravelApi::class, 'rjtValReport']);
+    Route::get('mqr/svValReport', [MqrTravelApi::class, 'svValReport']);
+    Route::get('mqr/tpValReport', [MqrTravelApi::class, 'tpValReport']);
+
+    Route::post('/mqrSap', [MQRSapReport::class, 'index']);
 
     /*ACCOUNTING REPORTS TO BE ON HOLD BY RAHUL SIR*/
     /*Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
     Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']);*/
 
 });
+
+
