@@ -501,8 +501,9 @@ class V2ConfigApiController extends Controller
         $eq_id                  = $request->input('eq_id');
         $cl_black_list_version  = $request->input('cl_blacklist_version');
         $pass_version           = $request->input('pass_version');
-        $configResponse         = null;
+        $configResponse         = [];
 
+        /* FETCHING EQUIPMENT DETAIL FOR EDC CONFIG */
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
             ->where('eq_id', '=', $eq_id)
@@ -548,19 +549,19 @@ class V2ConfigApiController extends Controller
 
         $edcData = array_merge($equipmentArray, $readerDataArray);
 
-        if ($readerData == null) {
+        if ($readerData == null || $readerData == "") {
             return response([
-                'status' => false,
-                'code' => 103,
-                'error' => 'Invalid serial number !'
+                'status'    => false,
+                'code'      => 103,
+                'error'     => 'Invalid serial number !'
             ]);
         }
 
         if ($eq_id == null) {
             return response([
                 'status' => false,
-                'code' => 103,
-                'error' => 'EDC Does Not Exist !'
+                'code'   => 103,
+                'error'  => 'EDC Does Not Exist !'
             ]);
         }
 
@@ -568,125 +569,105 @@ class V2ConfigApiController extends Controller
 
             return response([
                 'status' => false,
-                'code' => 102,
-                'error' => 'No config is available!'
+                'code'   => 102,
+                'error'  => 'No Equipment is Found!'
             ]);
 
         }
 
-        $configs = DB::table('config_publish')
+        $published_config = DB::table('config_publish')
             ->where('equipment_id', '=', $equipment->eq_id)
             ->where('is_edc_sync', '=', false)
             ->get();
 
-        if ($configs == null || $configs == "") {
+        if ($published_config->count() == 0) {
             return response([
-                'status' => false,
-                'code' => 100,
+                'status'  => false,
+                'code'    => 100,
                 'message' => "No config is Available !"
             ]);
 
         }
 
-        if ($configs->count() > 0) {
-
-            if ($configs[0]->activation_time == null) {
+        if (!empty($published_config) && isset($published_config[0])) {
+            if ($published_config[0]->activation_time == null) {
                 $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
-            }else{
-            $datetime   = $configs[0]->activation_time;
-            $epochTime  = strtotime($datetime);
-            $configResponse['activation_time'] = $epochTime * 1000;
+            } else {
+                $datetime   = $published_config[0]->activation_time;
+                $epochTime  = strtotime($datetime);
+                $configResponse['activation_time'] = $epochTime * 1000;
             }
-
-            /*$configResponse['activation_time']  = strtotime($configs[0]->activation_time)*1000;*/
-            $configResponse['config']           = $edcData;
-
-            foreach ($configs as $config) {
-
-                /* FOR CARD TYPES CONFIGURATION */
-                $configResponse['cards'] = DB::table('card_type')
-                    ->where('status', '=', true)
-                    ->select([
-                        'card_type_id',
-                        'media_type_id',
-                        'card_name',
-                        'description',
-                        'card_pro_id',
-                        'card_fee',
-                        'card_sec',
-                        'status',
-                        'card_sec_refund_permit',
-                        'card_sec_refund_charges',
-                        'ps_type_id'
-                    ])
-                    ->orderBy('card_id', 'ASC')
-                    ->get();
-
-                /*FOR PASS CONFIGURATION */
-                if ($config->config_id == 4) {
-
-                    if ($config->config_version != $pass_version) {
-
-                        $PassData = DB::table('config_gen')
-                            ->where('config_id', '=', 4)
-                            ->where('config_version', '=', $config->config_version)
-                            ->value('config_data');
-
-                        $data = json_decode($PassData, true);
-                        $NewData = collect($data)
-                            ->sortBy('pass_inv_id')
-                            ->values()
-                            ->all();
-
-                        $configResponse['passes'] = $NewData;
-
-                    }
-                    $configResponse['config']['pass_version'] = $config->config_version;
-                }
-
-                /* FOR CARD BLACKLIST CONFIGURATION */
-                if ($config->config_id == 7) {
-
-                    if ($config->config_version != $cl_black_list_version) {
-
-                        $Cl_blacklist = DB::table('cl_blacklist')
-                            ->select('chip_id')
-                            ->distinct('chip_id')
-                            ->get()
-                            ->toJson();
-
-                        $data = json_decode($Cl_blacklist, true);
-                        $NewData = collect($data)->sortBy('chip_id')->values()->all();
-
-                        $configResponse['cl_blacklist'] = $NewData;
-                        $configResponse['config']['cl_blacklist_version'] = $config->config_version;
-
-                    }
-
-                }
-
-            }
-
-            DB::table('config_publish')
-                ->where('equipment_id', '=', $equipment->eq_id)
-                ->update([
-                    'is_edc_sync' => true,
-                    'updated_at' => Carbon::now()
-                ]);
-
-            return response([
-                'status' => true,
-                'code'  => 100,
-                'data'  => $configResponse
-            ]);
-
+        } else {
+            $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
         }
 
+        /* CREATING CONFIG ARRAY FOR RESPECTIVE EQUIPMENT DATA CAN SAVE */
+        $configResponse['config']                   = $edcData;
+        $configResponse['config']['config_version'] = $equipment->eq_version;
+
+        /* FOR PASS CONFIGURATION */
+        $pass_config = $published_config->filter(function ($item) {
+            return $item->config_id == 4;
+        })->first();
+        if ($pass_config != null && $pass_version != $pass_config->config_version) {
+            $passes = DB::table('config_gen')
+                ->where('config_id', '=', 4)
+                ->where('config_version', '=', $pass_config->config_version)
+                ->value('config_data');
+            $configResponse['passes'] = json_decode($passes, true);
+            $configResponse['config']['pass_version'] = $pass_config->config_version;
+        } else {
+            $configResponse['config']['pass_version'] = $pass_version;
+        }
+
+        /* FOR CARD TYPES */
+        $configResponse['cards'] = DB::table('card_type')
+            ->where('status', '=', true)
+            ->select([
+                'card_type_id',
+                'media_type_id',
+                'card_name',
+                'description',
+                'card_pro_id',
+                'card_fee',
+                'card_sec',
+                'status',
+                'card_sec_refund_permit',
+                'card_sec_refund_charges',
+                'ps_type_id'
+            ])
+            ->orderBy('card_id', 'ASC')
+            ->get();
+
+        /* FOR CARD BLACKLIST CONFIGURATION */
+        $card_blacklist_config = $published_config->filter(function ($item) {
+            return $item->config_id == 7;
+        })->first();
+        if ($card_blacklist_config != null && $cl_black_list_version != $card_blacklist_config->config_version) {
+
+            $Cl_blacklist = DB::table('cl_blacklist')
+                ->select('chip_id')
+                ->distinct('chip_id')
+                ->get()
+                ->toJson();
+
+            $configResponse['cl_blacklist'] = json_decode($Cl_blacklist, true);
+            $configResponse['config']['cl_blacklist_version'] = $card_blacklist_config->config_version;
+        } else {
+            $configResponse['config']['cl_blacklist_version'] = $cl_black_list_version;
+        }
+
+        DB::table('config_publish')
+            ->where('equipment_id', '=', $equipment->eq_id)
+            ->update([
+                'is_edc_sync' => true,
+                'updated_at' => Carbon::now()
+            ]);
 
         return response([
-            'status' => false,
-            'code' => 100,
-            'message' => "No config is Available !"
+            'status' => true,
+            'code' => 200,
+            'data' => $configResponse
         ]);
 
     }
