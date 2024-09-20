@@ -47,21 +47,21 @@ class DailyRidership extends Controller
                 ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                 ->count();
 
-            $totalPpblEntryData = $Stations = DB::table('ol_sv_validation as sv')
+            $totalPpblEntryData  = DB::table('ol_sv_validation as sv')
                 ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                 ->where('sv.val_type_id','=',1)
                 ->where('sv.pass_id','=',82)
                 ->where('card_mask_no','LIKE','8173'.'%')
                 ->count();
 
-            $totalSbiEntryData = $Stations = DB::table('ol_sv_validation as sv')
+            $totalSbiEntryData = DB::table('ol_sv_validation as sv')
                 ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                 ->where('sv.val_type_id','=',1)
                 ->where('sv.pass_id','=',82)
                 ->where('card_mask_no','LIKE','8174'.'%')
                 ->count();
 
-            $totalOtherEntryData = $Stations = DB::table('ol_sv_validation as sv')
+            $totalOtherEntryData  = DB::table('ol_sv_validation as sv')
                 ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                 ->where('sv.val_type_id','=',1)
                 ->where('sv.pass_id','=',82)
@@ -76,7 +76,7 @@ class DailyRidership extends Controller
                     try {
 
                         /* NUMBER OF ENTRY COUNT */
-                        $ppblEntryData = $Stations = DB::table('ol_sv_validation as sv')
+                        $ppblEntryData  = DB::table('ol_sv_validation as sv')
                             ->join('station_inventory as stn','stn.stn_id','=','sv.stn_id')
                             ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                             ->where('sv.stn_id','=',$stn_data->stn_id)
@@ -87,7 +87,7 @@ class DailyRidership extends Controller
                             ->select(['stn.stn_name'])
                             ->count();
 
-                        $sbiEntryData = $Stations = DB::table('ol_sv_validation as sv')
+                        $sbiEntryData  = DB::table('ol_sv_validation as sv')
                             ->join('station_inventory as stn','stn.stn_id','=','sv.stn_id')
                             ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                             ->where('sv.stn_id','=',$stn_data->stn_id)
@@ -98,7 +98,7 @@ class DailyRidership extends Controller
                             ->select(['stn.stn_name'])
                             ->count();
 
-                        $otherEntryData = $Stations = DB::table('ol_sv_validation as sv')
+                        $otherEntryData  = DB::table('ol_sv_validation as sv')
                             ->join('station_inventory as stn','stn.stn_id','=','sv.stn_id')
                             ->whereBetween(DB::raw('(txn_date)'), [$convertedFrom, $convertedTo])
                             ->where('sv.stn_id','=',$stn_data->stn_id)

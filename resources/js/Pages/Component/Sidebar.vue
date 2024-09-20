@@ -148,13 +148,27 @@
 
                 <!--FOR OPERATORS-->
                 <li class="sidebar-header">
-                    OPERATORS MODULE
+                   API & OPERATORS MODULE
                 </li>
 
                 <li class="sidebar-item ">
                     <Link :href="'/operators'" class="sidebar-link">
-                        <font-awesome-icon icon="fa-solid fa-user"/>
+                        <font-awesome-icon icon="fa-solid fa-handshake"/>
                         <span class="align-middle">Operators</span>
+                    </Link>
+                </li>
+
+                <li class="sidebar-item ">
+                    <Link :href="'/api/endPoint'" class="sidebar-link">
+                        <font-awesome-icon icon="fa-solid fa-code-compare"/>
+                        <span class="align-middle">API</span>
+                    </Link>
+                </li>
+
+                <li class="sidebar-item ">
+                    <Link :href="'/operators/privilege'" class="sidebar-link">
+                        <font-awesome-icon icon="fa-solid fa-lock"/>
+                        <span class="align-middle">Operators Privilege</span>
                     </Link>
                 </li>
 
@@ -230,7 +244,7 @@
                 <div class="sidebar-cta">
                     <div class="sidebar-cta-content">
                         <div class="d-grid">
-                            <a class="btn btn-outline-primary">Version 3.5.3</a>
+                            <a class="btn btn-outline-primary">Version 3.9.1</a>
                         </div>
                     </div>
                 </div>
@@ -245,9 +259,9 @@
 
 <script>
 
-    import {Link} from "@inertiajs/inertia-vue3";
+import {Link} from "@inertiajs/inertia-vue3";
 
-    export default {
+export default {
         name: "Sidebar",
         components: {
             Link

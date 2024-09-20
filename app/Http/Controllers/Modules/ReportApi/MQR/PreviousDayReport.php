@@ -220,7 +220,6 @@ class PreviousDayReport extends Controller
                 ->where('pass_id', 81)
                 ->where('is_test', false)
                 ->whereBetween('txn_date', [$from, $to])
-                ->where('stn_id', '=', 12)
                 ->where('val_type_id', 1)
                 ->count();
 

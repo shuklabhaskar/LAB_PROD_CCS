@@ -267,7 +267,6 @@ class ClAccounting extends Controller
 
             if ($transaction['product_id'] == 4) {
 
-
                 $TpData = DB::table('cl_tp_accounting')->insert([
                     'atek_id'           => $transaction['atek_id'],
                     'txn_date'          => $transaction['txn_date'],
@@ -516,7 +515,6 @@ class ClAccounting extends Controller
                     ->where('pass_id', '=', $transaction['pass_id'])
                     ->first() ?: throw new PDOException("Failed to found given Pass ID");
 
-
                 $cardSecDeposit = DB::table('card_type')
                     ->where('card_type_id', '=', $pass->card_type_id)
                     ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
@@ -530,6 +528,7 @@ class ClAccounting extends Controller
                         'pass_id'        => $transaction['pass_id'],
                         'product_id'     => $transaction['product_id'],
                         'card_sec'       => $cardSecDeposit->card_sec,
+                        'pass_expiry'    => $transaction['pass_expiry'],
                         'src_stn_id'     => $transaction['src_stn_id'],
                         'des_stn_id'     => $transaction['des_stn_id'],
                         'pax_first_name' => $paxFirstName,
@@ -569,15 +568,15 @@ class ClAccounting extends Controller
     {
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
-        $paxFirstName = "";
-        $paxLastName = "";
-        $paxMobile = 123456789;
-        $paxGenType = 0;
+        $paxFirstName   = "";
+        $paxLastName    = "";
+        $paxMobile      = 123456789;
+        $paxGenType     = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         try {
 
@@ -815,7 +814,6 @@ class ClAccounting extends Controller
                         ->where('card_type_id', '=', $pass->card_type_id)
                         ->first('card_sec') ?: throw new PDOException("Failed To Found Card Security");
 
-
                     DB::table('cl_status')
                         ->updateOrInsert(
                             ['engraved_id'      => $transaction['engraved_id']],
@@ -960,8 +958,8 @@ class ClAccounting extends Controller
             } else {
                 $transData['is_settled'] = false;
             }
-            $transData['atek_id'] = $transaction['atek_id'];
-            $transData['error'] = $e->getMessage();
+            $transData['atek_id']   = $transaction['atek_id'];
+            $transData['error']     = $e->getMessage();
 
             return $transData;
 

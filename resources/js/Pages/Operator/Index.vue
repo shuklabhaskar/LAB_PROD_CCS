@@ -1,7 +1,9 @@
 <template>
 
+    <!--MAIN CONTAINER-->
     <div class="container-fluid p-0">
 
+        <!--MAIN HEADING-->
         <div class="row mb-2 mb-xl-3">
 
             <div class="col-auto d-none d-sm-block">
@@ -9,13 +11,15 @@
             </div>
 
             <div class="col-auto ms-auto text-end mt-n1">
-                <Link :href="'/operator/create'" class="btn btn-outline-primary"><font-awesome-icon icon="fa-solid fa-plus" /> Create
-                    Operator
+                <Link :href="'/operator/create'" class="btn btn-outline-primary">
+                    <font-awesome-icon icon="fa-solid fa-plus" />
+                    Create Operator
                 </Link>
             </div>
 
         </div>
 
+        <!--TABLE FOR OPERATOR DATA-->
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -29,7 +33,7 @@
                                 <th>S.NO</th>
                                 <th>OPERATOR NAME</th>
                                 <th>USER NAME</th>
-                                <th>CREATED DATE</th>
+                                <th>CREATED AT</th>
                                 <th>ACTION</th>
                             </tr>
                             </thead>
@@ -41,12 +45,15 @@
                                 <td>{{operator.created_at}}</td>
 
                                 <td>
-                                    <Link type="button" :href="'//edit/' + operator.operators_id"  class="btn btn-sm btn-icon btn-primary rounded" title="Edit">
+                                    <Link type="button" :href="'/operator/edit/' + operator.operator_id"
+                                          class="btn btn-sm btn-icon btn-primary rounded" title="Edit">
                                         <font-awesome-icon icon="fa-solid fa-edit" />
                                     </Link>
                                 </td>
                             </tr>
+
                             </tbody>
+
                         </table>
 
                     </div>
@@ -70,6 +77,17 @@ export default {
     props: {
         errors: Object,
         operators:Array
+    },
+    mounted() {
+        $("#example").DataTable({
+            responsive: true,
+            "paging": true,
+            "ordering": true,
+            "columnDefs": [
+                { "className": "text-center", "targets": [0,3,4] }
+            ],
+
+        });
     }
 }
 

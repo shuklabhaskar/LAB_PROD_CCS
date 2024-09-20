@@ -170,7 +170,7 @@ class StoreValueExitRevenue extends Controller
 
         return response([
             'status' => true,
-            'data' => $response
+            'data'   => $response
         ]);
 
     }

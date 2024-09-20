@@ -92,6 +92,14 @@ return [
             'days'      => 30,
         ],
 
+        'clInitialisation' => [
+            'driver'    => 'daily',
+            'path'      => storage_path('logs/CL/ClInitialisation/'),
+            'filename'  => 'clInitialisation_' . now()->format('Y-m-d') . '.log',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'days'      => 30,
+        ],
+
         'paytmSettlement' => [
             'driver'    => 'daily',
             'path'      => storage_path('logs/OL/PaytmSettlement/'),

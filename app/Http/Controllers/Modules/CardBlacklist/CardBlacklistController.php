@@ -14,15 +14,9 @@ class CardBlacklistController extends Controller
         $MediaTypes         = DB::table('ms_media_types')->where('media_type_id', '=', 2)->get();
         $BlacklistReasons   = DB::table('ms_cl_blacklist_reason')->get();
 
-        $blacklistedCards   = DB::table('cl_blacklist')
-            ->join('ms_cl_blacklist_reason', 'ms_cl_blacklist_reason.ms_blk_reason_id', '=', 'cl_blacklist.ms_blk_reason_id')
-            ->orderBy('cl_blk_id','ASC')
-            ->get();
-
         return Inertia::render('CardBlacklist/Index', [
             'MediaTypes'        => $MediaTypes,
             'BlacklistReasons'  => $BlacklistReasons,
-            'blacklistedCards'  => $blacklistedCards
         ]);
 
     }
@@ -100,6 +94,28 @@ class CardBlacklistController extends Controller
             'message' => 'CARD BLACKLIST UPDATED SUCCESSFULLY.'
         ]);
 
+    }
+
+    public function search($id){
+
+        $data = DB::table('cl_blacklist')
+            ->where('engraved_id', $id)
+            ->join('ms_cl_blacklist_reason','ms_cl_blacklist_reason.ms_blk_reason_id','=','cl_blacklist.ms_blk_reason_id')
+            ->first();
+
+        if ($data == null){
+            return response([
+                'status'     => false,
+                'data'       => $data,
+                'message'    => 'CARD NOT FOUND IN BLACKLIST TABLE.'
+            ]);
+        }
+
+        return response([
+           'status'     => true,
+           'data'       => $data ,
+           'message'    => 'CARD FOUND IN BLACKLIST TABLE.'
+        ]);
     }
 
 }

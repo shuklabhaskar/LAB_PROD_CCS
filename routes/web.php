@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Modules\Acq\AcqParamController;
+use App\Http\Controllers\Modules\ApiUpload\ApiController;
 use App\Http\Controllers\Modules\Authentication\LoginController;
 use App\Http\Controllers\Modules\CardBlacklist\CardBlacklistController;
 use App\Http\Controllers\Modules\CardSnMapping\CardSnMappingController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Modules\Fare\FareController;
 use App\Http\Controllers\Modules\Firmware\FirmwareController;
 use App\Http\Controllers\Modules\Firmware\FirmwarePublish;
 use App\Http\Controllers\Modules\Operator\OperatorController;
+use App\Http\Controllers\Modules\OperatorPrivilege\OperatorPrivilegeController;
 use App\Http\Controllers\Modules\Pass\PassController;
 use App\Http\Controllers\Modules\Product\ProductController;
 use App\Http\Controllers\Modules\Station\StationController;
@@ -124,14 +126,33 @@ Route::get('/firmwarePublish', [FirmwarePublish::class, 'index']);
 Route::post('/firmwarePublish', [FirmwarePublish::class, 'store']);
 Route::post('/saveFile', [FirmwareController::class, 'uploadFile']);
 
-//CARD BLACKLIST
+/*CARD BLACKLIST*/
 Route::get('/card/blacklist', [CardBlacklistController::class, 'index']);
 Route::post('/card/blacklist', [CardBlacklistController::class, 'store']);
 Route::post('/card/blacklist/delete/{id}', [CardBlacklistController::class, 'delete']);
 
-// CARD SN MAPPING
+/*CARD SN MAPPING*/
 Route::get('/card/sn/mapping', [CardSnMappingController::class, 'index']);
 Route::post('/card/sn/mapping', [CardSnMappingController::class, 'store']);
 
-/*OPERATOR*/
+/* OPERATOR */
 Route::get('/operators', [OperatorController::class, 'index']);
+Route::get('/operator/create', [OperatorController::class, 'create']);
+Route::post('/operators', [OperatorController::class, 'store']);
+Route::get('/operator/edit/{id}', [OperatorController::class, 'edit']);
+Route::post('/operator/edit/{id}', [OperatorController::class, 'update']);
+Route::post('/operator/edit/password/{id}', [OperatorController::class, 'passwordUpdate']);
+
+/* API UPLOAD */
+Route::get('/api/endPoint', [ApiController::class, 'index']);
+Route::get('/api/endPoint/create', [ApiController::class, 'create']);
+Route::post('/api/endPoint/store', [ApiController::class, 'store']);
+Route::get('/api/endPoint/edit/{id}', [ApiController::class, 'edit']);
+Route::post('/api/endPoint/update/{id}', [ApiController::class, 'update']);
+
+/* OPERATORS API PRIVILEGE */
+Route::get('/operators/privilege', [OperatorPrivilegeController::class, 'index']);
+Route::get('/operator/privilege/create', [OperatorPrivilegeController::class, 'create']);
+Route::post('/operators/privilege', [OperatorPrivilegeController::class, 'store']);
+Route::get('/operator/privilege/edit/{id}', [OperatorPrivilegeController::class, 'edit']);
+Route::post('/operator/privilege/edit/{id}', [OperatorPrivilegeController::class, 'update']);

@@ -37,7 +37,7 @@ class ClFicoReport extends Controller
 
         if ($ficoReport->isEmpty()) {
             return response()->json([
-                'status' => true,
+                'status'  => true,
                 'message' => 'No data available for the specified date range',
             ]);
         }

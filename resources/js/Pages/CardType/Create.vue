@@ -173,7 +173,7 @@
     import {Link, useForm} from "@inertiajs/inertia-vue3";
     export default {
         props: {
-            errors:Array,
+            errors:Object,
             svPass:Array,
             tpPass:Array,
             MediaTypes:Array,

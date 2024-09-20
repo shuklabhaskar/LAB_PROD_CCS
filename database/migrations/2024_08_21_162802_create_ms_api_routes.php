@@ -13,19 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ms_operators', function (Blueprint $table) {
-            $table->id('ms_operator_id');
-            $table->unsignedBigInteger('operator_id');
-            $table->string('operator_name');
-            $table->string('user_name');
-            $table->string('user_password');
-            $table->boolean('grant_all_api');
+        Schema::create('ms_api_routes', function (Blueprint $table) {
+            $table->id('ms_api_route_id');
+            $table->text('api_name');
+            $table->text('api_route')->index();
+            $table->text('api_description')->nullable();
+            $table->integer('api_request_type');
+            $table->integer('product_type_id');
             $table->timestamps();
         });
 
-        $table_name = 'ms_operators';
+        $table_name = 'ms_api_routes';
         Schema::table($table_name, function (Blueprint $table) {
-            $table->index('operator_id', 'index_ms_operators__operator_id');
+            $table->index('api_route', 'index_ms_api_routes_api_route');
         });
     }
 
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ms_operators');
+        Schema::dropIfExists('ms_api_routes');
     }
 };

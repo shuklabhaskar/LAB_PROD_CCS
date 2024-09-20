@@ -531,7 +531,7 @@ class V2ConfigApiController extends Controller
             ->first();
 
         $readerDataArray = $readerData ? (array)$readerData : [];
-        $equipmentArray = $equipment ? (array)$equipment : [];
+        $equipmentArray  = $equipment ? (array)$equipment : [];
 
         /**
          * Fetch and combine data from multiple sources into a unified JSON response.
@@ -551,9 +551,9 @@ class V2ConfigApiController extends Controller
 
         if ($readerData == null || $readerData == "") {
             return response([
-                'status'    => false,
-                'code'      => 103,
-                'error'     => 'Invalid serial number !'
+                'status' => false,
+                'code'   => 103,
+                'error'  => 'Invalid serial number !'
             ]);
         }
 
@@ -586,16 +586,15 @@ class V2ConfigApiController extends Controller
                 'code'    => 100,
                 'message' => "No config is Available !"
             ]);
-
         }
 
         if (!empty($published_config) && isset($published_config[0])) {
             if ($published_config[0]->activation_time == null) {
                 $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
             } else {
-                $datetime   = $published_config[0]->activation_time;
-                $epochTime  = strtotime($datetime);
-                $configResponse['activation_time'] = $epochTime * 1000;
+                $datetime                           = $published_config[0]->activation_time;
+                $epochTime                          = strtotime($datetime);
+                $configResponse['activation_time']  = $epochTime * 1000;
             }
         } else {
             $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
@@ -661,13 +660,13 @@ class V2ConfigApiController extends Controller
             ->where('equipment_id', '=', $equipment->eq_id)
             ->update([
                 'is_edc_sync' => true,
-                'updated_at' => Carbon::now()
+                'updated_at'  => Carbon::now()
             ]);
 
         return response([
             'status' => true,
-            'code' => 200,
-            'data' => $configResponse
+            'code'   => 200,
+            'data'   => $configResponse
         ]);
 
     }

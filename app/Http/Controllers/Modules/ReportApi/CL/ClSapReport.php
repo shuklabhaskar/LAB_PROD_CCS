@@ -104,7 +104,7 @@ class ClSapReport extends Controller
     coalesce(Sum(CASE WHEN  a.pass_id in (73,83) and  op_type_id in (1) THEN card_sec + card_fee END),0) as CSC_DEP,
     coalesce(Sum(CASE WHEN   a.pass_id in (73,83,84)  and op_type_id in (6) THEN card_sec + card_fee END),0) as CSC_DEP_REF,
     0 as CSC_SUP,
-    coalesce(Sum(CASE WHEN   a.pass_id in (73,83)  and op_type_id in (11,12,13) THEN card_sec + card_fee + processing_fee END),0) as CSC_REP,
+    coalesce(Sum(CASE WHEN   a.pass_id in (73,83,84)  and op_type_id in (11,12,13) THEN card_sec + card_fee + processing_fee END),0) as CSC_REP,
     0 as A, 0 as B, 0 as C,
     coalesce(Sum(CASE WHEN  a.pass_id in (84) and  op_type_id in (1) THEN card_sec + card_fee END),0) as D,
     0 as E, 0 as F, 0 as G, 0 as H, 0 as I, 0 as J, 0 as K,

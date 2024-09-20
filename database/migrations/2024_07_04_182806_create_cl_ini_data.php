@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('engraved_id');
             $table->bigInteger('chip_id');
             $table->text('eq_id');
+            $table->timestamp('card_expiry')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });
 

@@ -183,16 +183,12 @@ class ClValidation extends Controller
                                 DB::table('cl_status')
                                     ->where('engraved_id', '=', $transaction['engraved_id'])
                                     ->update($updates);
-
                             }
 
                         }else{
                             $message = "Txn Date is not available for the given engraved_id in Cl Status: {$transaction['engraved_id']}";
                             Log::channel('clAccounting')->info($message);
                         }
-
-
-
                     }
 
 

@@ -25,7 +25,7 @@
                         <div class="card-body">
 
 
-                            <table class="table table-responsive">
+                            <table id = "passParameters" class="table table-responsive">
 
                                 <!--FOR SHOWING HEADING -->
                                 <thead>
@@ -67,34 +67,44 @@
 </template>
 
 <script>
-    import Layout from "../Base/Layout";
-    import {Link, useForm} from "@inertiajs/inertia-vue3";
+import Layout from "../Base/Layout";
+import {Link, useForm} from "@inertiajs/inertia-vue3";
 
-    export default {
-        props:{
-            Parameters:Array,
-            columns:Array,
-            Params:Object,
-        },
-        name: "Parameters",
-        layout: Layout,
-        components: {
-            Link
-        },
-        data() {
-            return {
-                form: useForm({
-                    param: [],
-                })
-            }
-        },
+export default {
+    props:{
+        Parameters:Array,
+        columns:Array,
+        Params:Object,
+    },
+    name: "Parameters",
+    layout: Layout,
+    components: {
+        Link
+    },
+    data() {
+        return {
+            form: useForm({
+                param: [],
+            })
+        }
+    },
 
-        methods: {
-            storeParams: function () {
-                this.form.post('/pass/parameters')
-            }
-        },
+    methods: {
+        storeParams: function () {
+            this.form.post('/pass/parameters')
+        }
+    },
+
+    mounted() {
+        $("#passParameters").DataTable({
+            responsive: true,
+            "paging": true,
+            scrollY: 500,
+            deferRender: true,
+            scroller: true,
+        });
     }
+}
 </script>
 
 <style scoped>

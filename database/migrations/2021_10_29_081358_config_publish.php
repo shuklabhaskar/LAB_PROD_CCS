@@ -22,6 +22,7 @@ class ConfigPublish extends Migration
             $table->integer('sent_by');
             $table->boolean('is_published');
             $table->boolean('is_sent')->default(false);
+            $table->boolean('is_edc_sync')->default(false);
             $table->dateTime('activation_time')->nullable();
             $table->dateTime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->nullable();

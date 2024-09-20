@@ -12,8 +12,8 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 import {
     faBackward, faBan, faBarcode,
     faChartArea, faCheck, faCheckCircle,
-    faClipboardCheck, faCreditCard, faEdit, faGear, faInbox,
-    faInr, faMoneyCheck, faPaperclip,
+    faClipboardCheck, faCodeCompare, faCreditCard, faEdit, faGear, faHandshake, faInbox,
+    faInr, faLock, faMagnifyingGlass, faMoneyCheck, faPaperclip,
     faPaperPlane,
     faPencil, faPlus, faPowerOff,
     faQrcode, faRefresh, faRightFromBracket, faSave, faSignal, faSliders,
@@ -58,6 +58,11 @@ library.add(faEdit)
 library.add(faCheckCircle)
 library.add(faPowerOff)
 library.add(faUser)
+library.add(faHandshake)
+library.add(faCodeCompare)
+library.add(faLock)
+library.add(faMagnifyingGlass)
+
 
 
 createInertiaApp({
