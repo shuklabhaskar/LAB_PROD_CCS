@@ -13,6 +13,7 @@ class V2ConfigApiController extends Controller
     /* MASTER FUNCTION */
     public function getConfig(Request $request)
     {
+
         $eq_type_id = $request->input('eq_type_id');
         $eq_id = $request->input('eq_id');
 
@@ -24,8 +25,8 @@ class V2ConfigApiController extends Controller
 
         return response([
             'status' => false,
-            'code' => 101,
-            'error' => "Equipment identification failed !"
+            'code'   => 101,
+            'error'  => "Equipment identification failed !"
         ]);
 
     }
@@ -149,152 +150,155 @@ class V2ConfigApiController extends Controller
     /* FOR AG CONFIGURATION*/
     private function getAGConfig(Request $request)
     {
-        $ip = $request->input('ip');
-        $config_version = $request->input('config_version');
-        $fare_version = $request->input('fare_version');
-        $pass_version = $request->input('pass_version');
-        $cl_black_list_version = $request->input('cl_blacklist_version');
+        $ip                     = $request->input('ip');
+        $fare_version           = $request->input('fare_version');
+        $pass_version           = $request->input('pass_version');
+        $cl_black_list_version  = $request->input('cl_blacklist_version');
 
+        $configResponse         = [];
 
+        /* FETCHING EQUIPMENT DETAIL FOR AG CONFIG */
         $equipment = DB::table('equipment_inventory as ei')
             ->join('station_inventory as stn', 'stn.stn_id', '=', 'ei.stn_id')
             ->where('eq_type_id', '=', 1)
             ->where('ip_address', '=', $ip)
-            ->select(['ei.*', 'stn.stn_name'])
+            ->select([
+                'ei.eq_id',
+                'ei.eq_mode_id',
+                'ei.status',
+                'ei.stn_id',
+                'stn.stn_name',
+                'ei.eq_id',
+                'ei.eq_version'
+            ])
             ->first();
 
-        if ($equipment == null) {
+        $acquirer = DB::table('acq_param as ap')
+            ->where('description','=',"FIEG")
+            ->select([
+                'ap.acq_id as acquirer_id',
+                'ap.acq_name as acquirer_name',
+                'ap.acq_mid as merchant_id',
+                'ap.client_id as client_id',
+                'ap.operator_id as operator_id'
+                ])
+            ->first();
+
+        $acquirerArray = $acquirer ? (array)$acquirer : [];
+        $equipmentArray  = $equipment ? (array)$equipment : [];
+
+        /* MERGING BOTH AG AND ACQUIRER ARRAY */
+        $AgData = array_merge($equipmentArray, $acquirerArray);
+
+        if ($equipment == null || $equipment == "") {
+
             return response([
                 'status' => false,
-                'code' => 102,
-                'error' => 'No config is available!'
+                'code'   => 102,
+                'error'  => 'No Equipment is Found!'
+            ]);
+
+        }
+
+        if ($ip == null) {
+            return response([
+                'status' => false,
+                'code'   => 103,
+                'error'  => 'AG Does Not Exist !'
             ]);
         }
 
-        $configs = DB::table('config_publish')
+        $published_config = DB::table('config_publish')
             ->where('equipment_id', '=', $equipment->eq_id)
             ->where('is_sent', '=', false)
             ->get();
 
-        $configResponse = [];
-
-        if ($configs->count() > 0) {
-
-            $configResponse['activation_time'] = $configs[0]->activation_time;
-
-            foreach ($configs as $config) {
-
-                if ($config->config_id == 1) {
-
-                    if ($config->config_version != $config_version) {
-
-                        $scs = DB::table('equipment_inventory')
-                            ->where('stn_id', '=', $equipment->stn_id)
-                            ->where('eq_type_id', '=', 1)
-                            ->first();
-
-                        $eq_data = json_decode($equipment->eq_data);
-                        $eq_data->stn_name = $equipment->stn_name;
-                        $eq_data->scs_ip_add = $scs->ip_address;
-
-                        $configResponse['config'] = $eq_data;
-                        $configResponse['version']['eq_version'] = $config->config_version;
-
-                    } else {
-                        $configResponse['version']['eq_version'] = $config_version;
-                    }
-
-                }
-
-                if ($config->config_id == 2) {
-
-                    if ($config->config_version != $fare_version) {
-
-                        $FareData = DB::table('config_gen')
-                            ->where('config_id', '=', 2)
-                            ->where('config_version', '=', $config->config_version)
-                            ->value('config_data');
-
-                        $data = json_decode($FareData, true);
-                        $NewData = collect($data)
-                            ->sortBy('fare_table_id')
-                            ->values()
-                            ->all();
-
-                        $configResponse['fares'] = $NewData;
-                        $configResponse['version']['fare_version'] = $config->config_version;
-
-                    } else {
-                        $configResponse['version']['fare_version'] = $fare_version;
-                    }
-
-                }
-
-                if ($config->config_id == 4) {
-                    if ($config->config_version != $pass_version) {
-
-                        $PassData = DB::table('config_gen')
-                            ->where('config_id', '=', 4)
-                            ->where('config_version', '=', $config->config_version)
-                            ->value('config_data');
-
-                        $data = json_decode($PassData, true);
-                        $NewData = collect($data)
-                            ->sortBy('pass_inv_id')
-                            ->values()
-                            ->all();
-
-                        $configResponse['passes'] = $NewData;
-                        $configResponse['version']['pass_version'] = $config->config_version;
-                    } else {
-                        $configResponse['version']['pass_version'] = $pass_version;
-                    }
-                }
-
-                /* FOR CARD BLACKLIST CONFIGURATION */
-                if ($config->config_id == 7) {
-
-                    if ($config->config_version != $cl_black_list_version) {
-
-                        $Cl_blacklist = DB::table('cl_blacklist')
-                            ->select('chip_id')
-                            ->distinct('chip_id')
-                            ->get()
-                            ->toJson();
-
-                        $data = json_decode($Cl_blacklist, true);
-                        $NewData = collect($data)
-                            ->sortBy('chip_id')
-                            ->values()
-                            ->all();
-
-                        $configResponse['cl_blacklist'] = $NewData;
-
-                    }
-                    $configResponse['version']['cl_blacklist_version'] = $config->config_version;
-                }
-
-            }
-
-            DB::table('config_publish')
-                ->where('equipment_id', '=', $equipment->eq_id)
-                ->update([
-                    'is_sent' => true,
-                    'updated_at' => Carbon::now()
-                ]);
-
+        if ($published_config->count() == 0) {
             return response([
-                'status' => true,
-                'code' => 100,
-                'data' => $configResponse
+                'status'  => false,
+                'code'    => 100,
+                'message' => "No config is Available !"
             ]);
-
         }
 
+        if (!empty($published_config) && isset($published_config[0])) {
+            if ($published_config[0]->activation_time == null) {
+                $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
+            } else {
+                $datetime                           = $published_config[0]->activation_time;
+                $epochTime                          = strtotime($datetime);
+                $configResponse['activation_time']  = $epochTime * 1000;
+            }
+        } else {
+            $configResponse['activation_time'] = Carbon::now()->timestamp * 1000;
+        }
+
+        /* CREATING CONFIG ARRAY FOR RESPECTIVE EQUIPMENT DATA CAN SAVE */
+        $configResponse['config']                   = $AgData;
+        $configResponse['config']['config_version'] = $equipment->eq_version;
+
+        /* FOR FARE CONFIGURATION */
+        $fare_config = $published_config->filter(function ($item) {
+            return $item->config_id == 2;
+        })->first();
+        if ($fare_config != null && $fare_version != $fare_config->config_version) {
+            $fares = DB::table('config_gen')
+                ->where('config_id', '=', 2)
+                ->where('config_version', '=', $fare_config->config_version)
+                ->value('config_data');
+            $configResponse['fares'] = json_decode($fares, true);
+            $configResponse['config']['fare_version'] = $fare_config->config_version;
+        } else {
+            $configResponse['config']['fare_version'] = $fare_version;
+        }
+
+        /* FOR PASS CONFIGURATION */
+        $pass_config = $published_config->filter(function ($item) {
+            return $item->config_id == 4;
+        })->first();
+        if ($pass_config != null && $pass_version != $pass_config->config_version) {
+            $passes = DB::table('config_gen')
+                ->where('config_id', '=', 4)
+                ->where('config_version', '=', $pass_config->config_version)
+                ->value('config_data');
+            $configResponse['passes'] = json_decode($passes, true);
+            $configResponse['config']['pass_version'] = $pass_config->config_version;
+        } else {
+            $configResponse['config']['pass_version'] = $pass_version;
+        }
+
+        /* FOR CARD BLACKLIST CONFIGURATION */
+        $card_blacklist_config = $published_config->filter(function ($item) {
+            return $item->config_id == 7;
+        })->first();
+        if ($card_blacklist_config != null && $cl_black_list_version != $card_blacklist_config->config_version) {
+
+            $Cl_blacklist = DB::table('cl_blacklist')
+                ->select('chip_id')
+                ->distinct('chip_id')
+                ->get()
+                ->toJson();
+
+            $configResponse['cl_blacklist'] = json_decode($Cl_blacklist, true);
+            $configResponse['config']['cl_blacklist_version'] = $card_blacklist_config->config_version;
+        } else {
+            $configResponse['config']['cl_blacklist_version'] = $cl_black_list_version;
+        }
+
+        $configResponse['readers'] = DB::table('tid_inv')->get();
+
+        /* UPDATING THE TABLE AFTER CONFIGURATION SENT SUCCESSFULLY */
+        DB::table('config_publish')
+            ->where('equipment_id', '=', $equipment->eq_id)
+            ->update([
+                'is_sent'    => true,
+                'updated_at' => Carbon::now()
+            ]);
+
         return response([
-            'status' => false,
-            'code' => 102,
-            'error' => 'No config is available!'
+            'status' => true,
+            'code'   => 200,
+            'data'   => $configResponse
         ]);
 
     }
@@ -655,6 +659,7 @@ class V2ConfigApiController extends Controller
         } else {
             $configResponse['config']['cl_blacklist_version'] = $cl_black_list_version;
         }
+
 
         DB::table('config_publish')
             ->where('equipment_id', '=', $equipment->eq_id)
