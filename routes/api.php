@@ -42,9 +42,12 @@ use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRSapReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MqrTravelApi;
 use App\Http\Controllers\Modules\ReportApi\MQR\PreviousDayReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PQRPreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlSapReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PQRDailyRidershipReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PqrTravelApi;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
 use Illuminate\Http\Request;
@@ -215,6 +218,15 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::get('mqr/tpValReport', [MqrTravelApi::class, 'tpValReport']);
 
     Route::post('/mqrSap', [MQRSapReport::class, 'index']);
+
+    /* PQR API */
+    /* PQR HOURLY REPORT (DAILY RIDERSHIP) */
+    Route::post('/pqr/Daily/Ridership', [PQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
+    Route::post('/pqr/PrevDay', [PQRPreviousDayReport::class, 'PqrPrevDay']);  /*Previous Day*/
+
+    /* MQR BOARDING ALIGHTING (TRAVEL API)*/
+    Route::get('pqr/sjtValReport', [PqrTravelApi::class, 'sjtValReport']);
+    Route::get('pqr/rjtValReport', [PqrTravelApi::class, 'rjtValReport']);
 
     /*ACCOUNTING REPORTS TO BE ON HOLD BY RAHUL SIR*/
     /*Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
