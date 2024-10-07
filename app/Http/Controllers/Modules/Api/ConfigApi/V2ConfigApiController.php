@@ -285,7 +285,12 @@ class V2ConfigApiController extends Controller
             $configResponse['config']['cl_blacklist_version'] = $cl_black_list_version;
         }
 
-        $configResponse['readers'] = DB::table('tid_inv')->get();
+        $configResponse['readers'] = DB::table('tid_inv')
+            ->select([
+                'tid_inv.emv_serial_no',
+                'tid_inv.emv_tid'
+            ])
+            ->get();
 
         /* UPDATING THE TABLE AFTER CONFIGURATION SENT SUCCESSFULLY */
         DB::table('config_publish')
