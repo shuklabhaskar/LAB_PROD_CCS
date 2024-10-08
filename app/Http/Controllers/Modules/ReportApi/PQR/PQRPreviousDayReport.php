@@ -77,7 +77,7 @@ class PQRPreviousDayReport extends Controller
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
-                $sjtRevenue = $sjtIssueAmount + $sjtGra - $sjtRefundAmount;
+                $sjtRevenue = ($sjtIssueAmount + $sjtGra) - $sjtRefundAmount;
 
                 /* FOR RJT */
                 $rjtIssueCount = DB::table('prjt_ms_accounting')
@@ -111,7 +111,7 @@ class PQRPreviousDayReport extends Controller
                     ->where('src_stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
-                $rjtRevenue = $rjtIssueAmount + $rjtGra - $rjtRefundAmount;
+                $rjtRevenue = ($rjtIssueAmount + $rjtGra) - $rjtRefundAmount;
 
                 /* SEGREGATING STATION WISE DATA*/
                 $data['station_id'] = $station->stn_id;
@@ -120,13 +120,13 @@ class PQRPreviousDayReport extends Controller
                 $data['sjt']['issue_count']   = $sjtIssueCount;
                 $data['sjt']['refund_count']  = $sjtRefundCount;
                 $data['sjt']['total_revenue'] = $sjtRevenue;
-                $data['sjt']['ridership']     = $sjtIssueCount;
+                $data['sjt']['ridership']     = $sjtIssueCount - $sjtRefundCount;
 
                 /* FOR RJT ONLY */
                 $data['rjt']['rjt_issue_count']  = $rjtIssueCount;
                 $data['rjt']['rjt_refund_count'] = $rjtRefundCount;
                 $data['rjt']['total_revenue']    = $rjtRevenue;
-                $data['rjt']['ridership']        = $rjtIssueCount*2;
+                $data['rjt']['ridership']        = ($rjtIssueCount - $rjtRefundCount)*2 ;
 
                 $entries[] = $data;
 
