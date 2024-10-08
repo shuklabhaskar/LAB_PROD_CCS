@@ -49,20 +49,20 @@ class PQRPreviousDayReport extends Controller
                 $sjtIssueCount = DB::table('psjt_ms_accounting')
                     ->whereBetween(DB::raw('(psjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('units');
 
                 $sjtRefundCount = DB::table('psjt_ms_accounting')
                     ->whereBetween(DB::raw('(psjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 6)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->count();
 
                 /* FOR SJT REVENUE */
                 $sjtIssueAmount = DB::table('psjt_ms_accounting')
                     ->whereBetween(DB::raw('(psjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $sjtGra = DB::table('psjt_ms_accounting')
@@ -74,7 +74,7 @@ class PQRPreviousDayReport extends Controller
                 $sjtRefundAmount = DB::table('psjt_ms_accounting')
                     ->whereBetween(DB::raw('(psjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 6)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $sjtRevenue = ($sjtIssueAmount + $sjtGra) - $sjtRefundAmount;
@@ -83,20 +83,20 @@ class PQRPreviousDayReport extends Controller
                 $rjtIssueCount = DB::table('prjt_ms_accounting')
                     ->whereBetween(DB::raw('(prjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('units');
 
                 $rjtRefundCount = DB::table('prjt_ms_accounting')
                     ->whereBetween(DB::raw('(prjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 6)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->count();
 
                 /* FOR SJT REVENUE */
                 $rjtIssueAmount = DB::table('prjt_ms_accounting')
                     ->whereBetween(DB::raw('(prjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 1)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $rjtGra = DB::table('prjt_ms_accounting')
@@ -108,7 +108,7 @@ class PQRPreviousDayReport extends Controller
                 $rjtRefundAmount = DB::table('prjt_ms_accounting')
                     ->whereBetween(DB::raw('(prjt_ms_accounting.txn_date)'), [$from, $to])
                     ->where('op_type_id', '=', 6)
-                    ->where('src_stn_id', '=', $station->stn_id)
+                    ->where('stn_id', '=', $station->stn_id)
                     ->sum('total_price');
 
                 $rjtRevenue = ($rjtIssueAmount + $rjtGra) - $rjtRefundAmount;
