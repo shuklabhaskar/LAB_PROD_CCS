@@ -191,12 +191,17 @@ class PassController extends Controller
             $Pass = DB::table('pass_inventory as pi')
                 ->join('card_type as ct','ct.card_type_id','=','pi.card_type_id')
                 ->join('ms_media_types as mt','mt.media_type_id','=','pi.media_type_id')
-                ->where('pi.pass_inv_id','=',$id)->first();
+                ->where('pi.pass_inv_id','=',$id)
+                ->select([
+                    'pi.*',
+                ])
+                ->first();
         }
 
         if ($mediaTypeID->media_type_id == 3 || $mediaTypeID->media_type_id == 4 || $mediaTypeID->media_type_id == 5){
             $Pass = DB::table('pass_inventory')
-                ->where('pass_inv_id','=',$id)->first();
+                ->where('pass_inv_id','=',$id)
+                ->first();
         }
 
         $Units      = DB::table('ms_units')->get();
