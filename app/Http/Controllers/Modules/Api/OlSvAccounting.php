@@ -179,7 +179,7 @@ class OlSvAccounting extends Controller
                     ]);
                 }
 
-                /* FOR EXIT MISMATCH NO ENTRY OP TYPE ID 65 */
+                /* FOR EXIT MISMATCH SAME TIME OP TYPE ID 65 */
                 if ($transaction->op_type_id==65){
 
                     DB::table("ol_pen_accounting")->insert([
@@ -189,6 +189,25 @@ class OlSvAccounting extends Controller
                         'card_hash_no'      => $transaction->card_hash_no,
                         'pay_scheme'        => $transaction->pay_scheme,
                         'pen_type_id'       => 35,
+                        'pen_price'         => $transaction->total_price,
+                        'stn_id'            => $transaction->stn_id,
+                        'media_type_id'     => $transaction->media_type_id,
+                        'product_id'        => $transaction->product_id,
+                        'pass_id'           => $transaction->pass_id,
+                        'created_at'        => Carbon::now(),
+                    ]);
+                }
+
+                /* FOR EXIT MISMATCH OTHER TIME OP TYPE ID 66 */
+                if ($transaction->op_type_id==66){
+
+                    DB::table("ol_pen_accounting")->insert([
+                        'ms_acc_id'         => $msAccID->ms_acc_id,
+                        'txn_date'          => $transaction->txn_date,
+                        'card_mask_no'      => $transaction->card_mask_no,
+                        'card_hash_no'      => $transaction->card_hash_no,
+                        'pay_scheme'        => $transaction->pay_scheme,
+                        'pen_type_id'       => 36,
                         'pen_price'         => $transaction->total_price,
                         'stn_id'            => $transaction->stn_id,
                         'media_type_id'     => $transaction->media_type_id,
