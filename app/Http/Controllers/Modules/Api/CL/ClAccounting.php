@@ -15,15 +15,15 @@ class ClAccounting extends Controller
     public function ClAccounting(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            '*.atek_id'         => 'required',
-            '*.des_stn_id'      => 'required|integer',
-            '*.engraved_id'     => 'required',
-            '*.eq_id'           => 'required|string',
-            '*.media_type_id'   => 'required|integer',
-            '*.pass_id'         => 'required',
-            '*.src_stn_id'      => 'required|integer',
-            '*.stn_id'          => 'required|integer',
-            '*.txn_date'        => 'required'
+            '*.atek_id'       => 'required',
+            '*.des_stn_id'    => 'required|integer',
+            '*.engraved_id'   => 'required',
+            '*.eq_id'         => 'required|string',
+            '*.media_type_id' => 'required|integer',
+            '*.pass_id'       => 'required',
+            '*.src_stn_id'    => 'required|integer',
+            '*.stn_id'        => 'required|integer',
+            '*.txn_date'      => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -228,10 +228,10 @@ class ClAccounting extends Controller
                                 'card_fee'           => $transaction['card_fee'],
                                 'card_sec'           => $transaction['card_sec'],
                                 'sv_balance'         => $transaction['pos_chip_bal'],
-                                'tp_balance'         => $transaction['rem_trips'],
+                                'tp_balance'         => 0,
                                 'pass_expiry'        => $transaction['pass_expiry'],
-                                'src_stn_id'         => $transaction['src_stn_id'],
-                                'des_stn_id'         => $transaction['des_stn_id'],
+                                'src_stn_id'         => 0,
+                                'des_stn_id'         => 0,
                                 'auto_topup_status'  => $autoTopUpStatus,
                                 'auto_topup_amt'     => $autoTopUpAmount,
                                 'bonus_points'       => $bonusPoints,
@@ -256,9 +256,9 @@ class ClAccounting extends Controller
                             'card_fee'          => $transaction['card_fee'],
                             'card_sec'          => $transaction['card_sec'],
                             'pass_expiry'       => $transaction['pass_expiry'],
-                            'src_stn_id'        => $transaction['src_stn_id'],
-                            'des_stn_id'        => $transaction['des_stn_id'],
-                            'tp_balance'        => $transaction['rem_trips'],
+                            'src_stn_id'        => 0,
+                            'des_stn_id'        => 0,
+                            'tp_balance'        => 0,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'auto_topup_status' => $autoTopUpStatus,
                             'auto_topup_amt'    => $autoTopUpAmount,
@@ -330,7 +330,7 @@ class ClAccounting extends Controller
                                 'card_fee'          => $transaction['card_fee'],
                                 'card_sec'          => $transaction['card_sec'],
                                 'tp_balance'        => $transaction['rem_trips'],
-                                'sv_balance'        => $transaction['pos_chip_bal'],
+                                'sv_balance'        => 0,
                                 'pass_expiry'       => $transaction['pass_expiry'],
                                 'src_stn_id'        => $transaction['src_stn_id'],
                                 'des_stn_id'        => $transaction['des_stn_id'],
@@ -357,7 +357,7 @@ class ClAccounting extends Controller
                             'card_fee'          => $transaction['card_fee'],
                             'card_sec'          => $transaction['card_sec'],
                             'tp_balance'        => $transaction['rem_trips'],
-                            'sv_balance'        => $transaction['pos_chip_bal'],
+                            'sv_balance'        => 0,
                             'pass_expiry'       => $transaction['pass_expiry'],
                             'src_stn_id'        => $transaction['src_stn_id'],
                             'des_stn_id'        => $transaction['des_stn_id'],
@@ -467,7 +467,7 @@ class ClAccounting extends Controller
                     ->update([
                         'txn_date'       => $transaction['txn_date'],
                         'sv_balance'     => $transaction['pos_chip_bal'],
-                        'tp_balance'     => $transaction['rem_trips'],
+                        'tp_balance'     => 0,
                         'pass_expiry'    => $transaction['pass_expiry'],
                         'pass_id'        => $transaction['pass_id'],
                         'product_id'     => $transaction['product_id'],
@@ -519,7 +519,7 @@ class ClAccounting extends Controller
                     'pay_ref'           => $transaction['pay_ref'],
                     'is_test'           => $transaction['is_test'],
                     'old_engraved_id'   => $transaction['old_engraved_id'],
-                ]) ?: throw new PDOException("Failed to insert in cl_sv_accounting");
+                ]) ?: throw new PDOException("Failed to insert in cl_tp_accounting");
 
 
                 $pass = DB::table("pass_inventory")
@@ -535,7 +535,7 @@ class ClAccounting extends Controller
                     ->update([
                         'txn_date'       => $transaction['txn_date'],
                         'tp_balance'     => $transaction['rem_trips'],
-                        'sv_balance'     => $transaction['pos_chip_bal'],
+                        'sv_balance'     => 0,
                         'pass_id'        => $transaction['pass_id'],
                         'product_id'     => $transaction['product_id'],
                         'card_sec'       => $cardSecDeposit->card_sec,
@@ -837,8 +837,8 @@ class ClAccounting extends Controller
                             'card_sec'          => $cardSecDeposit->card_sec,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
-                            'src_stn_id'        => $transaction['src_stn_id'],
-                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'src_stn_id'        => 0,
+                            'des_stn_id'        => 0,
                             'auto_topup_status' => $autoTopUpStatus,
                             'auto_topup_amt'    => $autoTopUpAmount,
                             'bonus_points'      => $bonusPoints,
@@ -1057,8 +1057,8 @@ class ClAccounting extends Controller
                             'card_sec'          => $cardSecDeposit->card_sec,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
-                            'src_stn_id'        => $transaction['src_stn_id'],
-                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'src_stn_id'        => 0,
+                            'des_stn_id'        => 0,
                             'auto_topup_status' => $autoTopUpStatus,
                             'auto_topup_amt'    => $autoTopUpAmount,
                             'bonus_points'      => $bonusPoints,
@@ -1278,8 +1278,8 @@ class ClAccounting extends Controller
                             'card_sec'          => $cardSecDeposit->card_sec,
                             'sv_balance'        => $transaction['pos_chip_bal'],
                             'pass_expiry'       => $transaction['pass_expiry'],
-                            'src_stn_id'        => $transaction['src_stn_id'],
-                            'des_stn_id'        => $transaction['des_stn_id'],
+                            'src_stn_id'        => 0,
+                            'des_stn_id'        => 0,
                             'auto_topup_status' => $autoTopUpStatus,
                             'auto_topup_amt'    => $autoTopUpAmount,
                             'bonus_points'      => $bonusPoints,
@@ -1427,9 +1427,9 @@ class ClAccounting extends Controller
         $paxGenType = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 4) {
 
@@ -1438,40 +1438,40 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_tp_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => $transaction['op_type_id'],
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'num_trips' => $transaction['num_trips'],
-                    'rem_trips' => $transaction['rem_trips'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => $transaction['op_type_id'],
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'num_trips'         => $transaction['num_trips'],
+                    'rem_trips'         => $transaction['rem_trips'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -1482,29 +1482,29 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 14,
-                        'pen_price' => $transaction['total_charges'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 14,
+                        'pen_price'     => $transaction['total_charges'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
                 /* PEN TYPE ID 24 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 24,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 24,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1546,9 +1546,9 @@ class ClAccounting extends Controller
         $paxGenType = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 3) {
 
@@ -1557,38 +1557,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 61,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
+                    'atek_id'          => $transaction['atek_id'],
+                    'txn_date'         => $transaction['txn_date'],
+                    'engraved_id'      => $transaction['engraved_id'],
+                    'op_type_id'       => 61,
+                    'stn_id'           => $transaction['stn_id'],
+                    'cash_col'         => $transaction['cash_col'],
+                    'cash_ret'         => $transaction['cash_ret'],
+                    'pass_price'       => $transaction['pass_price'],
+                    'card_fee'         => $transaction['card_fee'],
+                    'card_sec'         => $transaction['card_sec'],
+                    'processing_fee'   => $transaction['processing_fee'],
+                    'total_price'      => $transaction['total_price'],
+                    'pass_ref_chr'     => $transaction['pass_ref_chr'],
                     'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
                     'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'pre_chip_bal'     => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'     => $transaction['pos_chip_bal'],
+                    'media_type_id'    => $transaction['media_type_id'],
+                    'product_id'       => $transaction['product_id'],
+                    'pass_id'          => $transaction['pass_id'],
+                    'pass_expiry'      => $transaction['pass_expiry'],
+                    'pax_first_name'   => $paxFirstName,
+                    'pax_last_name'    => $paxLastName,
+                    'pax_mobile'       => $paxMobile,
+                    'pax_gen_type'     => $paxGenType,
+                    'shift_id'         => $transaction['shift_id'],
+                    'user_id'          => $transaction['user_id'],
+                    'eq_id'            => $transaction['eq_id'],
+                    'pay_type_id'      => $transaction['pay_type_id'],
+                    'pay_ref'          => $transaction['pay_ref'],
+                    'is_test'          => $transaction['is_test'],
+                    'old_engraved_id'  => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -1599,15 +1599,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 31,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 31,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1630,7 +1630,7 @@ class ClAccounting extends Controller
             //DB::commit();
 
             $transData['is_settled'] = true;
-            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['atek_id']    = $transaction['atek_id'];
             return $transData;
 
         }
@@ -1662,20 +1662,20 @@ class ClAccounting extends Controller
                     'media_type_id'     => $transaction['media_type_id'],
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -1686,15 +1686,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 31,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 31,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1705,7 +1705,7 @@ class ClAccounting extends Controller
                     $transData['is_settled'] = false;
                 }
                 $transData['atek_id'] = $transaction['atek_id'];
-                $transData['error'] = $e->getMessage();
+                $transData['error']   = $e->getMessage();
 
                 DB::rollBack();
 
@@ -1715,7 +1715,7 @@ class ClAccounting extends Controller
             DB::commit();
 
             $transData['is_settled'] = true;
-            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['atek_id']    = $transaction['atek_id'];
             return $transData;
 
         }
@@ -1730,14 +1730,14 @@ class ClAccounting extends Controller
     {
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName = "";
-        $paxLastName = "";
-        $paxMobile = 123456789;
-        $paxGenType = 0;
+        $paxLastName  = "";
+        $paxMobile    = 123456789;
+        $paxGenType   = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 3) {
 
@@ -1746,38 +1746,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 62,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 62,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -1788,15 +1788,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 32,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 32,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1819,7 +1819,7 @@ class ClAccounting extends Controller
             DB::commit();
 
             $transData['is_settled'] = true;
-            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['atek_id']    = $transaction['atek_id'];
             return $transData;
 
         }
@@ -1851,20 +1851,20 @@ class ClAccounting extends Controller
                     'media_type_id'     => $transaction['media_type_id'],
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -1875,15 +1875,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 32,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 32,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1921,14 +1921,14 @@ class ClAccounting extends Controller
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName = "";
-        $paxLastName = "";
-        $paxMobile = 123456789;
-        $paxGenType = 0;
+        $paxLastName  = "";
+        $paxMobile    = 123456789;
+        $paxGenType   = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 3) {
 
@@ -1937,38 +1937,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 63,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 63,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -1979,15 +1979,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 33,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 33,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -1999,7 +1999,7 @@ class ClAccounting extends Controller
                     $transData['is_settled'] = false;
                 }
                 $transData['atek_id'] = $transaction['atek_id'];
-                $transData['error'] = $e->getMessage();
+                $transData['error']   = $e->getMessage();
 
                 DB::rollBack();
 
@@ -2010,7 +2010,7 @@ class ClAccounting extends Controller
             DB::commit();
 
             $transData['is_settled'] = true;
-            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['atek_id']    = $transaction['atek_id'];
             return $transData;
 
         }
@@ -2042,20 +2042,20 @@ class ClAccounting extends Controller
                     'media_type_id'     => $transaction['media_type_id'],
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -2066,15 +2066,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 33,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 33,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2125,38 +2125,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 64,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 64,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -2167,15 +2167,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 34,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 34,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2230,20 +2230,20 @@ class ClAccounting extends Controller
                     'media_type_id'     => $transaction['media_type_id'],
                     'product_id'        => $transaction['product_id'],
                     'pass_id'           => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -2254,15 +2254,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 34,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 34,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2298,15 +2298,15 @@ class ClAccounting extends Controller
     {
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
-        $paxFirstName = "";
-        $paxLastName = "";
-        $paxMobile = 123456789;
-        $paxGenType = 0;
+        $paxFirstName   = "";
+        $paxLastName    = "";
+        $paxMobile      = 123456789;
+        $paxGenType     = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 3) {
 
@@ -2315,38 +2315,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 65,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 65,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -2357,15 +2357,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 35,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 35,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2400,40 +2400,40 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_tp_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 65,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'num_trips' => $transaction['num_trips'],
-                    'rem_trips' => $transaction['rem_trips'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'src_stn_id' => $transaction['src_stn_id'],
-                    'des_stn_id' => $transaction['des_stn_id'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 65,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'num_trips'         => $transaction['num_trips'],
+                    'rem_trips'         => $transaction['rem_trips'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'src_stn_id'        => $transaction['src_stn_id'],
+                    'des_stn_id'        => $transaction['des_stn_id'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_tp_accounting')
@@ -2444,15 +2444,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 35,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 35,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2489,14 +2489,14 @@ class ClAccounting extends Controller
 
         /* CHECK THAT IS THESE ATTRIBUTES ARE NULLABLE OR NOT */
         $paxFirstName = "";
-        $paxLastName = "";
-        $paxMobile = 123456789;
-        $paxGenType = 0;
+        $paxLastName  = "";
+        $paxMobile    = 123456789;
+        $paxGenType   = 0;
 
         if (array_key_exists("pax_first_name", $transaction)) $paxFirstName = $transaction['pax_first_name'];
-        if (array_key_exists("pax_last_name", $transaction)) $paxLastName = $transaction['pax_last_name'];
-        if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
-        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
+        if (array_key_exists("pax_last_name", $transaction)) $paxLastName   = $transaction['pax_last_name'];
+        if (array_key_exists("pax_mobile", $transaction)) $paxMobile        = $transaction['pax_mobile'];
+        if (array_key_exists("pax_gen_type", $transaction)) $paxGenType     = $transaction['pax_gen_type'];
 
         if ($transaction['product_id'] == 3) {
 
@@ -2505,38 +2505,38 @@ class ClAccounting extends Controller
             try {
 
                 DB::table('cl_sv_accounting')->insert([
-                    'atek_id' => $transaction['atek_id'],
-                    'txn_date' => $transaction['txn_date'],
-                    'engraved_id' => $transaction['engraved_id'],
-                    'op_type_id' => 66,
-                    'stn_id' => $transaction['stn_id'],
-                    'cash_col' => $transaction['cash_col'],
-                    'cash_ret' => $transaction['cash_ret'],
-                    'pass_price' => $transaction['pass_price'],
-                    'card_fee' => $transaction['card_fee'],
-                    'card_sec' => $transaction['card_sec'],
-                    'processing_fee' => $transaction['processing_fee'],
-                    'total_price' => $transaction['total_price'],
-                    'pass_ref_chr' => $transaction['pass_ref_chr'],
-                    'card_fee_ref_chr' => $transaction['card_fee_ref_chr'],
-                    'card_sec_ref_chr' => $transaction['card_sec_ref_chr'],
-                    'pre_chip_bal' => $transaction['pre_chip_bal'],
-                    'pos_chip_bal' => $transaction['pos_chip_bal'],
-                    'media_type_id' => $transaction['media_type_id'],
-                    'product_id' => $transaction['product_id'],
-                    'pass_id' => $transaction['pass_id'],
-                    'pass_expiry' => $transaction['pass_expiry'],
-                    'pax_first_name' => $paxFirstName,
-                    'pax_last_name' => $paxLastName,
-                    'pax_mobile' => $paxMobile,
-                    'pax_gen_type' => $paxGenType,
-                    'shift_id' => $transaction['shift_id'],
-                    'user_id' => $transaction['user_id'],
-                    'eq_id' => $transaction['eq_id'],
-                    'pay_type_id' => $transaction['pay_type_id'],
-                    'pay_ref' => $transaction['pay_ref'],
-                    'is_test' => $transaction['is_test'],
-                    'old_engraved_id' => $transaction['old_engraved_id'],
+                    'atek_id'           => $transaction['atek_id'],
+                    'txn_date'          => $transaction['txn_date'],
+                    'engraved_id'       => $transaction['engraved_id'],
+                    'op_type_id'        => 66,
+                    'stn_id'            => $transaction['stn_id'],
+                    'cash_col'          => $transaction['cash_col'],
+                    'cash_ret'          => $transaction['cash_ret'],
+                    'pass_price'        => $transaction['pass_price'],
+                    'card_fee'          => $transaction['card_fee'],
+                    'card_sec'          => $transaction['card_sec'],
+                    'processing_fee'    => $transaction['processing_fee'],
+                    'total_price'       => $transaction['total_price'],
+                    'pass_ref_chr'      => $transaction['pass_ref_chr'],
+                    'card_fee_ref_chr'  => $transaction['card_fee_ref_chr'],
+                    'card_sec_ref_chr'  => $transaction['card_sec_ref_chr'],
+                    'pre_chip_bal'      => $transaction['pre_chip_bal'],
+                    'pos_chip_bal'      => $transaction['pos_chip_bal'],
+                    'media_type_id'     => $transaction['media_type_id'],
+                    'product_id'        => $transaction['product_id'],
+                    'pass_id'           => $transaction['pass_id'],
+                    'pass_expiry'       => $transaction['pass_expiry'],
+                    'pax_first_name'    => $paxFirstName,
+                    'pax_last_name'     => $paxLastName,
+                    'pax_mobile'        => $paxMobile,
+                    'pax_gen_type'      => $paxGenType,
+                    'shift_id'          => $transaction['shift_id'],
+                    'user_id'           => $transaction['user_id'],
+                    'eq_id'             => $transaction['eq_id'],
+                    'pay_type_id'       => $transaction['pay_type_id'],
+                    'pay_ref'           => $transaction['pay_ref'],
+                    'is_test'           => $transaction['is_test'],
+                    'old_engraved_id'   => $transaction['old_engraved_id'],
                 ]);
 
                 $clAccId = DB::table('cl_sv_accounting')
@@ -2547,15 +2547,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 14 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 36,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 36,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2578,7 +2578,7 @@ class ClAccounting extends Controller
             DB::commit();
 
             $transData['is_settled'] = true;
-            $transData['atek_id'] = $transaction['atek_id'];
+            $transData['atek_id']    = $transaction['atek_id'];
             return $transData;
 
         }
@@ -2634,15 +2634,15 @@ class ClAccounting extends Controller
                 /* PEN TYPE ID 31 */
                 DB::table('cl_pen_accounting')
                     ->insert([
-                        'cl_acc_id' => $clAccId,
-                        'txn_date' => $transaction['txn_date'],
-                        'engraved_id' => $transaction['engraved_id'],
-                        'pen_type_id' => 36,
-                        'pen_price' => $transaction['total_penalty'],
-                        'stn_id' => $transaction['stn_id'],
+                        'cl_acc_id'     => $clAccId,
+                        'txn_date'      => $transaction['txn_date'],
+                        'engraved_id'   => $transaction['engraved_id'],
+                        'pen_type_id'   => 36,
+                        'pen_price'     => $transaction['total_penalty'],
+                        'stn_id'        => $transaction['stn_id'],
                         'media_type_id' => $transaction['media_type_id'],
-                        'product_id' => $transaction['product_id'],
-                        'pass_id' => $transaction['pass_id'],
+                        'product_id'    => $transaction['product_id'],
+                        'pass_id'       => $transaction['pass_id'],
                     ]);
 
             } catch (PDOException $e) {
@@ -2671,7 +2671,6 @@ class ClAccounting extends Controller
         $transData['error'] = "Product Not Found !";
         $transData['atek_id'] = $transaction['atek_id'];
         return $transData;
-
 
     }/* OP_TYPE_ID = 66*/
 
