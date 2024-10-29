@@ -42,11 +42,12 @@ use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRSapReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MqrTravelApi;
 use App\Http\Controllers\Modules\ReportApi\MQR\PreviousDayReport;
-use App\Http\Controllers\Modules\ReportApi\PQR\PQRPreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlSapReport;
 use App\Http\Controllers\Modules\ReportApi\PQR\PQRDailyRidershipReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PQRPreviousDayReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PQRSapReport;
 use App\Http\Controllers\Modules\ReportApi\PQR\PqrTravelApi;
 use App\Http\Controllers\Modules\ReportApi\Revenue;
 use App\Http\Controllers\Modules\ReportApi\TravelApiController;
@@ -68,7 +69,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/cl/initialisation',[ClInitialisation::class,'initialisation']);
+Route::post('/cl/initialisation', [ClInitialisation::class, 'initialisation']);
 Route::post('get/params', [PassController::class, 'getParamsForPass']);
 
 /*DOWNLOAD AND CHECK UPDATE OF FIRMWARE*/
@@ -92,7 +93,7 @@ Route::post('syncOlAccTrans', [OlSvAccounting::class, 'OlSvAccounting']);
 Route::post('tidDetails', [TidController::class, 'tidDetails']);
 
 /*FOR GETTING CARD IN CARD BLACKLIST */
-Route::get('/get/blacklisted/cardDetail/{id}',[CardBlacklistController::class,'search']);
+Route::get('/get/blacklisted/cardDetail/{id}', [CardBlacklistController::class, 'search']);
 
 /* EDIT TID DETAILS */
 Route::post('editEdcDetails', [TidController::class, 'editEdcDetails']);
@@ -228,9 +229,12 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::get('pqr/sjtValReport', [PqrTravelApi::class, 'sjtValReport']);
     Route::get('pqr/rjtValReport', [PqrTravelApi::class, 'rjtValReport']);
 
-    /*ACCOUNTING REPORTS TO BE ON HOLD BY RAHUL SIR*/
-    /*Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
-    Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']);*/
+    Route::post('/pqrSap', [PQRSapReport::class, 'index']);
+
+
+    /* ACCOUNTING REPORTS TO BE ON HOLD BY L1 */
+    /* Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
+    Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']); */
 
 });
 
