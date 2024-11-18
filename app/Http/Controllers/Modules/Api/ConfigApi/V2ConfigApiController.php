@@ -217,7 +217,7 @@ class V2ConfigApiController extends Controller
             return response([
                 'status'  => false,
                 'code'    => 100,
-                'message' => "No config is Available !"
+                'error' => "No config is Available !"
             ]);
         }
 
@@ -368,8 +368,6 @@ class V2ConfigApiController extends Controller
         } else {
             $config_response['activation_time'] = null;
         }
-
-
 
         $scsIp = DB::table('equipment_inventory as ei')
             ->where('stn_id', '=', $equipment->stn_id)
@@ -593,7 +591,7 @@ class V2ConfigApiController extends Controller
             return response([
                 'status'  => false,
                 'code'    => 100,
-                'message' => "No config is Available !"
+                'error' => "No config is Available !"
             ]);
         }
 
