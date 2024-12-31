@@ -36,6 +36,14 @@ class ClAccounting extends Controller
         $transactions = json_decode($request->getContent(), true);
         $response     = [];
 
+        /**
+         * Sorts the transactions array in ascending order
+         * based on the 'id' key as per the request.
+         */
+        usort($transactions, function ($a, $b) {
+            return $a['id'] <=> $b['id'];
+        });
+
 
         if ($transactions == [] || $transactions == null) {
 
