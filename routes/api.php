@@ -38,6 +38,7 @@ use App\Http\Controllers\Modules\ReportApi\CL\StoreValueExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\CL\TripPassExitRevenue;
 use App\Http\Controllers\Modules\ReportApi\DailyRidership;
 use App\Http\Controllers\Modules\ReportApi\KnowYourLoad;
+use App\Http\Controllers\Modules\ReportApi\MQR\MqrAccReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRDailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MQRSapReport;
 use App\Http\Controllers\Modules\ReportApi\MQR\MqrTravelApi;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Modules\ReportApi\MQR\PreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlAccReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlFicoReport;
 use App\Http\Controllers\Modules\ReportApi\OL\OlSapReport;
+use App\Http\Controllers\Modules\ReportApi\PQR\PqrAccReport;
 use App\Http\Controllers\Modules\ReportApi\PQR\PQRDailyRidershipReport;
 use App\Http\Controllers\Modules\ReportApi\PQR\PQRPreviousDayReport;
 use App\Http\Controllers\Modules\ReportApi\PQR\PQRSapReport;
@@ -199,7 +201,6 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::post('/cl/cardDetail/mobileNumber', [CardDetail::class, 'cardDetailUsingMobileNumber']);
     Route::post('/cl/cardDetail/cardNumber', [CardDetail::class, 'cardDetailUsingCardNumber']);
     Route::post('/clSap', [ClSapReport::class, 'index']);
-
     Route::post('/clSvValReport', [ClTravelApi::class, 'svValReport']);
     Route::post('/clTpValReport', [ClTravelApi::class, 'tpValReport']);
 
@@ -208,9 +209,11 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::post('/clTpAccReport', [ClAccReport::class, 'tpAccReport']);
 
     /* MQR API */
-    /* MQR HOURLY REPORT (DAILY RIDERSHIP) */
-    Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
-    Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);  /*Previous Day*/
+    /* ACCOUNTING REPORTS TO BE ON HOLD BY L1 */
+    Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
+    Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']);
+    Route::get('/mqrSvAccReport', [MqrAccReport::class, 'svAccReport']);
+    Route::get('/mqrTpAccReport', [MqrAccReport::class, 'tptAccReport']);
 
     /* MQR BOARDING ALIGHTING (TRAVEL API)*/
     Route::get('mqr/sjtValReport', [MqrTravelApi::class, 'sjtValReport']);
@@ -218,24 +221,28 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::get('mqr/svValReport', [MqrTravelApi::class, 'svValReport']);
     Route::get('mqr/tpValReport', [MqrTravelApi::class, 'tpValReport']);
 
+    /* MQR BOARDING ALIGHTING (FOR DUMP DATA ONLY) */
+    Route::get('mqr/svVal2Report', [MqrTravelApi::class, 'svVal2Report']);
+    Route::get('mqr/tpVal2Report', [MqrTravelApi::class, 'tpVal2Report']);
+
+    /* MQR HOURLY REPORT (DAILY RIDERSHIP) */
+    Route::post('/mqr/Daily/Ridership', [MQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
+    Route::post('/mqr/PrevDay', [PreviousDayReport::class, 'MqrPrevDay']);  /*Previous Day*/
     Route::post('/mqrSap', [MQRSapReport::class, 'index']);
 
     /* PQR API */
-    /* PQR HOURLY REPORT (DAILY RIDERSHIP) */
-    Route::post('/pqr/Daily/Ridership', [PQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
-    Route::post('/pqr/PrevDay', [PQRPreviousDayReport::class, 'PqrPrevDay']);  /*Previous Day*/
+    /* ACCOUNTING REPORTS */
+    Route::get('/pqrSjtAccReport', [PqrAccReport::class, 'sjtAccReport']);
+    Route::get('/pqrRjtAccReport', [PqrAccReport::class, 'rjtAccReport']);
 
-    /* MQR BOARDING ALIGHTING (TRAVEL API)*/
+    /* PQR BOARDING ALIGHTING (TRAVEL API)*/
     Route::get('pqr/sjtValReport', [PqrTravelApi::class, 'sjtValReport']);
     Route::get('pqr/rjtValReport', [PqrTravelApi::class, 'rjtValReport']);
 
+    /* PQR HOURLY REPORT (DAILY RIDERSHIP) */
+    Route::post('/pqr/Daily/Ridership', [PQRDailyRidershipReport::class, 'dailyRidership']); /*Hourly Report*/
+    Route::post('/pqr/PrevDay', [PQRPreviousDayReport::class, 'PqrPrevDay']);  /*Previous Day*/
     Route::post('/pqrSap', [PQRSapReport::class, 'index']);
 
 
-    /* ACCOUNTING REPORTS TO BE ON HOLD BY L1 */
-    /* Route::get('/mqrSjtAccReport', [MqrAccReport::class, 'sjtAccReport']);
-    Route::get('/mqrRjtAccReport', [MqrAccReport::class, 'rjtAccReport']); */
-
 });
-
-

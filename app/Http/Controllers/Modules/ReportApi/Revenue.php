@@ -32,7 +32,10 @@ class Revenue extends Controller
             $cardData = [];
 
             /* TO GET NUMBER OF STATION AND STATION NAME */
-            $stations = DB::table('station_inventory')->select('stn_name', 'stn_id')->orderBy('stn_id','ASC')->get();
+            $stations = DB::table('station_inventory')
+                ->select('stn_name', 'stn_id')
+                ->orderBy('stn_id','ASC')
+                ->get();
 
             $totalRevenue = DB::table('ol_sv_validation')
                 ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
@@ -267,7 +270,7 @@ class Revenue extends Controller
                         ->where('stn_id', '=', $stn_data->stn_id)
                         ->where('pass_id','=',82)
                         ->where('card_mask_no','LIKE','8173'.'%')
-                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->whereNotIn('op_type_id', [1,2,3,4,6,11,12,13,100])
                         ->sum('total_price');
 
                     /* SBI  REVENUE */
@@ -283,7 +286,7 @@ class Revenue extends Controller
                         ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
                         ->where('stn_id', '=', $stn_data->stn_id)
                         ->where('pass_id','=',82)
-                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->whereNotIn('op_type_id', [1,2,3,4,6,11,12,13,100])
                         ->where('card_mask_no','LIKE','8174'.'%')
                         ->sum('total_price');
 
@@ -301,7 +304,7 @@ class Revenue extends Controller
                         ->whereBetween(DB::raw('(txn_date)'), [$from, $to])
                         ->where('stn_id', '=', $stn_data->stn_id)
                         ->where('pass_id','=',82)
-                        ->whereIn('op_type_id', [61, 62, 63, 64, 65])
+                        ->whereNotIn('op_type_id', [1,2,3,4,6,11,12,13,100])
                         ->where('card_mask_no','NOT LIKE','8173'.'%')
                         ->where('card_mask_no','NOT LIKE','8174'.'%')
                         ->sum('total_price');

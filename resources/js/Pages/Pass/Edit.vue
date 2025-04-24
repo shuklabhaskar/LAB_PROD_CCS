@@ -581,6 +581,7 @@
         },
         mounted() {
 
+            console.log(this.Pass)
             this.setParam(this.Pass.product_id)
 
             console.log("permit"+this.Pass.reload_permit)

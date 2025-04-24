@@ -138,6 +138,7 @@ class TripPassExitRevenue extends Controller
     /* TP STALE REVENUE FOR ATEK SYSTEM PASS ID 23*/
     function tpStaleRevenueAtek(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date_format:Y-m-d',
             'to_date' => 'required|date_format:Y-m-d',
@@ -156,7 +157,7 @@ class TripPassExitRevenue extends Controller
         $endDate = Carbon::parse($request->input('to_date'));
 
         $response = [];
-
+        
         for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
 
             $processDate = $date->format('Y-m-d');

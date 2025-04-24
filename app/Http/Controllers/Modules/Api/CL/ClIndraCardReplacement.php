@@ -60,8 +60,6 @@ class ClIndraCardReplacement extends Controller
                     $desStnId  = $transaction['desStnId'];
                 }
 
-
-
                 $indraRep = DB::table('cl_indra_rep')->insert([
                     'atek_id'        => $transaction['atekId'],
                     'txn_date'       => $transaction['txnDate'],
@@ -124,11 +122,10 @@ class ClIndraCardReplacement extends Controller
                 $response[]              = $transData;
 
             } catch (\Exception $e) {
-                $transData['is_settled'] = false;
+                $transData['is_settled'] = true;
                 $transData['atek_id']    = $transaction['atekId'];
                 $transData['error']      = $e->getMessage();
                 $response[]              = $transData;
-
             }
 
 

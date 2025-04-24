@@ -115,6 +115,7 @@ class StoreValueExitRevenue extends Controller
                 ->orderBy('txn_date', 'DESC')
                 ->get();
 
+
             $sum = 0;
 
             foreach ($accTrans as $trans) {
@@ -133,27 +134,42 @@ class StoreValueExitRevenue extends Controller
                     $engravedId = $trans->engraved_id;
                 }
 
-                $unitPrice = ($trans->pass_price / $trans->pos_chip_balance);
+             //   $unitPrice = ($trans->pass_price / $trans->pos_chip_balance);
+
+                $unitPrice = (isset($trans->pos_chip_balance) && $trans->pos_chip_balance != 0)
+                    ? ($trans->pass_price / $trans->pos_chip_balance)
+                    : 0;
 
                 $validationWithZeroTrips = DB::table('cl_sv_validation')
                     ->where('txn_date', '<=', $processDate . " 01:10:00")
                     ->where('engraved_id', $engravedId)
-                    ->where('trip_balance', 0)
+                    ->where('chip_balance', 0)
                     ->orderBy('txn_date', 'DESC')
                     ->first();
 
                 if ($validationWithZeroTrips != null) {
-                    $staleAmount = $unitPrice * $validationWithZeroTrips->trip_balance;
+                    $staleAmount = $unitPrice * $validationWithZeroTrips->chip_balance;
                 } else {
+
                     $validation = DB::table('cl_sv_validation')
                         ->where('txn_date', '<=', $processDate . " 01:10:00")
                         ->where('engraved_id', $engravedId)
                         ->orderBy('txn_date', 'DESC')
                         ->first();
                     if ($validation != null) {
-                        $staleAmount = $unitPrice * $validation->chip_balance;
+
+                       // $staleAmount = $unitPrice * $validation->chip_balance;
+
+                        $staleAmount = (isset($validation->chip_balance) && $validation->chip_balance != 0)
+                        ? ($unitPrice * $validation->chip_balance):0;
+
                     } else {
-                        $staleAmount = $unitPrice * $trans->pos_chip_balance;
+
+                        // $staleAmount = $unitPrice * $trans->pos_chip_balance;
+
+                        $staleAmount = (isset($trans->pos_chip_balance) && $trans->pos_chip_balance != 0)
+                            ? ($unitPrice * $trans->pos_chip_balance):0;
+
                     }
                 }
 

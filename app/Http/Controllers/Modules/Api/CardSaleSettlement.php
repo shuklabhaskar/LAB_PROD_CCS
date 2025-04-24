@@ -56,17 +56,17 @@ class CardSaleSettlement extends Controller{
 
                 $response[] = [
                     'is_settled' => true,
-                    'atek_id' => $transaction->atek_id,
-                    'code' => 100
+                    'atek_id'    => $transaction->atek_id,
+                    'code'       => 100
                 ];
 
             } catch (PDOException $e) {
 
                 $response[] = [
                     'is_settled' => false,
-                    'atek_id' => $transaction->atek_id,
-                    'code' => 101,
-                    'error' => $e->getMessage()
+                    'atek_id'    => $transaction->atek_id,
+                    'code'       => 101,
+                    'error'      => $e->getMessage()
                 ];
 
             }

@@ -187,7 +187,7 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_sv_accounting.pass_id','=',53)
-                        ->whereIn('cl_sv_accounting.op_type_id', [54, 61, 62, 63, 64, 65])
+                        ->whereNotIn('cl_sv_accounting.op_type_id', [1,2,3,4,6,11,12,13,100])
                         ->sum('total_price');
 
                     $tpGra = DB::table('cl_tp_accounting')
@@ -198,7 +198,7 @@ class RevenueReport extends Controller
                         ->where('pass_inventory.is_test','=',false)
                         ->where('pass_inventory.media_type_id','=',2)
                         ->whereNot('cl_tp_accounting.pass_id','=',53)
-                        ->whereIn('cl_tp_accounting.op_type_id', [54, 61, 62, 63, 64, 65])
+                        ->whereNotIn('cl_tp_accounting.op_type_id', [1,2,3,4,6,11,12,13,100])
                         ->sum('total_price');
 
                     $svRepAmount = DB::table('cl_sv_accounting')

@@ -93,7 +93,6 @@ class ConfigController extends Controller
             ->orderBy('config_version', 'desc')
             ->first('config_version');
 
-
         DB::table('config_gen')
             ->insert([
                 'config_gen_id'  => ($newConfigGenId != null) ? $newConfigGenId->config_gen_id + 1 : 1,

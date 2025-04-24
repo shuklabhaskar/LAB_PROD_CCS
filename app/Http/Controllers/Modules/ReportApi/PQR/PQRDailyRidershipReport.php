@@ -45,7 +45,6 @@ class PQRDailyRidershipReport extends Controller
                     'stn_code' => $station->stn_id,
                 ];
 
-
                 /***
                  * BELOW PASS ID FOR RESPECTIVE PRODUCT TYPE
                  * SJT = 15
