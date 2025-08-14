@@ -119,7 +119,7 @@
 
                     <!--BACK BUTTON-->
                     <div class="col-auto d-none d-sm-block">
-                        <Link :href="'/stations'" class="btn btn-outline-primary"><font-awesome-icon icon="fa-solid fa-backward" /> Back</Link>
+                        <Link :href="'/station/inventory'" class="btn btn-outline-primary"><font-awesome-icon icon="fa-solid fa-backward" /> Back</Link>
                     </div>
 
                     <!--SAVE BUTTON-->

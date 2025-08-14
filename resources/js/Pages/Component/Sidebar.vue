@@ -81,7 +81,6 @@
                     </Link>
                 </li>
 
-
                 <li class="sidebar-header">
                     INVENTORIES
                 </li>
@@ -244,7 +243,7 @@
                 <div class="sidebar-cta">
                     <div class="sidebar-cta-content">
                         <div class="d-grid">
-                            <a class="btn btn-outline-primary">Version 3.9.1</a>
+                            <a class="btn btn-outline-primary">Version 4.0.0</a>
                         </div>
                     </div>
                 </div>

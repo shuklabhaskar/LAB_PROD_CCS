@@ -417,7 +417,6 @@ class ClAccounting extends Controller
         if (array_key_exists("pax_mobile", $transaction)) $paxMobile = $transaction['pax_mobile'];
         if (array_key_exists("pax_gen_type", $transaction)) $paxGenType = $transaction['pax_gen_type'];
 
-
         try {
 
             if ($transaction['product_id'] == 3) {

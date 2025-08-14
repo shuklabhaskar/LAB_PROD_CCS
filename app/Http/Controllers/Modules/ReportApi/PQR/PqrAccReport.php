@@ -49,6 +49,7 @@ class PqrAccReport extends Controller
                     'psjt_ms_accounting.total_price',
                     'psjt_ms_accounting.stn_id',
                     'psjt_ms_accounting.eq_id',
+                    'psjt_ms_accounting.pay_type_id',
                 ])->get();
 
             if ($sjtAccounting->isEmpty()) {
@@ -124,8 +125,8 @@ class PqrAccReport extends Controller
                     'prjt_ms_accounting.total_price',
                     'prjt_ms_accounting.stn_id',
                     'prjt_ms_accounting.eq_id',
+                    'prjt_ms_accounting.pay_type_id',
                 ])->get();
-
 
             if ($rjtAccounting->isEmpty()) {
                 return response([

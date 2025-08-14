@@ -523,17 +523,20 @@ class V2ConfigApiController extends Controller
             ])
             ->first();
 
-        $readerData = DB::table('tid_inv')
-            ->join('acq_param', 'acq_param.eq_type_id', '=', 'tid_inv.eq_type_id')
-            ->where('tid_inv.emv_serial_no', '=', $serial_no)
-            ->where('tid_inv.eq_type_id', '=', $eq_type_id)
+        $readerData = DB::table('tid_inv as ti')
+            ->join('acq_param as ap', function($join) {
+                $join->on('ap.acq_id', '=', 'ti.acq_id')
+                    ->on('ap.eq_type_id', '=', 'ti.eq_type_id');
+            })
+            ->where('ti.emv_serial_no', '=', $serial_no)
+            ->where('ti.eq_type_id', '=', $eq_type_id)
             ->select([
-                'tid_inv.emv_tid as terminal_id',
-                'acq_param.acq_mid as merchant_id',
-                'acq_param.client_id as client_id',
-                'acq_param.acq_id as acquirer_id',
-                'acq_param.acq_name as acquirer_name',
-                'acq_param.operator_id',
+                'ti.emv_tid as terminal_id',
+                'ap.acq_mid as merchant_id',
+                'ap.client_id as client_id',
+                'ap.acq_id as acquirer_id',
+                'ap.acq_name as acquirer_name',
+                'ap.operator_id',
             ])
             ->first();
 
@@ -591,7 +594,7 @@ class V2ConfigApiController extends Controller
             return response([
                 'status'  => false,
                 'code'    => 100,
-                'error' => "No config is Available !"
+                'message' => "No config is Available !"
             ]);
         }
 
@@ -662,7 +665,6 @@ class V2ConfigApiController extends Controller
         } else {
             $configResponse['config']['cl_blacklist_version'] = $cl_black_list_version;
         }
-
 
         DB::table('config_publish')
             ->where('equipment_id', '=', $equipment->eq_id)

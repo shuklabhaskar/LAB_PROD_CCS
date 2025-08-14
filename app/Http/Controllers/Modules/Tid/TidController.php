@@ -12,24 +12,37 @@ class TidController extends Controller
     public function index()
     {
         $Tids = DB::table('tid_inv as ti')
-            ->join('ms_emv_type as met','met.emv_type_id','=','ti.emv_type_id')
-            ->join('acq_param as ap','ap.eq_type_id','=','ti.eq_type_id')
+            ->join('ms_emv_type as met', 'met.emv_type_id', '=', 'ti.emv_type_id')
+            ->join('acq_param as ap', function($join) {
+                $join->on('ap.acq_id', '=', 'ti.acq_id')
+                    ->on('ap.eq_type_id', '=', 'ti.eq_type_id');
+            })
+            ->select([
+                'ti.tid_inv_id',
+                'ti.emv_serial_no',
+                'ti.emv_box_serial_no',
+                'ti.emv_tid',
+                'met.emv_reader_name',
+                'ap.acq_name'
+            ])
             ->get();
 
-        return Inertia::render('Tid_Inventory/Index',[
-            'Tids'=>$Tids
+
+        return Inertia::render('Tid_Inventory/Index', [
+            'Tids' => $Tids
         ]);
 
     }
 
-    public function create(){
+    public function create()
+    {
 
         $EmvTypes = DB::table('ms_emv_type')->get();
         $Acquirers = DB::table('acq_param')->get();
 
-        return Inertia::render('Tid_Inventory/Create',[
-            'EmvTypes'  =>$EmvTypes,
-            'Acquirers' =>$Acquirers,
+        return Inertia::render('Tid_Inventory/Create', [
+            'EmvTypes' => $EmvTypes,
+            'Acquirers' => $Acquirers,
         ]);
 
     }
@@ -37,37 +50,37 @@ class TidController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'emv_tid'           => 'required|unique:tid_inv',
-            'emv_serial_no'     => 'required|unique:tid_inv',
-            'emv_type_id'       => 'required|integer',
-            'acq_id'            => 'required|integer',
+            'emv_tid' => 'required|unique:tid_inv',
+            'emv_serial_no' => 'required|unique:tid_inv',
+            'emv_type_id' => 'required|integer',
+            'acq_id' => 'required|integer',
         ]);
 
         /* FOR GATE */
-        if ($request->input('emv_type_id') == 1){
+        if ($request->input('emv_type_id') == 1) {
             DB::table('tid_inv')->insert([
-                'emv_tid'           =>$request->input('emv_tid'),
-                'emv_serial_no'     =>$request->input('emv_serial_no'),
-                'emv_box_serial_no' =>$request->input('device_id'),
-                'emv_type_id'       =>$request->input('emv_type_id'),
-                'eq_type_id'        =>7,
-                'acq_id'            =>$request->input('acq_id'),
-                'start_date'        =>date('Y-m-d H:i:s'),
-                'is_bind'           =>false,
+                'emv_tid' => $request->input('emv_tid'),
+                'emv_serial_no' => $request->input('emv_serial_no'),
+                'emv_box_serial_no' => $request->input('device_id'),
+                'emv_type_id' => $request->input('emv_type_id'),
+                'eq_type_id' => 7,
+                'acq_id' => $request->input('acq_id'),
+                'start_date' => date('Y-m-d H:i:s'),
+                'is_bind' => false,
             ]);
         }
 
         /* FOR TOM */
-        if ($request->input('emv_type_id') == 2){
+        if ($request->input('emv_type_id') == 2) {
             DB::table('tid_inv')->insert([
-                'emv_tid'           =>$request->input('emv_tid'),
-                'emv_serial_no'     =>$request->input('emv_serial_no'),
-                'emv_box_serial_no' =>$request->input('device_id'),
-                'emv_type_id'       =>$request->input('emv_type_id'),
-                'acq_id'            =>$request->input('acq_id'),
-                'eq_type_id'        =>6,
-                'start_date'        =>date('Y-m-d H:i:s'),
-                'is_bind'           =>false,
+                'emv_tid' => $request->input('emv_tid'),
+                'emv_serial_no' => $request->input('emv_serial_no'),
+                'emv_box_serial_no' => $request->input('device_id'),
+                'emv_type_id' => $request->input('emv_type_id'),
+                'acq_id' => $request->input('acq_id'),
+                'eq_type_id' => 6,
+                'start_date' => date('Y-m-d H:i:s'),
+                'is_bind' => false,
             ]);
         }
 
@@ -75,22 +88,23 @@ class TidController extends Controller
         return redirect()
             ->to('tids')
             ->with([
-                'status'    => true,
-                'message'   => ' TID CREATED SUCCESSFULLY.'
+                'status' => true,
+                'message' => ' TID CREATED SUCCESSFULLY.'
             ]);
 
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
 
         $EmvTypes = DB::table('ms_emv_type')->get();
         $Acquirers = DB::table('acq_param')->get();
-        $tid        = DB::table('tid_inv')->where('tid_inv_id','=',$id)->first();
+        $tid = DB::table('tid_inv')->where('tid_inv_id', '=', $id)->first();
 
-        return Inertia::render('Tid_Inventory/Edit',[
-            'EmvTypes'  =>$EmvTypes,
-            'Acquirers' =>$Acquirers,
-            'tid'       =>$tid,
+        return Inertia::render('Tid_Inventory/Edit', [
+            'EmvTypes' => $EmvTypes,
+            'Acquirers' => $Acquirers,
+            'tid' => $tid,
         ]);
 
     }
@@ -98,21 +112,21 @@ class TidController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'emv_tid'           => 'required',
-            'emv_serial_no'     => 'required',
-            'acq_id'            => 'required|integer',
+            'emv_tid' => 'required',
+            'emv_serial_no' => 'required',
+            'acq_id' => 'required|integer',
         ]);
 
         DB::table('tid_inv')
-            ->where('tid_inv_id','=',$id)
+            ->where('tid_inv_id', '=', $id)
             ->update([
-            'emv_tid'           =>$request->input('emv_tid'),
-            'emv_serial_no'     =>$request->input('emv_serial_no'),
-            'emv_box_serial_no' =>$request->input('device_id'),
-            'acq_id'            =>$request->input('acq_id'),
-            'start_date'        =>now(),
-            'is_bind'           =>false,
-        ]);
+                'emv_tid' => $request->input('emv_tid'),
+                'emv_serial_no' => $request->input('emv_serial_no'),
+                'emv_box_serial_no' => $request->input('device_id'),
+                'acq_id' => $request->input('acq_id'),
+                'start_date' => now(),
+                'is_bind' => false,
+            ]);
 
         return redirect()
             ->to('tids')

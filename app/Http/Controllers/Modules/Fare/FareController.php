@@ -122,16 +122,9 @@ class FareController extends Controller
             ->orderBy('fare_table.id','ASC')
             ->get();
 
-
-        $fare = null;
-        foreach ($fares as $key => $val){
-            for($i = 1; $i <= $fares->count(); $i++) {
-                // PRINT COLUMN
-                for($j = 1; $j <= $fares->count(); $j++) {
-                    // PRINT ROW
-                    $fare[$val->destination_id][$val->source_id] = $val->fare;
-                }
-            }
+        $fare = [];
+        foreach ($fares as $val) {
+            $fare[$val->destination_id][$val->source_id] = $val->fare;
         }
 
         return Inertia::render('Fare/Edit', [

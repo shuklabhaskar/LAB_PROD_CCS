@@ -86,7 +86,7 @@ class OlSvAccounting extends Controller
                 /* FOR OVER TRAVEL OP TYPE ID 54 */
                 if ($transaction->op_type_id==54){
 
-                    DB::table("ol_pen_accounting")->insert([
+                        DB::table("ol_pen_accounting")->insert([
                         'ms_acc_id'         => $msAccID->ms_acc_id,
                         'txn_date'          => $transaction->txn_date,
                         'card_mask_no'      => $transaction->card_mask_no,

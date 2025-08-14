@@ -69,7 +69,7 @@ class StoreValueAuditApi extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $result ?: "No Data Found",
+            'data'   => $result ?: "No Data Found",
         ]);
 
     }

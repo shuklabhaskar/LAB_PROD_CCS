@@ -244,5 +244,4 @@ Route::middleware(['basic_auth'])->group(function () {
     Route::post('/pqr/PrevDay', [PQRPreviousDayReport::class, 'PqrPrevDay']);  /*Previous Day*/
     Route::post('/pqrSap', [PQRSapReport::class, 'index']);
 
-
 });

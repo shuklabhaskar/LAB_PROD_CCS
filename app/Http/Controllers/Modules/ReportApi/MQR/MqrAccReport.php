@@ -125,7 +125,6 @@ class MqrAccReport extends Controller
                     'mrjt_ms_accounting.total_price',
                 ])->get();
 
-
             if ($rjtAccounting->isEmpty()) {
                 return response([
                     'status' => false,
@@ -198,8 +197,8 @@ class MqrAccReport extends Controller
                     'msv_ms_accounting.op_type_id',
                     'msv_ms_accounting.pass_price',
                     'msv_ms_accounting.total_price as recharge_amount',
+                    'msv_ms_accounting.ms_qr_exp as expiry_date',
                 ])->get();
-
 
             if ($svAccounting->isEmpty()) {
                 return response([
@@ -275,8 +274,8 @@ class MqrAccReport extends Controller
                     'mtp_ms_accounting.pass_price',
                     'mtp_ms_accounting.total_price as recharge_amount',
                     'mtp_ms_accounting.rem_trips as trip_count',
+                    'mtp_ms_accounting.ms_qr_exp as expiry_date',
                 ])->get();
-
 
             if ($tpAccounting->isEmpty()) {
                 return response([
